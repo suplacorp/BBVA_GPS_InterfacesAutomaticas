@@ -21,5 +21,14 @@ namespace Suplacorp.GPS.BL
             _objDL.kike();
         }
 
+        public List<ValidacionInterfazBE> ListarValidaciones_xInterfaz(string nombre_fichero) {
+            try {
+                return (new ValidacionInterfazDAL()).ListarValidaciones_xInterfaz(nombre_fichero);
+            }
+            catch (Exception ex) {
+                throw;
+            }
+        }
+
     }
 }

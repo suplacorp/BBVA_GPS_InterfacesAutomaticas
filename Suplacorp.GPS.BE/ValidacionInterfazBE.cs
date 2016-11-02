@@ -20,13 +20,27 @@ namespace Suplacorp.GPS.BE
         private string _logica_mapeo;
         private string _descripcion;
         private string _consideraciones;
-        private int _idinterface;
-        private int _idtiporegistro;
+
+        //private int _idinterface;
+        private TipoInterfazBE _tipo_interfaz;
+        
+        //private int _idtiporegistro;
+        private TipoRegistroBE _tipo_registro;
+
+        private int _id_tipodetalle_tiporegistro;
+
+        private bool _cierra_registro;
+
         #endregion
 
         #region Constructores
         public ValidacionInterfazBE() {
-            
+            _tipo_interfaz = new TipoInterfazBE();
+            _tipo_registro = new TipoRegistroBE();
+        }
+
+        public ValidacionInterfazBE(int id){
+            //Cargar ValidacionInterfazBE por id
         }
         #endregion
 
@@ -176,31 +190,86 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public int Idinterface
+        //public int Idinterface
+        //{
+        //    get
+        //    {
+        //        return _idinterface;
+        //    }
+        //    set
+        //    {
+        //        if (_idinterface == value) return;
+        //        _idinterface = value;
+        //    }
+        //}
+        //public int Idtiporegistro
+        //{
+        //    get
+        //    {
+        //        return _idtiporegistro;
+        //    }
+        //    set
+        //    {
+        //        if (_idtiporegistro == value) return;
+        //        _idtiporegistro = value;
+        //    }
+        //}
+
+        public TipoRegistroBE Tipo_registro
         {
             get
             {
-                return _idinterface;
+                return _tipo_registro;
             }
             set
             {
-                if (_idinterface == value) return;
-                _idinterface = value;
+                if (_tipo_registro == value) return;
+                _tipo_registro = value;
             }
         }
 
-        public int Idtiporegistro
+
+        public TipoInterfazBE Tipo_interfaz
         {
             get
             {
-                return _idtiporegistro;
+                return _tipo_interfaz;
             }
             set
             {
-                if (_idtiporegistro == value) return;
-                _idtiporegistro = value;
+                if (_tipo_interfaz == value) return;
+                _tipo_interfaz = value;
             }
         }
+
+        public bool Cierra_registro
+        {
+            get
+            {
+                return _cierra_registro;
+            }
+            set
+            {
+                if (_cierra_registro == value) return;
+                _cierra_registro = value;
+            }
+        }
+
+        public int Id_tipodetalle_tiporegistro
+        {
+            get
+            {
+                return _id_tipodetalle_tiporegistro;
+            }
+
+            set
+            {
+                _id_tipodetalle_tiporegistro = value;
+            }
+        }
+
         #endregion
     }
+
+    
 }

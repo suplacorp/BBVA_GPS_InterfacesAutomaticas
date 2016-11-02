@@ -13,5 +13,40 @@ namespace Suplacorp.GPS.BE
         private string _descripcion;
         #endregion
 
+        #region Constructores
+        public TipoRegistroBE()
+        {
+
+        }
+        #endregion
+
+        #region Propiedades
+        public int Idtiporegistro
+        {
+            get
+            {
+                return _idtiporegistro;
+            }
+            set
+            {
+                if (_idtiporegistro == value) return;
+                _idtiporegistro = value;
+            }
+        }
+
+        public string Descripcion
+        {
+            get
+            {
+                return _descripcion;
+            }
+            set
+            {
+                if (_descripcion == value) return;
+                _descripcion = value;
+            }
+        }
+        #endregion
+
     }
 }
