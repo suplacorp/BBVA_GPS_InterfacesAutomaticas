@@ -15,7 +15,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
         static void Main(string[] args)
         {
-            //TESTING1
+            //TESTING1 KIKE
             /*
             string registro_inicial = "000000	0	S	MX	MM	MX_OL1_REFER	01102015	172629													";
             string registro_abajo = "000001	1	MX11	000000000210000222	BLOCK DE 100 HOJAS	UN	PAQ	1	100			Z002		0,000		0,000		10100023	MX11		";
