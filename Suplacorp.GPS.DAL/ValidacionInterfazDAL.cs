@@ -50,7 +50,7 @@ namespace Suplacorp.GPS.DAL
             {
                 using (DbCommand _sqlCmd = _sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_CARGARVALIDACIONES_XINTERFAZ")) {
                     _sqlDatabase.AddInParameter(_sqlCmd, "NOMBRE_FICHERO", DbType.String, nombre_fichero);
-                    using (IDataReader dataReader = _sqlDatabase.ExecuteReader("BBVA_GPS_SEL_CARGARVALIDACIONES", nombre_fichero)){
+                    using (IDataReader dataReader = _sqlDatabase.ExecuteReader(_sqlCmd)){
                         while (dataReader.Read()){
                             _lstValidacion.Add(CargarValidacion(dataReader));
                         }
