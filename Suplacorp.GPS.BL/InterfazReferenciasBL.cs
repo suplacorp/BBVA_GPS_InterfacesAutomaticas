@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Suplacorp.GPS.BL
 {
-    public class InterfazReferenciasBL : BaseBL<InterfazReferenciasBE>, IInterfaz<InterfazReferenciasBE>
+    public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfaz<InterfazReferencias_RegIniBE>
     {
         Dictionary<int, string> dic_tipo_registro_detalle = new Dictionary<int, string>();
 
@@ -19,9 +19,9 @@ namespace Suplacorp.GPS.BL
             
         }
 
-        public List<InterfazReferenciasBE> LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero, List<ValidacionInterfazBE> lstValidacion)
+        public List<InterfazReferencias_RegIniBE> LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero, List<ValidacionInterfazBE> lstValidacion)
         {
-            List<InterfazReferenciasBE> lstInterfazReferencias = new List<InterfazReferenciasBE>();
+            List<InterfazReferencias_RegIniBE> lstInterfazReferencias = new List<InterfazReferencias_RegIniBE>();
             int contador = 0;
             string linea_actual;
             System.IO.StreamReader file = null;
@@ -42,8 +42,7 @@ namespace Suplacorp.GPS.BL
 
                 // Leyendo el archivo
                 file = new System.IO.StreamReader(ruta_fichero);
-                while ((linea_actual = file.ReadLine()) != null)
-                {
+                while ((linea_actual = file.ReadLine()) != null){
                     if (linea_actual.Length > 0 && linea_actual != "") {
                         lstInterfazReferencias.Add(LlenarEntidad(linea_actual, lstValidacionRegistroInicial, lstValidacionRegistroProceso, lstValidacionRegistroFin));
                         //System.Console.WriteLine(line);
@@ -60,28 +59,28 @@ namespace Suplacorp.GPS.BL
             return lstInterfazReferencias;
         }
 
-        public InterfazReferenciasBE LlenarEntidad(string linea_actual, params List<ValidacionInterfazBE>[] listas_validacion_x_tiporegistro)
+        public InterfazReferencias_RegIniBE LlenarEntidad(string linea_actual, params List<ValidacionInterfazBE>[] listas_validacion_x_tiporegistro)
         {
-            InterfazReferenciasBE _interfazReferencia;
+            InterfazReferencias_RegIniBE _interfazReferencia;
             Dictionary<int, string> _dict = new Dictionary<int, string>();
 
             try {
 
                 String[] valores_linea_actual = linea_actual.Split('\t');
                 string idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
-                _interfazReferencia = new InterfazReferenciasBE();
+                _interfazReferencia = new InterfazReferencias_RegIniBE();
 
                 switch (idTipoDetalle_TipoRegistro) {
                     case "0": //1) Registro de control inicial para el inicio del fichero
-                        _interfazReferencia.Id = 0;
-                        _interfazReferencia.Validacion.Id = listas_validacion_x_tiporegistro[Convert.ToInt32(idTipoDetalle_TipoRegistro)][i].Id;
-                        _interfazReferencia.Nro_proceso = 0;
-                        _interfazReferencia.Valor = valores_linea_actual[i];
-                        _interfazReferencia.Nombre_fichero = "NOMBRE FICHERO KIKE";
-                        _interfazReferencia.Ruta_fichero = "RUTA FICHERO KIKE";
-                        _interfazReferencia.Fecha_ejecucion = DateTime.Today;
-                        _interfazReferencia.Fecha_registro = DateTime.Today;
-                        _interfazReferencia.Procesado = false;
+                        //_interfazReferencia.Id = 0;
+                        //_interfazReferencia.Validacion.Id = listas_validacion_x_tiporegistro[Convert.ToInt32(idTipoDetalle_TipoRegistro)][i].Id;
+                        //_interfazReferencia.Nro_proceso = 0;
+                        //_interfazReferencia.Valor = valores_linea_actual[i];
+                        //_interfazReferencia.Nombre_fichero = "NOMBRE FICHERO KIKE";
+                        //_interfazReferencia.Ruta_fichero = "RUTA FICHERO KIKE";
+                        //_interfazReferencia.Fecha_ejecucion = DateTime.Today;
+                        //_interfazReferencia.Fecha_registro = DateTime.Today;
+                        //_interfazReferencia.Procesado = false;
                         break;
                     case "1": //2) Registros de proceso
 
