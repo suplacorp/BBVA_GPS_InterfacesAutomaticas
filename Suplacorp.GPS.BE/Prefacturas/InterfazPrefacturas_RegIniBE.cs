@@ -12,12 +12,12 @@ namespace Suplacorp.GPS.BE
         private string _numero_registros_cab_fin;
         private string _numero_registros_pos_fin;
         private string _numero_registros_tipo3_fin;
+        private List<InterfazPrefacturas_RegCabBE> _lstInterfazPrefacturas_RegCabBE;
         #endregion
 
         #region Constructores
-        public InterfazPrefacturas_RegIniBE()
-        {
-
+        public InterfazPrefacturas_RegIniBE(){
+            _lstInterfazPrefacturas_RegCabBE = new List<InterfazPrefacturas_RegCabBE>();
         }
         #endregion
 
@@ -58,6 +58,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _numero_registros_tipo3_fin = value;
+            }
+        }
+
+        public List<InterfazPrefacturas_RegCabBE> LstInterfazPrefacturas_RegCabBE
+        {
+            get
+            {
+                return _lstInterfazPrefacturas_RegCabBE;
+            }
+
+            set
+            {
+                _lstInterfazPrefacturas_RegCabBE = value;
             }
         }
         #endregion

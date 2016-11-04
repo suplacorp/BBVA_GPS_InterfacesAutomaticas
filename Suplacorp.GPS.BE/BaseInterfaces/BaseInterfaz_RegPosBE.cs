@@ -14,7 +14,6 @@ namespace Suplacorp.GPS.BE
         private string _numeral;
         private string _tipo_registro;
         private bool _procesado;
-
         #endregion
 
         #region constructores

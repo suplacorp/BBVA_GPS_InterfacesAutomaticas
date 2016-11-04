@@ -12,15 +12,12 @@ namespace Suplacorp.GPS.BE
         private string _numero_registros_cab_fin;
         private string _numero_registros_pos_fin;
         private string _numero_registros_tipo3_fin;
+        private List<InterfazExpediciones_RegCabBE> _lstInterfazExpediciones_RegCabBE;
         #endregion
 
         #region Constructores
-        /// <summary>
-        /// 
-        /// </summary>
-        public InterfazExpediciones_RegIniBE()
-        {
-
+        public InterfazExpediciones_RegIniBE(){
+            _lstInterfazExpediciones_RegCabBE = new List<InterfazExpediciones_RegCabBE>();
         }
         #endregion
 
@@ -61,6 +58,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _numero_registros_tipo3_fin = value;
+            }
+        }
+
+        public List<InterfazExpediciones_RegCabBE> LstInterfazExpediciones_RegCabBE
+        {
+            get
+            {
+                return _lstInterfazExpediciones_RegCabBE;
+            }
+
+            set
+            {
+                _lstInterfazExpediciones_RegCabBE = value;
             }
         }
         #endregion

@@ -21,8 +21,7 @@ namespace Suplacorp.GPS.BE
         #endregion
 
         #region Constructores
-        public InterfazPrefacturas_RegPosBE()
-        {
+        public InterfazPrefacturas_RegPosBE(){
 
         }
         #endregion

@@ -18,7 +18,6 @@ namespace Suplacorp.GPS.BE
         private string _centro_coste;
         private decimal _cantidad_pedido_reserva;
         private string _unidad_medida_pedido;
-        
         #endregion
 
         #region Constructores

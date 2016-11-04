@@ -12,11 +12,12 @@ namespace Suplacorp.GPS.BE
         private string _numero_registros_cab_fin;
         private string _numero_registros_pos_fin;
         private string _numero_registros_tipo3_fin;
+        private List<InterfazSuministros_RegCabBE> _lstInterfazSuministros_RegCabBE;
         #endregion
 
         #region Constructores
         public InterfazSuministros_RegIniBE() {
-
+            _lstInterfazSuministros_RegCabBE = new List<InterfazSuministros_RegCabBE>();
         }
         #endregion
 
@@ -57,6 +58,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _numero_registros_tipo3_fin = value;
+            }
+        }
+
+        public List<InterfazSuministros_RegCabBE> LstInterfazSuministros_RegCabBE
+        {
+            get
+            {
+                return _lstInterfazSuministros_RegCabBE;
+            }
+
+            set
+            {
+                _lstInterfazSuministros_RegCabBE = value;
             }
         }
         #endregion

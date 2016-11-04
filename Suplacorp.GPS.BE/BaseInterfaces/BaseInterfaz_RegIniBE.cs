@@ -12,21 +12,16 @@ namespace Suplacorp.GPS.BE
         private int _idregini;
         private int _nro_proceso;
         private string _numeral;
-        private string _tipo_registro;
-        private string _tipo_interfaz;
+        private string _tipo_registro; 
+        private string _tipo_interfaz; 
         private string _pais;
         private string _identificador_interfaz;
         private string _nombre_fichero;
         private DateTime _fecha_ejecucion;
         private TimeSpan _hora_proceso;
         private string _ruta_fichero;
-
-        //private int _idinterfaz;
         private TipoInterfazBE interfaz;
-
-        //private int _idtiporegistro;
         private TipoRegistroBE tiporegistro;
-        
         private bool _procesado;
         private string _numero_total_registros_fin;
         private string _tipo_registro_fin;
@@ -34,8 +29,8 @@ namespace Suplacorp.GPS.BE
 
         #region constructores
         public BaseInterfaz_RegIniBE(){
-        }
-        public BaseInterfaz_RegIniBE(int id){
+            interfaz = new TipoInterfazBE();
+            tiporegistro = new TipoRegistroBE();
         }
         #endregion
 

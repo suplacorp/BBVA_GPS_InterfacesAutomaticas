@@ -13,11 +13,12 @@ namespace Suplacorp.GPS.BE
         private string _numero_registros_proceso_fin;
         private string _numero_registros_tipo2_fin;
         private string _numero_registros_tipo3_fin;
+        private List<InterfazReferencias_RegProcBE> _lstInterfazReferencias_RegProcBE;
         #endregion
 
         #region Constructores
         public InterfazReferencias_RegIniBE() {
-
+            _lstInterfazReferencias_RegProcBE = new List<InterfazReferencias_RegProcBE>();
         }
         #endregion
 
@@ -60,7 +61,20 @@ namespace Suplacorp.GPS.BE
                 _numero_registros_tipo3_fin = value;
             }
         }
+
+        public List<InterfazReferencias_RegProcBE> LstInterfazReferencias_RegProcBE
+        {
+            get
+            {
+                return _lstInterfazReferencias_RegProcBE;
+            }
+
+            set
+            {
+                _lstInterfazReferencias_RegProcBE = value;
+            }
+        }
         #endregion
-        
+
     }
 }
