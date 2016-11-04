@@ -40,21 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Registro_Cabecera\BaseInterfaz_RegCabBE.cs" />
-    <Compile Include="Registro_Cabecera\InterfazExpediciones_RegCabBE.cs" />
-    <Compile Include="Registro_Cabecera\InterfazPrefacturas_RegCabBE.cs" />
-    <Compile Include="Registro_Cabecera\InterfazSuministros_RegCabBE.cs" />
-    <Compile Include="Registro_Inicial\BaseInterfaz_RegIniBE.cs" />
-    <Compile Include="Registro_Posicion\BaseInterfaz_RegPosBE.cs" />
-    <Compile Include="Registro_Posicion\InterfazExpediciones_RegPosBE.cs" />
-    <Compile Include="Registro_Posicion\InterfazPrefacturas_RegPosBE.cs" />
-    <Compile Include="Registro_Proceso\InterfazReferencias_RegProcBE.cs" />
-    <Compile Include="Registro_Posicion\InterfazSuministros_RegPosBE.cs" />
+    <Compile Include="BaseInterfaces\BaseInterfaz_RegCabBE.cs" />
+    <Compile Include="Expediciones\InterfazExpediciones_RegCabBE.cs" />
+    <Compile Include="Prefacturas\InterfazPrefacturas_RegCabBE.cs" />
+    <Compile Include="Suministros\InterfazSuministros_RegCabBE.cs" />
+    <Compile Include="BaseInterfaces\BaseInterfaz_RegIniBE.cs" />
+    <Compile Include="BaseInterfaces\BaseInterfaz_RegPosBE.cs" />
+    <Compile Include="Expediciones\InterfazExpediciones_RegPosBE.cs" />
+    <Compile Include="Prefacturas\InterfazPrefacturas_RegPosBE.cs" />
+    <Compile Include="Referencias\InterfazReferencias_RegProcBE.cs" />
+    <Compile Include="Suministros\InterfazSuministros_RegPosBE.cs" />
     <Compile Include="TipoInterfazBE.cs" />
-    <Compile Include="Registro_Inicial\InterfazExpediciones_RegIniBE.cs" />
-    <Compile Include="Registro_Inicial\InterfazPrefacturas_RegIniBE.cs" />
-    <Compile Include="Registro_Inicial\InterfazReferencias_RegIniBE.cs" />
-    <Compile Include="Registro_Inicial\InterfazSuministros_RegIniBE.cs" />
+    <Compile Include="Expediciones\InterfazExpediciones_RegIniBE.cs" />
+    <Compile Include="Prefacturas\InterfazPrefacturas_RegIniBE.cs" />
+    <Compile Include="Referencias\InterfazReferencias_RegIniBE.cs" />
+    <Compile Include="Suministros\InterfazSuministros_RegIniBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TipoRegistroBE.cs" />
     <Compile Include="ValidacionInterfazBE.cs" />
