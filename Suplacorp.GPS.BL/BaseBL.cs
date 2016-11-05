@@ -13,8 +13,7 @@ namespace Suplacorp.GPS.BL
         public BaseBL() {       
 
         }
-
-       
-       
+        
+        
     }
 }

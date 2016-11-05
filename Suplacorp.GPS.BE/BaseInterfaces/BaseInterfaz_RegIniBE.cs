@@ -17,6 +17,7 @@ namespace Suplacorp.GPS.BE
         private string _pais;
         private string _identificador_interfaz;
         private string _nombre_fichero;
+        private string _nombre_fichero_detino;
         private DateTime _fecha_ejecucion;
         private string _hora_proceso;
         private string _ruta_fichero_detino;
@@ -25,6 +26,7 @@ namespace Suplacorp.GPS.BE
         private bool _procesado;
         private string _numero_total_registros_fin;
         private string _tipo_registro_fin;
+        private DateTime _fecha_registro;
         #endregion
 
         #region constructores
@@ -240,6 +242,32 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _tipo_registro_fin = value;
+            }
+        }
+
+        public string Nombre_fichero_detino
+        {
+            get
+            {
+                return _nombre_fichero_detino;
+            }
+
+            set
+            {
+                _nombre_fichero_detino = value;
+            }
+        }
+
+        public DateTime Fecha_registro
+        {
+            get
+            {
+                return _fecha_registro;
+            }
+
+            set
+            {
+                _fecha_registro = value;
             }
         }
         #endregion

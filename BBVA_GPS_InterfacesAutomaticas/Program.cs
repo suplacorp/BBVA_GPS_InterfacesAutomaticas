@@ -30,10 +30,20 @@ namespace BBVA_GPS_InterfacesAutomaticas
             //_lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz("PE_OL1_REFER");
 
 
+            /*DEFINIENDO VARIABLES GLOBALES*/
+            DefinirVariablesFlobales();
+
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
         }
 
+        private static  void DefinirVariablesFlobales() {
+            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+        }
 
         #region FileWatcher Listener
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -41,8 +51,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
         {
             //string[] args = System.Environment.GetCommandLineArgs();
             string[] args = new string[10];
-            string ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"];
-            args[1] = ruta_sftp;
+            args[1] = GlobalVariables.Ruta_sftp;
 
             // Create a new FileSystemWatcher and set its properties.
             FileSystemWatcher watcher = new FileSystemWatcher();
@@ -115,9 +124,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                     switch (nombre_fichero){
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-                            //Console.WriteLine("Referencias: " + _lstValidacion.Count.ToString());
                             (new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
-
                             break;
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
                             Console.WriteLine("Suministros: " + _lstValidacion.Count.ToString());

@@ -25,13 +25,13 @@ namespace Suplacorp.GPS.BL
             System.IO.StreamReader file = null;
 
             try{
-                //1) Registro de control inicial para el inicio del fichero
+                //1) Validaciones - registro de control inicial para el inicio del fichero
                 List<ValidacionInterfazBE> lstValidacionRegistroInicial = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroInicial = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 0);
-                //2) Registros de proceso
+                //2) Validaciones - registros de proceso
                 List<ValidacionInterfazBE> lstValidacionRegistroProceso = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroProceso = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 1);
-                //3) Registros para fin
+                //3) Validaciones - registros para fin
                 List<ValidacionInterfazBE> lstValidacionRegistroFin = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroFin = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 9);
 
@@ -61,12 +61,22 @@ namespace Suplacorp.GPS.BL
                     }
                 }
 
-                //Cargar a la BD la interfaz leída
-                interfazReferencias_RegIniBE.Ruta_fichero_detino = "";          /*ACTUALIZAR ESTO*/
-                interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS */
-                interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS */
+                //Registrar en la BD la interfaz leída
+                interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
+                interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero+"_"+ interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_"+ interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
+                interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
+                interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
-                (new InterfazReferenciasDAL()).CargarInterfaz(ref interfazReferencias_RegIniBE);
+                /* Registró el registro inicial correctamente */
+                if ((new InterfazReferenciasDAL()).RegistrarInterfaz(ref interfazReferencias_RegIniBE)){
+                    GuardarFichero(interfazReferencias_RegIniBE.Nombre_fichero, GlobalVariables.Ruta_sftp, interfazReferencias_RegIniBE.Nombre_fichero_detino, interfazReferencias_RegIniBE.Ruta_fichero_detino);
+                    //AQUI ME QUEDÉ, REALIZAR EL REGISTRO DEL DETALLE (PROCESO)
+                    //REALIZAR VALIDACIONES    
+                    //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
+                }
+                else {
+                    /* Ocurrió un error en el registro inicial */
+                }
             }
             catch (Exception ex){
                 throw ex;
@@ -79,7 +89,6 @@ namespace Suplacorp.GPS.BL
 
         public void LlenarEntidad_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegIni)
         {
-
             try {
                 //Ejemplo: "000000	0	S	MX	MM	MX_OL1_REFER	01102015	172629		
                 interfaz_RegIniBE.Numeral = valores_linea_actual[0].ToString();
@@ -130,7 +139,6 @@ namespace Suplacorp.GPS.BL
 
         public void LlenarEntidad_RegFin(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegFin)
         {
-
             try{
                 //Ejemplo: "000205	9	00205	00000	00000																";
                 interfaz_RegIniBE.Numero_total_registros_fin = valores_linea_actual[0].ToString();
@@ -142,6 +150,31 @@ namespace Suplacorp.GPS.BL
             catch (Exception ex){
                 throw;
             }
+        }
+
+
+
+
+
+        public void GuardarFichero(string nombre_fichero_origen, string ruta_fichero_origen, string nombre_fichero_destino, string ruta_fichero_destino) {
+
+            try{
+                //La clase Path manipula el fichero y directorio, haciéndolo uno solo.
+                string ficheroOrigen = System.IO.Path.Combine(ruta_fichero_origen, nombre_fichero_origen + ".txt");
+                string ficheroDestino = System.IO.Path.Combine(ruta_fichero_destino, nombre_fichero_destino + ".txt");
+
+                // ¿Directorio Existe?
+                if (!System.IO.Directory.Exists(ruta_fichero_destino)){
+                    System.IO.Directory.CreateDirectory(ruta_fichero_destino);
+                }
+
+                //Copiando y sobreescribiendo si existe fichero
+                System.IO.File.Copy(ficheroOrigen, ficheroDestino, true);
+            }
+            catch (Exception ex) {
+                throw;
+            }
+
         }
     }
 
