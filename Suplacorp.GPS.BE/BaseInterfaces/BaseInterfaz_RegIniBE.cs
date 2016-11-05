@@ -18,8 +18,8 @@ namespace Suplacorp.GPS.BE
         private string _identificador_interfaz;
         private string _nombre_fichero;
         private DateTime _fecha_ejecucion;
-        private TimeSpan _hora_proceso;
-        private string _ruta_fichero;
+        private string _hora_proceso;
+        private string _ruta_fichero_detino;
         private TipoInterfazBE interfaz;
         private TipoRegistroBE tiporegistro;
         private bool _procesado;
@@ -152,7 +152,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public TimeSpan Hora_proceso
+        public string Hora_proceso
         {
             get
             {
@@ -165,16 +165,16 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string Ruta_fichero
+        public string Ruta_fichero_detino
         {
             get
             {
-                return _ruta_fichero;
+                return _ruta_fichero_detino;
             }
 
             set
             {
-                _ruta_fichero = value;
+                _ruta_fichero_detino = value;
             }
         }
 

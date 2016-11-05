@@ -5,6 +5,7 @@ using System.Security.Permissions;
 using Suplacorp.GPS.BE;
 using Suplacorp.GPS.BL;
 using System.Configuration;
+using Suplacorp.GPS.Utils;
 
 namespace BBVA_GPS_InterfacesAutomaticas
 {
@@ -31,19 +32,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
-
-
         }
 
 
-
-
-
-
-
-
         #region FileWatcher Listener
-
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         private static void ActivarFileWatcher_SuplaSFTP()
         {
@@ -76,7 +68,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
             Console.WriteLine("Presione la laetra \'q\' para terminar el programa \n[MUCHO CUIDADO! ESTE PROGRAMA DEBE PERMANECER ACTIVO SIEMPRE]");
             while (Console.Read() != 'q') ;
         }
-
         // Define the event handlers.
         private static void OnCreated(object source, FileSystemEventArgs e)
         {
@@ -124,7 +115,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                     switch (nombre_fichero){
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-                            Console.WriteLine("Referencias: " + _lstValidacion.Count.ToString());
+                            //Console.WriteLine("Referencias: " + _lstValidacion.Count.ToString());
                             (new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
 
                             break;

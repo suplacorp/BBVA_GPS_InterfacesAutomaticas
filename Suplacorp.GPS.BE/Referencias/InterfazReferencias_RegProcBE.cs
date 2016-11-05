@@ -10,7 +10,6 @@ namespace Suplacorp.GPS.BE
     public class InterfazReferencias_RegProcBE
     {
         #region Variables
-
         private int _idproc;
         private int _idregini;
         private string _numeral;
@@ -33,7 +32,6 @@ namespace Suplacorp.GPS.BE
         private string _codigo_antiguo_material;
         private string _centro;
         private bool _procesado;
-
         #endregion
 
         #region Constructores
@@ -56,7 +54,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public int Idregini1
+        public int Idregini
         {
             get
             {
@@ -69,7 +67,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string Numeral1
+        public string Numeral
         {
             get
             {
@@ -82,7 +80,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string Tipo_registro1
+        public string Tipo_registro
         {
             get
             {
@@ -316,7 +314,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public bool Procesado1
+        public bool Procesado
         {
             get
             {

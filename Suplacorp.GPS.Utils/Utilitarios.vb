@@ -107,4 +107,27 @@ Public Class Utilitarios
         Return String.Format("{0}{1}{2}", aa, mm, dd)
     End Function
 
+
+    'input: 01102015
+    Public Shared Function FechaFormatoAAMMDD_BBVA(ByVal fecha As String) As String
+        Dim dd As String = fecha.ToString.Substring(0, 2)
+        Dim mm As String = fecha.ToString.Substring(2, 2)
+        Dim aa As String = fecha.ToString.Substring(4, 4)
+        Return String.Format("{0}-{1}-{2}", aa, mm, dd)
+    End Function
+
+    Public Shared Function HoraFormatoHHMMSS_BBVA(ByVal hora As String) As String
+        Dim hh As String = hora.ToString.Substring(0, 2)
+        Dim mm As String = hora.ToString.Substring(2, 2)
+        Dim ss As String = hora.ToString.Substring(4, 2)
+        Return String.Format("{0}:{1}:{2}", hh, mm, ss)
+    End Function
+
+    Public Shared Function DecimalFormato_BBVA(ByVal cantidad As String) As String
+        'CAMBIANDO LA COMA (",") SEPARADORA DE DECIMALES EUROPEA POR EL PUNTO (".") SEPARADOR DE DECIMALES PERUANO
+        cantidad = cantidad.Replace(",", ".")
+
+        Return cantidad
+    End Function
+
 End Class

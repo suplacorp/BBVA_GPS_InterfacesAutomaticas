@@ -55,6 +55,10 @@
       <Project>{257780c1-c5a8-45a6-a3a6-0ecb09c4f6ff}</Project>
       <Name>Suplacorp.GPS.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Suplacorp.GPS.Utils\Suplacorp.GPS.Utils.vbproj">
+      <Project>{856b3af3-475c-4de8-9b59-b27280e8b2af}</Project>
+      <Name>Suplacorp.GPS.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

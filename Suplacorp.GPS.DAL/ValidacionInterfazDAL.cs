@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Microsoft.Practices.EnterpriseLibrary.Common;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
@@ -19,38 +18,17 @@ namespace Suplacorp.GPS.DAL
 {
     public class ValidacionInterfazDAL : BaseDAL
     {
-        private SqlDatabase _sqlDatabase;
-
         public ValidacionInterfazDAL() {
-            _sqlDatabase = new SqlDatabase(base.strConnectionString);
-        }
-
-        public void kike() {
             
-            //TEST
-            SqlDatabase sqlDatabase = new SqlDatabase(base.strConnectionString);
-            using (IDataReader reader = sqlDatabase.ExecuteReader(CommandType.Text, "SELECT TOP 1 * FROM usuariosweb")){
-                DisplayRowValues(reader);
-            }
-        }
-        static void DisplayRowValues(IDataReader reader){
-
-            while (reader.Read()){
-                for (int i = 0; i < reader.FieldCount; i++){
-                    Console.WriteLine("{0} = {1}", reader.GetName(i), reader[i].ToString());
-                }
-                Console.WriteLine();
-            }
         }
 
         public List<ValidacionInterfazBE> ListarValidaciones_xInterfaz(string nombre_fichero)
         {
             List<ValidacionInterfazBE> _lstValidacion = new List<ValidacionInterfazBE>();
-            try
-            {
-                using (DbCommand _sqlCmd = _sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_CARGARVALIDACIONES_XINTERFAZ")) {
-                    _sqlDatabase.AddInParameter(_sqlCmd, "NOMBRE_FICHERO", DbType.String, nombre_fichero);
-                    using (IDataReader dataReader = _sqlDatabase.ExecuteReader(_sqlCmd)){
+            try{
+                using (DbCommand _sqlCmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_CARGARVALIDACIONES_XINTERFAZ")) {
+                    sqlDatabase.AddInParameter(_sqlCmd, "NOMBRE_FICHERO", DbType.String, nombre_fichero);
+                    using (IDataReader dataReader = sqlDatabase.ExecuteReader(_sqlCmd)){
                         while (dataReader.Read()){
                             _lstValidacion.Add(CargarValidacion(dataReader));
                         }

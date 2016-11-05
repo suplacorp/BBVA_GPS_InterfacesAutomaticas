@@ -7,48 +7,66 @@ using Suplacorp.GPS.DAL;
 using Suplacorp.GPS.BE;
 using System.Collections;
 using System.Reflection;
+using Suplacorp.GPS.Utils;
 
 namespace Suplacorp.GPS.BL
 {
-    public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfaz<InterfazReferencias_RegIniBE>
+    public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfazRegIni<InterfazReferencias_RegIniBE, InterfazReferencias_RegProcBE>
     {
-        Dictionary<int, string> dic_tipo_registro_detalle = new Dictionary<int, string>();
 
         public InterfazReferenciasBL() {
-            dic_tipo_registro_detalle.Add(0, "0");
-            
+
         }
 
-        public List<InterfazReferencias_RegIniBE> LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero, List<ValidacionInterfazBE> lstValidacion)
-        {
-            List<InterfazReferencias_RegIniBE> lstInterfazReferencias = new List<InterfazReferencias_RegIniBE>();
-            int contador = 0;
+        public InterfazReferencias_RegIniBE LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion){
+
+            InterfazReferencias_RegIniBE interfazReferencias_RegIniBE;
             string linea_actual;
             System.IO.StreamReader file = null;
 
-            try
-            {
+            try{
                 //1) Registro de control inicial para el inicio del fichero
                 List<ValidacionInterfazBE> lstValidacionRegistroInicial = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroInicial = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 0);
-
                 //2) Registros de proceso
                 List<ValidacionInterfazBE> lstValidacionRegistroProceso = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroProceso = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 1);
-
                 //3) Registros para fin
                 List<ValidacionInterfazBE> lstValidacionRegistroFin = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroFin = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 9);
 
+                interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                 // Leyendo el archivo
-                file = new System.IO.StreamReader(ruta_fichero);
+                file = new System.IO.StreamReader(ruta_fichero_lectura);
+                String[] valores_linea_actual;
+                string idTipoDetalle_TipoRegistro;
+
                 while ((linea_actual = file.ReadLine()) != null){
                     if (linea_actual.Length > 0 && linea_actual != "") {
-                        lstInterfazReferencias.Add(LlenarEntidad(linea_actual, lstValidacionRegistroInicial, lstValidacionRegistroProceso, lstValidacionRegistroFin));
-                        //System.Console.WriteLine(line);
+
+                        valores_linea_actual = linea_actual.Split('\t');
+                        idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
+                        switch (idTipoDetalle_TipoRegistro)
+                        {
+                            case "0": //1) Registro de control inicial para el inicio del fichero
+                                LlenarEntidad_RegIni(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                                break;
+                            case "1": //2) Registros de proceso
+                                interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
+                                break;
+                            case "9": //3) Registros para fin
+                                LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                                break;
+                        }
                     }
-                    contador++;
                 }
+
+                //Cargar a la BD la interfaz leída
+                interfazReferencias_RegIniBE.Ruta_fichero_detino = "";          /*ACTUALIZAR ESTO*/
+                interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS */
+                interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS */
+
+                (new InterfazReferenciasDAL()).CargarInterfaz(ref interfazReferencias_RegIniBE);
             }
             catch (Exception ex){
                 throw ex;
@@ -56,79 +74,75 @@ namespace Suplacorp.GPS.BL
             finally{
                 file.Close();
             }
-            return lstInterfazReferencias;
+            return interfazReferencias_RegIniBE;
         }
 
-        public InterfazReferencias_RegIniBE LlenarEntidad(string linea_actual, params List<ValidacionInterfazBE>[] listas_validacion_x_tiporegistro)
+        public void LlenarEntidad_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegIni)
         {
-            InterfazReferencias_RegIniBE _interfazReferencia;
-            Dictionary<int, string> _dict = new Dictionary<int, string>();
 
             try {
-
-                String[] valores_linea_actual = linea_actual.Split('\t');
-                string idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
-                _interfazReferencia = new InterfazReferencias_RegIniBE();
-
-                switch (idTipoDetalle_TipoRegistro) {
-                    case "0": //1) Registro de control inicial para el inicio del fichero
-                        //_interfazReferencia.Id = 0;
-                        //_interfazReferencia.Validacion.Id = listas_validacion_x_tiporegistro[Convert.ToInt32(idTipoDetalle_TipoRegistro)][i].Id;
-                        //_interfazReferencia.Nro_proceso = 0;
-                        //_interfazReferencia.Valor = valores_linea_actual[i];
-                        //_interfazReferencia.Nombre_fichero = "NOMBRE FICHERO KIKE";
-                        //_interfazReferencia.Ruta_fichero = "RUTA FICHERO KIKE";
-                        //_interfazReferencia.Fecha_ejecucion = DateTime.Today;
-                        //_interfazReferencia.Fecha_registro = DateTime.Today;
-                        //_interfazReferencia.Procesado = false;
-                        break;
-                    case "1": //2) Registros de proceso
-
-                        break;
-                    case "9": //3) Registros para fin
-
-                        break;
-                }
-
-                /*
-                for (int i = 0; i < listas_validacion_x_tiporegistro[Convert.ToInt32(idTipoDetalle_TipoRegistro)].Count; i++) {
-                    _interfazReferencia.Id = 0;
-                    _interfazReferencia.Validacion.Id = listas_validacion_x_tiporegistro[Convert.ToInt32(idTipoDetalle_TipoRegistro)][i].Id;
-                    _interfazReferencia.Nro_proceso = 0;
-                    _interfazReferencia.Valor = valores_linea_actual[i];
-                    _interfazReferencia.Nombre_fichero = "NOMBRE FICHERO KIKE";
-                    _interfazReferencia.Ruta_fichero = "RUTA FICHERO KIKE";
-                    _interfazReferencia.Fecha_ejecucion = DateTime.Today;
-                    _interfazReferencia.Fecha_registro = DateTime.Today;
-                    _interfazReferencia.Procesado = false;
-                }*/
-
-
+                //Ejemplo: "000000	0	S	MX	MM	MX_OL1_REFER	01102015	172629		
+                interfaz_RegIniBE.Numeral = valores_linea_actual[0].ToString();
+                interfaz_RegIniBE.Tipo_registro = valores_linea_actual[1].ToString();
+                interfaz_RegIniBE.Tipo_interfaz = valores_linea_actual[2].ToString();
+                interfaz_RegIniBE.Pais = valores_linea_actual[3].ToString();
+                interfaz_RegIniBE.Identificador_interfaz = valores_linea_actual[4].ToString();
+                interfaz_RegIniBE.Nombre_fichero = valores_linea_actual[5].ToString();
+                interfaz_RegIniBE.Fecha_ejecucion = DateTime.Parse(Utilitarios.FechaFormatoAAMMDD_BBVA(valores_linea_actual[6]));
+                interfaz_RegIniBE.Hora_proceso = Utilitarios.HoraFormatoHHMMSS_BBVA(valores_linea_actual[7]);
             }
             catch (Exception ex){
                 throw;
             }
-            return _interfazReferencia;
         }
 
-        // Explicit predicate delegate.
-        private static bool EncontrarValidaciones_xIdTipoDetalle_TipoRegistro(ValidacionInterfazBE validacion)
+        public InterfazReferencias_RegProcBE LlenarEntidad_RegProc(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegProc)
         {
-            if (validacion.Id_tipodetalle_tiporegistro == 1){
-                return true;
+
+            InterfazReferencias_RegProcBE interfazReferencias_RegProcBE = new InterfazReferencias_RegProcBE();
+            try{
+                //Ejemplo: "000001	1	MX11	000000000210000222	BLOCK DE 100 HOJAS	UN	PAQ	1	100			Z002		0,000		0,000		10100023	MX11		";
+                interfazReferencias_RegProcBE.Numeral = valores_linea_actual[0].ToString();
+                interfazReferencias_RegProcBE.Tipo_registro = valores_linea_actual[1].ToString();
+                interfazReferencias_RegProcBE.Sociedad = valores_linea_actual[2].ToString();
+                interfazReferencias_RegProcBE.Codigo_material = valores_linea_actual[3].ToString();
+                interfazReferencias_RegProcBE.Texto_breve_material = valores_linea_actual[4].ToString();
+                interfazReferencias_RegProcBE.Unidad_medida_base = valores_linea_actual[5].ToString();
+                interfazReferencias_RegProcBE.Unidad_medida_pedido = valores_linea_actual[6].ToString();
+                interfazReferencias_RegProcBE.Contador_conv_und_med_base = valores_linea_actual[7].ToString();
+                interfazReferencias_RegProcBE.Denominador_conv_und_med_base = valores_linea_actual[8].ToString();
+                interfazReferencias_RegProcBE.Status_mat_todos_centros = valores_linea_actual[9].ToString();
+                interfazReferencias_RegProcBE.Status_mat_especif_centro = valores_linea_actual[10].ToString();
+                interfazReferencias_RegProcBE.Tipo_aprov = valores_linea_actual[11].ToString();
+                interfazReferencias_RegProcBE.Indicador_breve = valores_linea_actual[12].ToString();
+                interfazReferencias_RegProcBE.Peso_bruto = decimal.Parse(Utilitarios.DecimalFormato_BBVA(valores_linea_actual[13])); /*DECIMAL*/
+                interfazReferencias_RegProcBE.Unidad_peso = valores_linea_actual[14].ToString();
+                interfazReferencias_RegProcBE.Volumen = decimal.Parse(Utilitarios.DecimalFormato_BBVA(valores_linea_actual[15]));    /*DECIMAL*/
+                interfazReferencias_RegProcBE.Unidad_volumen = valores_linea_actual[16].ToString();
+                interfazReferencias_RegProcBE.Codigo_antiguo_material = valores_linea_actual[17].ToString();
+                interfazReferencias_RegProcBE.Centro = valores_linea_actual[18].ToString();
             }
-            else{
-                return false;
+            catch (Exception ex){
+                throw;
             }
+            return interfazReferencias_RegProcBE;
         }
 
-        private static PropertyInfo[] GetProperties(object obj)
+        public void LlenarEntidad_RegFin(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegFin)
         {
-            return obj.GetType().GetProperties();
-        }
-        private static FieldInfo[] GetFields(object obj)
-        {
-            return obj.GetType().GetFields();
+
+            try{
+                //Ejemplo: "000205	9	00205	00000	00000																";
+                interfaz_RegIniBE.Numero_total_registros_fin = valores_linea_actual[0].ToString();
+                interfaz_RegIniBE.Tipo_registro_fin = valores_linea_actual[1].ToString();
+                interfaz_RegIniBE.Numero_registros_proceso_fin = valores_linea_actual[2].ToString();
+                interfaz_RegIniBE.Numero_registros_tipo2_fin = valores_linea_actual[3].ToString();
+                interfaz_RegIniBE.Numero_registros_tipo3_fin = valores_linea_actual[4].ToString();
+            }
+            catch (Exception ex){
+                throw;
+            }
         }
     }
+
 }

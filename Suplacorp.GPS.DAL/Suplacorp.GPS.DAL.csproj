@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="BaseDAL.cs" />
     <Compile Include="DAL.cs" />
+    <Compile Include="IInterfazDAL.cs" />
+    <Compile Include="InterfazReferenciasDAL.cs" />
     <Compile Include="ValidacionInterfazDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
