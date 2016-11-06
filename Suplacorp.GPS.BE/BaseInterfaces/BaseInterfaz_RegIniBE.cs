@@ -23,7 +23,7 @@ namespace Suplacorp.GPS.BE
         private string _ruta_fichero_detino;
         private TipoInterfazBE interfaz;
         private TipoRegistroBE tiporegistro;
-        private bool _procesado;
+        private int _procesado;
         private string _numero_total_registros_fin;
         private string _tipo_registro_fin;
         private DateTime _fecha_registro;
@@ -206,7 +206,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public bool Procesado
+        public int Procesado
         {
             get
             {

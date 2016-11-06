@@ -7,7 +7,7 @@ using Suplacorp.GPS.BE;
 
 namespace Suplacorp.GPS.BL
 {
-    public interface IInterfazRegIni<RegIni,RegProc>
+    public interface IInterfazRegIniBL<RegIni,RegProc>
     {
         RegIni LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion);
 

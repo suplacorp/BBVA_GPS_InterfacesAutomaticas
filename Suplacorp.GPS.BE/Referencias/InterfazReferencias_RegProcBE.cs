@@ -31,7 +31,7 @@ namespace Suplacorp.GPS.BE
         private string _unidad_volumen;
         private string _codigo_antiguo_material;
         private string _centro;
-        private bool _procesado;
+        private int _procesado;
         #endregion
 
         #region Constructores
@@ -314,7 +314,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public bool Procesado
+        public int Procesado
         {
             get
             {

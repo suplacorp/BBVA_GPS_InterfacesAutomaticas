@@ -6,38 +6,34 @@ using Suplacorp.GPS.BE;
 using Suplacorp.GPS.BL;
 using System.Configuration;
 using Suplacorp.GPS.Utils;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Threading;
 
 namespace BBVA_GPS_InterfacesAutomaticas
 {
     class Program
     {
         //enum Interfaces { PE_OL1_REFER, PE_OL1_SUMIN, PE_OL1_EXPED, PE_OL1_PREFAC };
-        
+
 
         static void Main(string[] args)
         {
-            //TESTING1 KIKE
-            /*
-            string registro_inicial = "000000	0	S	MX	MM	MX_OL1_REFER	01102015	172629													";
-            string registro_abajo = "000001	1	MX11	000000000210000222	BLOCK DE 100 HOJAS	UN	PAQ	1	100			Z002		0,000		0,000		10100023	MX11		";
-            string registro_ultimo = "000205	9	00205	00000	00000																";
-            String[] names = registro_inicial.Split('\t');
-            String[] names = registro_ultimo.Split('\t');
-            */
-
-            //TESTING2
-            //List<ValidacionInterfazBE> _lstValidacion = new List<ValidacionInterfazBE>();
-            //_lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz("PE_OL1_REFER");
-
-
             /*DEFINIENDO VARIABLES GLOBALES*/
-            DefinirVariablesFlobales();
+            DefinirVariablesGlobales();
+
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
+
+         
         }
 
-        private static  void DefinirVariablesFlobales() {
+      
+
+        
+
+        private static  void DefinirVariablesGlobales() {
             GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
             GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
             GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
@@ -83,7 +79,13 @@ namespace BBVA_GPS_InterfacesAutomaticas
             // Specify what is done when a file is changed, created, or deleted.
             // Console.WriteLine("File: {0} created" + e.FullPath + " " + e.ChangeType);
             //EventoDetectado(e.Name, e.FullPath);
-            EventoDetectado_Crearon(e);
+            try {
+                EventoDetectado_Crearon(e);
+            }
+            catch (NullReferenceException ex) {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
@@ -122,10 +124,26 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     _lstValidacion = new List<ValidacionInterfazBE>();
                     _lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz(nombre_fichero);
 
+                    InterfazReferenciasBL _objBL;
+                    Thread t;
                     switch (nombre_fichero){
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-                            (new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
+
+                            /*
+                            Console.WriteLine("#######################################################");
+                            Console.WriteLine("Referencia: " + nombre_fichero);
+                            Console.WriteLine("Referencia: " + ruta_fichero);
+                            Console.WriteLine("Referencia: " + _lstValidacion.Count);
+                            Console.WriteLine("#######################################################");
+                            */
+
+                            _objBL = new InterfazReferenciasBL();
+                            _objBL.LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
+
+                            //(new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
+
                             break;
+
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
                             Console.WriteLine("Suministros: " + _lstValidacion.Count.ToString());
                             break;
@@ -138,17 +156,20 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     }
                 }
             }
-            catch (Exception ex)
+            catch (NullReferenceException ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
-            finally {
-                _lstValidacion = null;
-            }
+         
         }
 
         #endregion
-
-
     }
+
+
+
+    
+
+
+
 }

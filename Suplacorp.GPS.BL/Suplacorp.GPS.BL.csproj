@@ -41,8 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseBL.cs" />
-    <Compile Include="IInterfaz.cs" />
-    <Compile Include="InterfazReferenciasBL.cs" />
+    <Compile Include="Referencias\IInterfazRegIniBL.cs" />
+    <Compile Include="Referencias\InterfazReferenciasBL.cs" />
     <Compile Include="ValidacionInterfazBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

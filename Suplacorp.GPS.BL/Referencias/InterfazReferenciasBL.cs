@@ -11,20 +11,23 @@ using Suplacorp.GPS.Utils;
 
 namespace Suplacorp.GPS.BL
 {
-    public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfazRegIni<InterfazReferencias_RegIniBE, InterfazReferencias_RegProcBE>
+    public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfazRegIniBL<InterfazReferencias_RegIniBE, InterfazReferencias_RegProcBE>
     {
 
-        public InterfazReferenciasBL() {
+        public InterfazReferenciasBL(){
 
         }
 
-        public InterfazReferencias_RegIniBE LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion){
+        public InterfazReferencias_RegIniBE LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion)
+        {
 
-            InterfazReferencias_RegIniBE interfazReferencias_RegIniBE;
+            InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
             string linea_actual;
             System.IO.StreamReader file = null;
+            string[] result_valores;
 
-            try{
+            try
+            {
                 //1) Validaciones - registro de control inicial para el inicio del fichero
                 List<ValidacionInterfazBE> lstValidacionRegistroInicial = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroInicial = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 0);
@@ -35,14 +38,16 @@ namespace Suplacorp.GPS.BL
                 List<ValidacionInterfazBE> lstValidacionRegistroFin = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroFin = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 9);
 
-                interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
+                //interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                 // Leyendo el archivo
                 file = new System.IO.StreamReader(ruta_fichero_lectura);
                 String[] valores_linea_actual;
                 string idTipoDetalle_TipoRegistro;
 
-                while ((linea_actual = file.ReadLine()) != null){
-                    if (linea_actual.Length > 0 && linea_actual != "") {
+                while ((linea_actual = file.ReadLine()) != null)
+                {
+                    if (linea_actual.Length > 0 && linea_actual != "")
+                    {
 
                         valores_linea_actual = linea_actual.Split('\t');
                         idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
@@ -63,25 +68,46 @@ namespace Suplacorp.GPS.BL
 
                 //Registrar en la BD la interfaz leída
                 interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
-                interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero+"_"+ interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_"+ interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
+                interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero + "_" + interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
+                interfazReferencias_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
                 interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
                 interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
                 /* Registró el registro inicial correctamente */
-                if ((new InterfazReferenciasDAL()).RegistrarInterfaz(ref interfazReferencias_RegIniBE)){
-                    GuardarFichero(interfazReferencias_RegIniBE.Nombre_fichero, GlobalVariables.Ruta_sftp, interfazReferencias_RegIniBE.Nombre_fichero_detino, interfazReferencias_RegIniBE.Ruta_fichero_detino);
-                    //AQUI ME QUEDÉ, REALIZAR EL REGISTRO DEL DETALLE (PROCESO)
-                    //REALIZAR VALIDACIONES    
+                result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfazReferencias_RegIniBE).Split(';');
+                if (int.Parse(result_valores[0]) != 0)
+                {
+                    //Identificando el "Idregini" del Registro Inicial que recién se acaba de registrar
+                    interfazReferencias_RegIniBE.Idregini = int.Parse(result_valores[0]);
+
+                    //Registrando proceso (detalle del registro inicial)
+                    result_valores = (new InterfazReferenciasDAL()).RegistrarProc(ref interfazReferencias_RegIniBE).Split(';');
+                    if (int.Parse(result_valores[0]) == interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Count()){
+
+                        //REALIZAR VALIDACIONES Y ACTUALIZAR CLIENTE_ARTICULO
+
+
+                        //Guardar fichero importado en ubicación segura para posterior auditoría de ser necesaria
+                        //base.GuardarFichero(interfazReferencias_RegIniBE.Nombre_fichero, GlobalVariables.Ruta_sftp, interfazReferencias_RegIniBE.Nombre_fichero_detino, interfazReferencias_RegIniBE.Ruta_fichero_detino);
+                        
+                    }
+                    else {
+                        /*Ocurrió un error y los "n" registros no se insertaron */
+                        //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
+                    }
+                }
+                else{
+                    /* Ocurrió un error en el registro inicial */
                     //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
                 }
-                else {
-                    /* Ocurrió un error en el registro inicial */
-                }
             }
-            catch (Exception ex){
-                throw ex;
+            catch (Exception ex)
+            {
+                //throw ex;
+                Console.WriteLine(ex.Message);
             }
-            finally{
+            finally
+            {
                 file.Close();
             }
             return interfazReferencias_RegIniBE;
@@ -89,7 +115,8 @@ namespace Suplacorp.GPS.BL
 
         public void LlenarEntidad_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegIni)
         {
-            try {
+            try
+            {
                 //Ejemplo: "000000	0	S	MX	MM	MX_OL1_REFER	01102015	172629		
                 interfaz_RegIniBE.Numeral = valores_linea_actual[0].ToString();
                 interfaz_RegIniBE.Tipo_registro = valores_linea_actual[1].ToString();
@@ -100,7 +127,8 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Fecha_ejecucion = DateTime.Parse(Utilitarios.FechaFormatoAAMMDD_BBVA(valores_linea_actual[6]));
                 interfaz_RegIniBE.Hora_proceso = Utilitarios.HoraFormatoHHMMSS_BBVA(valores_linea_actual[7]);
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 throw;
             }
         }
@@ -109,7 +137,8 @@ namespace Suplacorp.GPS.BL
         {
 
             InterfazReferencias_RegProcBE interfazReferencias_RegProcBE = new InterfazReferencias_RegProcBE();
-            try{
+            try
+            {
                 //Ejemplo: "000001	1	MX11	000000000210000222	BLOCK DE 100 HOJAS	UN	PAQ	1	100			Z002		0,000		0,000		10100023	MX11		";
                 interfazReferencias_RegProcBE.Numeral = valores_linea_actual[0].ToString();
                 interfazReferencias_RegProcBE.Tipo_registro = valores_linea_actual[1].ToString();
@@ -131,7 +160,8 @@ namespace Suplacorp.GPS.BL
                 interfazReferencias_RegProcBE.Codigo_antiguo_material = valores_linea_actual[17].ToString();
                 interfazReferencias_RegProcBE.Centro = valores_linea_actual[18].ToString();
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 throw;
             }
             return interfazReferencias_RegProcBE;
@@ -139,7 +169,8 @@ namespace Suplacorp.GPS.BL
 
         public void LlenarEntidad_RegFin(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegFin)
         {
-            try{
+            try
+            {
                 //Ejemplo: "000205	9	00205	00000	00000																";
                 interfaz_RegIniBE.Numero_total_registros_fin = valores_linea_actual[0].ToString();
                 interfaz_RegIniBE.Tipo_registro_fin = valores_linea_actual[1].ToString();
@@ -147,35 +178,12 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Numero_registros_tipo2_fin = valores_linea_actual[3].ToString();
                 interfaz_RegIniBE.Numero_registros_tipo3_fin = valores_linea_actual[4].ToString();
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 throw;
             }
         }
 
 
-
-
-
-        public void GuardarFichero(string nombre_fichero_origen, string ruta_fichero_origen, string nombre_fichero_destino, string ruta_fichero_destino) {
-
-            try{
-                //La clase Path manipula el fichero y directorio, haciéndolo uno solo.
-                string ficheroOrigen = System.IO.Path.Combine(ruta_fichero_origen, nombre_fichero_origen + ".txt");
-                string ficheroDestino = System.IO.Path.Combine(ruta_fichero_destino, nombre_fichero_destino + ".txt");
-
-                // ¿Directorio Existe?
-                if (!System.IO.Directory.Exists(ruta_fichero_destino)){
-                    System.IO.Directory.CreateDirectory(ruta_fichero_destino);
-                }
-
-                //Copiando y sobreescribiendo si existe fichero
-                System.IO.File.Copy(ficheroOrigen, ficheroDestino, true);
-            }
-            catch (Exception ex) {
-                throw;
-            }
-
-        }
     }
-
 }
