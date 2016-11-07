@@ -8,6 +8,7 @@ using Suplacorp.GPS.BE;
 using System.Collections;
 using System.Reflection;
 using Suplacorp.GPS.Utils;
+using System.IO;
 
 namespace Suplacorp.GPS.BL
 {
@@ -20,11 +21,12 @@ namespace Suplacorp.GPS.BL
 
         public InterfazReferencias_RegIniBE LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion)
         {
-
             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
             string linea_actual;
             System.IO.StreamReader file = null;
             string[] result_valores;
+            String[] valores_linea_actual;
+            string idTipoDetalle_TipoRegistro;
 
             try
             {
@@ -38,17 +40,13 @@ namespace Suplacorp.GPS.BL
                 List<ValidacionInterfazBE> lstValidacionRegistroFin = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroFin = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 9);
 
-                //interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
+                // ORIGINAL - ESTO ESTÁ BIEN, COMENTADO PROVISIONALMENTE
                 // Leyendo el archivo
-                file = new System.IO.StreamReader(ruta_fichero_lectura);
-                String[] valores_linea_actual;
-                string idTipoDetalle_TipoRegistro;
-
+                file = new StreamReader(ruta_fichero_lectura);
                 while ((linea_actual = file.ReadLine()) != null)
                 {
                     if (linea_actual.Length > 0 && linea_actual != "")
                     {
-
                         valores_linea_actual = linea_actual.Split('\t');
                         idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
                         switch (idTipoDetalle_TipoRegistro)
@@ -65,38 +63,41 @@ namespace Suplacorp.GPS.BL
                         }
                     }
                 }
+                file.Close();
+                file.Dispose();
+                GC.Collect();
 
-                //Registrar en la BD la interfaz leída
+                //Registrando en BD la entidad
                 interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
                 interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero + "_" + interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
                 interfazReferencias_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
                 interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
                 interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
-
                 /* Registró el registro inicial correctamente */
                 result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfazReferencias_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
+
                     //Identificando el "Idregini" del Registro Inicial que recién se acaba de registrar
                     interfazReferencias_RegIniBE.Idregini = int.Parse(result_valores[0]);
 
                     //Registrando proceso (detalle del registro inicial)
                     result_valores = (new InterfazReferenciasDAL()).RegistrarProc(ref interfazReferencias_RegIniBE).Split(';');
-                    if (int.Parse(result_valores[0]) == interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Count()){
-
+                    if (int.Parse(result_valores[0]) == interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Count())
+                    {
                         //REALIZAR VALIDACIONES Y ACTUALIZAR CLIENTE_ARTICULO
-
 
                         //Guardar fichero importado en ubicación segura para posterior auditoría de ser necesaria
                         //base.GuardarFichero(interfazReferencias_RegIniBE.Nombre_fichero, GlobalVariables.Ruta_sftp, interfazReferencias_RegIniBE.Nombre_fichero_detino, interfazReferencias_RegIniBE.Ruta_fichero_detino);
-                        
                     }
-                    else {
+                    else
+                    {
                         /*Ocurrió un error y los "n" registros no se insertaron */
                         //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
                     }
                 }
-                else{
+                else
+                {
                     /* Ocurrió un error en el registro inicial */
                     //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
                 }
@@ -104,11 +105,11 @@ namespace Suplacorp.GPS.BL
             catch (Exception ex)
             {
                 //throw ex;
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
             }
             finally
             {
-                file.Close();
+                //file.Close();
             }
             return interfazReferencias_RegIniBE;
         }

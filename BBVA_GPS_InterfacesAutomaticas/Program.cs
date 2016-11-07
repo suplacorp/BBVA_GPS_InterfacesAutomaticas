@@ -22,30 +22,22 @@ namespace BBVA_GPS_InterfacesAutomaticas
             /*DEFINIENDO VARIABLES GLOBALES*/
             DefinirVariablesGlobales();
 
-
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
-
-         
         }
 
       
 
+
+
         
 
-        private static  void DefinirVariablesGlobales() {
-            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
-        }
+        
 
         #region FileWatcher Listener
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         private static void ActivarFileWatcher_SuplaSFTP()
         {
-            //string[] args = System.Environment.GetCommandLineArgs();
             string[] args = new string[10];
             args[1] = GlobalVariables.Ruta_sftp;
 
@@ -56,7 +48,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
             /*  Watch for changes in LastAccess and LastWrite times, and
                 the renaming of files or directories. 
            */
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+           // watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             // Only watch text files.
             watcher.Filter = "*.txt";
 
@@ -74,18 +66,48 @@ namespace BBVA_GPS_InterfacesAutomaticas
             while (Console.Read() != 'q') ;
         }
         // Define the event handlers.
-        private static void OnCreated(object source, FileSystemEventArgs e)
+        private static void OnCreated(object sender, FileSystemEventArgs e)
         {
+            string filename = "";
+            string fullpath = "";
             // Specify what is done when a file is changed, created, or deleted.
-            // Console.WriteLine("File: {0} created" + e.FullPath + " " + e.ChangeType);
-            //EventoDetectado(e.Name, e.FullPath);
             try {
-                EventoDetectado_Crearon(e);
+
+                //EventoDetectado_Crearon(e); //ORIGINAL TEMPORALMENTE COMENTADO
+
+                Console.WriteLine("File " + e.FullPath + " started copying : " + DateTime.Now.ToString());
+               
+                try
+                {
+
+                    FileStream fileStream = File.Open(e.FullPath, FileMode.Open, FileAccess.Read);
+                    Console.WriteLine("File is copied : " + DateTime.Now.ToString());
+                    filename = e.Name;
+                    fullpath = e.FullPath;
+                    fileStream.Close();
+                    fileStream.Dispose();
+                    fileStream = null;
+
+                    //there is the point when the file is completed copying .... now you should be able to access the file and process it.
+
+                    EventoDetectado_Crearon(filename, fullpath); //ORIGINAL TEMPORALMENTE COMENTADO
+
+
+                    //if (File.Exists(e.FullPath)){
+                    //    File.Delete(e.FullPath);
+                    //}
+                }
+                catch (IOException ioException)
+                {
+                    Console.WriteLine(ioException.Message);
+                }
+             
+
+
             }
             catch (NullReferenceException ex) {
                 Console.WriteLine(ex.Message);
             }
-            
         }
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
@@ -101,6 +123,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
             //EventoDetectado(e.Name, e.FullPath);
             //EventoDetectado(e);
             //Llamar a otro Evento, no usar el mismo que uso para cuando suben (crean) un archivo o lo reemplazan
+            
         }
         private static void OnRenamed(object source, RenamedEventArgs e)
         {
@@ -110,22 +133,27 @@ namespace BBVA_GPS_InterfacesAutomaticas
             //EventoDetectado(e);
         }
 
-        private static void EventoDetectado_Crearon(FileSystemEventArgs e)
+
+
+
+
+
+        //private static void EventoDetectado_Crearon(FileSystemEventArgs e)
+        private static void EventoDetectado_Crearon(string name, string fullpath)
         {
             List<ValidacionInterfazBE> _lstValidacion;
             string nombre_fichero = "";
             string ruta_fichero = "";
-
-            try{
-                if (e.Name.Length > 0 & e.Name.Contains(".") && e.ChangeType.ToString() == "Created"){
-                    nombre_fichero = e.Name.Split('.')[0];
-                    ruta_fichero = e.FullPath.ToString();
+            try
+            {
+                if (name.Length > 0 & name.Contains(".")){
+                    nombre_fichero = name.Split('.')[0];
+                    ruta_fichero = fullpath.ToString();
 
                     _lstValidacion = new List<ValidacionInterfazBE>();
                     _lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz(nombre_fichero);
 
                     InterfazReferenciasBL _objBL;
-                    Thread t;
                     switch (nombre_fichero){
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
 
@@ -139,9 +167,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                             _objBL = new InterfazReferenciasBL();
                             _objBL.LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
-
+                            
                             //(new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
-
                             break;
 
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
@@ -163,6 +190,21 @@ namespace BBVA_GPS_InterfacesAutomaticas
          
         }
 
+
+
+
+
+
+
+
+        private static void DefinirVariablesGlobales()
+        {
+            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+        }
         #endregion
     }
 
