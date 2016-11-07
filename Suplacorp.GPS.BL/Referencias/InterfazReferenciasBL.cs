@@ -23,7 +23,7 @@ namespace Suplacorp.GPS.BL
         {
             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
             string linea_actual;
-            System.IO.StreamReader file = null;
+            //System.IO.StreamReader file = null;
             string[] result_valores;
             String[] valores_linea_actual;
             string idTipoDetalle_TipoRegistro;
@@ -42,30 +42,61 @@ namespace Suplacorp.GPS.BL
 
                 // ORIGINAL - ESTO ESTÁ BIEN, COMENTADO PROVISIONALMENTE
                 // Leyendo el archivo
-                file = new StreamReader(ruta_fichero_lectura);
-                while ((linea_actual = file.ReadLine()) != null)
+                //file = new StreamReader(ruta_fichero_lectura);
+                //while ((linea_actual = file.ReadLine()) != null)
+                //{
+                //    if (linea_actual.Length > 0 && linea_actual != "")
+                //    {
+                //        valores_linea_actual = linea_actual.Split('\t');
+                //        idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
+                //        switch (idTipoDetalle_TipoRegistro)
+                //        {
+                //            case "0": //1) Registro de control inicial para el inicio del fichero
+                //                LlenarEntidad_RegIni(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                //                break;
+                //            case "1": //2) Registros de proceso
+                //                interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
+                //                break;
+                //            case "9": //3) Registros para fin
+                //                LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                //                break;
+                //        }
+                //    }
+                //}
+                //file.Close();
+                //file.Dispose();
+
+
+                //TEMPORAL PRUEBA BORRAR LUEGO SI NO FUNCIONA
+                using (StreamReader file2 = new StreamReader(ruta_fichero_lectura))
                 {
-                    if (linea_actual.Length > 0 && linea_actual != "")
+
+                    while ((linea_actual = file2.ReadLine()) != null)
                     {
-                        valores_linea_actual = linea_actual.Split('\t');
-                        idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
-                        switch (idTipoDetalle_TipoRegistro)
+                        if (linea_actual.Length > 0 && linea_actual != "")
                         {
-                            case "0": //1) Registro de control inicial para el inicio del fichero
-                                LlenarEntidad_RegIni(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
-                                break;
-                            case "1": //2) Registros de proceso
-                                interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
-                                break;
-                            case "9": //3) Registros para fin
-                                LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
-                                break;
+                            valores_linea_actual = linea_actual.Split('\t');
+                            idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
+                            switch (idTipoDetalle_TipoRegistro)
+                            {
+                                case "0": //1) Registro de control inicial para el inicio del fichero
+                                    LlenarEntidad_RegIni(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                                    break;
+                                case "1": //2) Registros de proceso
+                                    interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
+                                    break;
+                                case "9": //3) Registros para fin
+                                    LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                                    break;
+                            }
                         }
                     }
+                    
                 }
-                file.Close();
-                file.Dispose();
-                GC.Collect();
+                //FIN TEMPORAL PRUEBA
+
+
+
 
                 //Registrando en BD la entidad
                 interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
@@ -101,11 +132,13 @@ namespace Suplacorp.GPS.BL
                     /* Ocurrió un error en el registro inicial */
                     //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
                 }
+
+
             }
             catch (Exception ex)
             {
-                //throw ex;
-                Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
+                throw ex;
+                //Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
             }
             finally
             {

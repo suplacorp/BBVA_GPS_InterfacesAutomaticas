@@ -24,6 +24,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
+            //Console.WriteLine(DateTime.Now.ToString("yyyyMMdd_hmmss"));
         }
 
       
@@ -72,34 +73,30 @@ namespace BBVA_GPS_InterfacesAutomaticas
             string fullpath = "";
             // Specify what is done when a file is changed, created, or deleted.
             try {
-
                 //EventoDetectado_Crearon(e); //ORIGINAL TEMPORALMENTE COMENTADO
 
                 Console.WriteLine("File " + e.FullPath + " started copying : " + DateTime.Now.ToString());
-               
                 try
                 {
-
-                    FileStream fileStream = File.Open(e.FullPath, FileMode.Open, FileAccess.Read);
                     Console.WriteLine("File is copied : " + DateTime.Now.ToString());
                     filename = e.Name;
                     fullpath = e.FullPath;
-                    fileStream.Close();
-                    fileStream.Dispose();
-                    fileStream = null;
+
+                    string newFileName = filename + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString();
+
+                    //D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal
+                    System.Threading.Thread.Sleep(3000);
+                    File.Move(fullpath, @"D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal\"+ newFileName);
 
                     //there is the point when the file is completed copying .... now you should be able to access the file and process it.
+                    //EventoDetectado_Crearon(filename, fullpath);
+                    EventoDetectado_Crearon(newFileName, @"D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal\" + newFileName);
 
-                    EventoDetectado_Crearon(filename, fullpath); //ORIGINAL TEMPORALMENTE COMENTADO
-
-
-                    //if (File.Exists(e.FullPath)){
-                    //    File.Delete(e.FullPath);
-                    //}
                 }
                 catch (IOException ioException)
                 {
-                    Console.WriteLine(ioException.Message);
+                    //Console.WriteLine(ioException.Message);
+                    throw ioException;
                 }
              
 
@@ -157,14 +154,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     switch (nombre_fichero){
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
 
-                            /*
-                            Console.WriteLine("#######################################################");
-                            Console.WriteLine("Referencia: " + nombre_fichero);
-                            Console.WriteLine("Referencia: " + ruta_fichero);
-                            Console.WriteLine("Referencia: " + _lstValidacion.Count);
-                            Console.WriteLine("#######################################################");
-                            */
-
+ 
                             _objBL = new InterfazReferenciasBL();
                             _objBL.LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
                             
@@ -185,7 +175,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             }
             catch (NullReferenceException ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
+                //Console.WriteLine(ex.Message);
             }
          
         }
