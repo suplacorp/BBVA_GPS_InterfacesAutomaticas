@@ -23,7 +23,6 @@ namespace Suplacorp.GPS.BL
         {
             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
             string linea_actual;
-            //System.IO.StreamReader file = null;
             string[] result_valores;
             String[] valores_linea_actual;
             string idTipoDetalle_TipoRegistro;
@@ -40,38 +39,10 @@ namespace Suplacorp.GPS.BL
                 List<ValidacionInterfazBE> lstValidacionRegistroFin = new List<ValidacionInterfazBE>();
                 lstValidacionRegistroFin = lstValidacion.FindAll(s => s.Id_tipodetalle_tiporegistro == 9);
 
-                // ORIGINAL - ESTO ESTÁ BIEN, COMENTADO PROVISIONALMENTE
-                // Leyendo el archivo
-                //file = new StreamReader(ruta_fichero_lectura);
-                //while ((linea_actual = file.ReadLine()) != null)
-                //{
-                //    if (linea_actual.Length > 0 && linea_actual != "")
-                //    {
-                //        valores_linea_actual = linea_actual.Split('\t');
-                //        idTipoDetalle_TipoRegistro = valores_linea_actual[1].ToString();
-                //        switch (idTipoDetalle_TipoRegistro)
-                //        {
-                //            case "0": //1) Registro de control inicial para el inicio del fichero
-                //                LlenarEntidad_RegIni(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
-                //                break;
-                //            case "1": //2) Registros de proceso
-                //                interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
-                //                break;
-                //            case "9": //3) Registros para fin
-                //                LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
-                //                break;
-                //        }
-                //    }
-                //}
-                //file.Close();
-                //file.Dispose();
-
-
-                //TEMPORAL PRUEBA BORRAR LUEGO SI NO FUNCIONA
-                using (StreamReader file2 = new StreamReader(ruta_fichero_lectura))
+                using (StreamReader file = new StreamReader(ruta_fichero_lectura))
                 {
 
-                    while ((linea_actual = file2.ReadLine()) != null)
+                    while ((linea_actual = file.ReadLine()) != null)
                     {
                         if (linea_actual.Length > 0 && linea_actual != "")
                         {
@@ -91,13 +62,8 @@ namespace Suplacorp.GPS.BL
                             }
                         }
                     }
-                    
                 }
-                //FIN TEMPORAL PRUEBA
-
-
-
-
+                
                 //Registrando en BD la entidad
                 interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
                 interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero + "_" + interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */

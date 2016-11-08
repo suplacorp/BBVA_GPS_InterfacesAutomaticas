@@ -130,4 +130,17 @@ Public Class Utilitarios
         Return cantidad
     End Function
 
+    Public Shared Function QuitarExtensionNombreFichero_BBVA(ByVal nombreFichero As String) As String
+
+        Try
+            'nombreFichero = nombreFichero.Remove((nombreFichero.Length - 1) - 3, 4)
+            nombreFichero = nombreFichero.Remove(nombreFichero.Length - 4)
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return nombreFichero
+
+    End Function
+
 End Class

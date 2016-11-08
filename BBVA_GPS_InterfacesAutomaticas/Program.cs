@@ -24,7 +24,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
-            //Console.WriteLine(DateTime.Now.ToString("yyyyMMdd_hmmss"));
         }
 
       
@@ -69,38 +68,35 @@ namespace BBVA_GPS_InterfacesAutomaticas
         // Define the event handlers.
         private static void OnCreated(object sender, FileSystemEventArgs e)
         {
-            string filename = "";
-            string fullpath = "";
-            // Specify what is done when a file is changed, created, or deleted.
+            string nombreFicheroBBVA = "";
+            string rutaFicheroBBVA = "";
+            string nombreFicheroSuplacorp = "";
+            
+            // Especificar que se hará cuando el fichero es cambiado, creado, eliminado
             try {
-                //EventoDetectado_Crearon(e); //ORIGINAL TEMPORALMENTE COMENTADO
-
-                Console.WriteLine("File " + e.FullPath + " started copying : " + DateTime.Now.ToString());
                 try
                 {
-                    Console.WriteLine("File is copied : " + DateTime.Now.ToString());
-                    filename = e.Name;
-                    fullpath = e.FullPath;
+                    Console.WriteLine("==========================================================");
+                    Console.WriteLine("Fichero " + e.FullPath + " detectado, comienza la copia: " + DateTime.Now.ToString());
+                    nombreFicheroBBVA = e.Name;
+                    rutaFicheroBBVA = e.FullPath;
 
-                    string newFileName = filename + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString();
+                    nombreFicheroSuplacorp = Utilitarios.QuitarExtensionNombreFichero_BBVA(nombreFicheroBBVA) + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
+                    
+                    //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) Y QUE NO HAYA UNA EXCEPCIÓN POR RECURSO AÚN EN USO
+                    System.Threading.Thread.Sleep(1000);
+                
+                    File.Move(rutaFicheroBBVA, GlobalVariables.Ruta_fichero_detino_Ref + nombreFicheroSuplacorp);
+                    Console.WriteLine("==========================================================");
+                    Console.WriteLine("");
 
-                    //D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal
-                    System.Threading.Thread.Sleep(3000);
-                    File.Move(fullpath, @"D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal\"+ newFileName);
-
-                    //there is the point when the file is completed copying .... now you should be able to access the file and process it.
-                    //EventoDetectado_Crearon(filename, fullpath);
-                    EventoDetectado_Crearon(newFileName, @"D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Temporal\" + newFileName);
-
+                    //En este punto el fichero terminó de ser copiado (uploaded) por el BBVA, y ya puede ser procesado por Suplacorp
+                    EventoDetectado_Crearon(nombreFicheroSuplacorp, (GlobalVariables.Ruta_fichero_detino_Ref + nombreFicheroSuplacorp));
                 }
                 catch (IOException ioException)
                 {
-                    //Console.WriteLine(ioException.Message);
-                    throw ioException;
+                    Console.WriteLine(ioException.Message);
                 }
-             
-
-
             }
             catch (NullReferenceException ex) {
                 Console.WriteLine(ex.Message);
@@ -136,31 +132,23 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
 
         //private static void EventoDetectado_Crearon(FileSystemEventArgs e)
-        private static void EventoDetectado_Crearon(string name, string fullpath)
+        private static void EventoDetectado_Crearon(string nombreFicheroSuplacorp, string Ruta_fichero_detino_Ref)
         {
             List<ValidacionInterfazBE> _lstValidacion;
-            string nombre_fichero = "";
-            string ruta_fichero = "";
+            string nombreFicheroBBVA; 
             try
             {
-                if (name.Length > 0 & name.Contains(".")){
-                    nombre_fichero = name.Split('.')[0];
-                    ruta_fichero = fullpath.ToString();
+                if (nombreFicheroSuplacorp.Length > 0 & nombreFicheroSuplacorp.Contains(".")){
 
+                    nombreFicheroBBVA = nombreFicheroSuplacorp.Remove(nombreFicheroSuplacorp.Length - 19);
                     _lstValidacion = new List<ValidacionInterfazBE>();
-                    _lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz(nombre_fichero);
+                    _lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz(nombreFicheroBBVA);
 
-                    InterfazReferenciasBL _objBL;
-                    switch (nombre_fichero){
+                    switch (nombreFicheroBBVA)
+                    {
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-
- 
-                            _objBL = new InterfazReferenciasBL();
-                            _objBL.LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
-                            
-                            //(new InterfazReferenciasBL()).LeerFicheroInterfaz(nombre_fichero, ruta_fichero, _lstValidacion);
+                            (new InterfazReferenciasBL()).LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
                             break;
-
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
                             Console.WriteLine("Suministros: " + _lstValidacion.Count.ToString());
                             break;
@@ -175,8 +163,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             }
             catch (NullReferenceException ex)
             {
-                throw ex;
-                //Console.WriteLine(ex.Message);
+                //throw ex;
+                Console.WriteLine(ex.Message);
             }
          
         }
