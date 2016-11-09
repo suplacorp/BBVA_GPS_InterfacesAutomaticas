@@ -32,7 +32,7 @@ namespace Suplacorp.GPS.BE
 
         #region Constructores
         public InterfazSuministros_RegCabBE() {
-            _lstInterfazSuministros_RegPosBE = new List<InterfazSuministros_RegPosBE>();
+            LstInterfazSuministros_RegPosBE = new List<InterfazSuministros_RegPosBE>();
         }
         #endregion
 
@@ -268,6 +268,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _urgente = value;
+            }
+        }
+
+        public List<InterfazSuministros_RegPosBE> LstInterfazSuministros_RegPosBE
+        {
+            get
+            {
+                return _lstInterfazSuministros_RegPosBE;
+            }
+
+            set
+            {
+                _lstInterfazSuministros_RegPosBE = value;
             }
         }
         #endregion

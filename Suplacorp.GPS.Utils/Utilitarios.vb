@@ -143,7 +143,6 @@ Public Class Utilitarios
     End Function
 
     Public Shared Function ObtenerNombreFicheroNeto(ByVal nombreFichero As String) As String
-
         If nombreFichero.Contains("PE_OL1_REFER") Then
             Return "PE_OL1_REFER"
         ElseIf nombreFichero.Contains("PE_OL1_SUMIN") Then
@@ -152,6 +151,22 @@ Public Class Utilitarios
             Return "PE_OL1_PREFAC"
         ElseIf nombreFichero.Contains("PE_OL1_EXPED") Then
             Return "PE_OL1_EXPED"
+        Else
+            Return ""
+        End If
+    End Function
+
+
+    Public Shared Function ObtenerRutaFicheroDestino(ByVal nombreFichero As String) As String
+        ''Ruta_fichero_detino_Ref
+        If nombreFichero.Contains("PE_OL1_REFER") Then
+            Return GlobalVariables.Ruta_fichero_detino_Ref
+        ElseIf nombreFichero.Contains("PE_OL1_SUMIN") Then
+            Return GlobalVariables.Ruta_fichero_detino_Sum
+        ElseIf nombreFichero.Contains("PE_OL1_PREFAC") Then
+            Return GlobalVariables.Ruta_fichero_detino_Pref
+        ElseIf nombreFichero.Contains("PE_OL1_EXPED") Then
+            Return GlobalVariables.Ruta_fichero_detino_Exp
         Else
             Return ""
         End If

@@ -18,9 +18,12 @@ namespace Suplacorp.GPS.DAL
 {
     public class ValidacionInterfazDAL : BaseDAL
     {
-        public ValidacionInterfazDAL() {
-            
+        #region Constructor
+        public ValidacionInterfazDAL()
+        {
+
         }
+        #endregion
 
         public List<ValidacionInterfazBE> ListarValidaciones_xInterfaz(string nombre_fichero)
         {

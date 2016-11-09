@@ -25,8 +25,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
 
-
-
             /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO
             //String[] valores_linea_actual;
             //string cabecera_suministro = "000001	1	0100084795	SECRETARIA TECNICA	PE11000001	AV. REPUBLICA DE PANAMA 3055 P3H6 U		L0027	LIMA		01	PE	2111000		SAN ISIDRO	RB CORPAC		PE11		";
@@ -37,15 +35,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
              */
         }
 
-
-
-
-
-
-
-
-
         #region FileWatcher Listener
+
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         private static void ActivarFileWatcher_SuplaSFTP()
         {
@@ -96,13 +87,13 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     
                     //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) Y QUE NO HAYA UNA EXCEPCIÓN POR RECURSO AÚN EN USO
                     System.Threading.Thread.Sleep(1000);
-                
-                    File.Move(rutaFicheroBBVA, GlobalVariables.Ruta_fichero_detino_Ref + nombreFicheroSuplacorp);
+                    
+                    File.Move(rutaFicheroBBVA, Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp);
                     Console.WriteLine("==========================================================");
                     Console.WriteLine("");
 
                     //En este punto el fichero terminó de ser copiado (uploaded) por el BBVA, y ya puede ser procesado por Suplacorp
-                    EventoDetectado_Crearon(nombreFicheroSuplacorp, (GlobalVariables.Ruta_fichero_detino_Ref + nombreFicheroSuplacorp));
+                    EventoDetectado_Crearon(nombreFicheroSuplacorp, (Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp));
                 }
                 catch (IOException ioException)
                 {
@@ -137,12 +128,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             //EventoDetectado(e);
         }
 
-
-
-
-
-
-        //private static void EventoDetectado_Crearon(FileSystemEventArgs e)
+        #endregion
+ 
         private static void EventoDetectado_Crearon(string nombreFicheroSuplacorp, string Ruta_fichero_detino_Ref)
         {
             List<ValidacionInterfazBE> _lstValidacion;
@@ -171,14 +158,19 @@ namespace BBVA_GPS_InterfacesAutomaticas
                                 else {  
                                     //Notificar por correo el problema
                                 }
-
                             }
                             else {
                                 //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
                             }
                             break;
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
-                            Console.WriteLine("Suministros: " + _lstValidacion.Count.ToString());
+
+                            InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
+                            InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
+
+                            interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+
+
                             break;
                         case "PE_OL1_EXPED": /*Interfaz Expediciones*/
                             Console.WriteLine("Expediciones: " + _lstValidacion.Count.ToString());
@@ -215,7 +207,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
 
         }
-        #endregion
+
+
     }
 
 
