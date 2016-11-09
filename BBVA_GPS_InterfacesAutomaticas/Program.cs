@@ -24,15 +24,26 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
+
+
+
+            /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO
+            //String[] valores_linea_actual;
+            //string cabecera_suministro = "000001	1	0100084795	SECRETARIA TECNICA	PE11000001	AV. REPUBLICA DE PANAMA 3055 P3H6 U		L0027	LIMA		01	PE	2111000		SAN ISIDRO	RB CORPAC		PE11		";
+            //valores_linea_actual = cabecera_suministro.Split('\t');
+            //string reg_posicion = "000002	2	0100084795	P	8500057950	00010	000000000210000226	07122016	PE11000001	1,000         	PAQ	";
+            //valores_linea_actual = reg_posicion.Split('\t');
+            'FIN PRUEBAS BBVA PROVISIONALES
+             */
         }
 
-      
 
 
 
-        
 
-        
+
+
+
 
         #region FileWatcher Listener
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -147,7 +158,25 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     switch (nombreFicheroBBVA)
                     {
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-                            (new InterfazReferenciasBL()).LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+                            InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
+                            InterfazReferenciasBL interfazRefBL = new InterfazReferenciasBL();
+
+                            interfazReferencias_RegIniBE = interfazRefBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+                            if (interfazRefBL.RegistrarInterfaz_RegIni(ref interfazReferencias_RegIniBE)){
+                                //Actualizar el maestro "Cliente_Articulo"
+                                if (interfazRefBL.ActualizarClienteArticulo_IntRef(ref interfazReferencias_RegIniBE)){
+                                    //Notificar por correo la actualización
+
+                                }
+                                else {
+                                    //Notificar por correo el problema
+                                }
+
+                            }
+                            else {
+                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
+                            }
+
                             break;
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
                             Console.WriteLine("Suministros: " + _lstValidacion.Count.ToString());

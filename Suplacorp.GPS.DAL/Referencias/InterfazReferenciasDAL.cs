@@ -59,10 +59,10 @@ namespace Suplacorp.GPS.DAL
                     return false;
                 }
                 */
-
             }
             catch (Exception ex) {
-                throw;
+                Console.WriteLine(ex.Message);
+                return result;
             }
         }
 
@@ -144,14 +144,14 @@ namespace Suplacorp.GPS.DAL
                     "   ROLLBACK TRANSACTION;" + "\r\n" +
                     "END" + "\r\n" +
                     "" + "\r\n" +
-                    "/*REGISTRANDO ERROR EN LOG*/" + "\r\n" +
+                    "/* REGISTRANDO ERROR EN LOG*/" + "\r\n" +
                     "DECLARE @ERROR_PROCEDURE VARCHAR(MAX),@ERROR_LINE VARCHAR(MAX), @ERROR_MESSAGE VARCHAR(MAX), @ERROR_STATE VARCHAR(MAX)" + "\r\n" +
                     "SELECT  @ERROR_PROCEDURE = ERROR_PROCEDURE(), @ERROR_LINE = ERROR_LINE(), @ERROR_MESSAGE = ERROR_MESSAGE(), @ERROR_STATE = ERROR_STATE()" + "\r\n" +
                     "EXEC BBVA_GPS_REGISTRARERROR_SQL @ERROR_PROCEDURE, @ERROR_LINE, @ERROR_MESSAGE, @ERROR_STATE, @ID_ERROR OUTPUT" + "\r\n" +
                     "/*FIN REGISTRO ERROR*/" + "\r\n" +
                     "END CATCH;" + "\r\n" +
                     "" + "\r\n" +
-                    "/*RETORNANDO RESULTADO*/" + "\r\n" +
+                    "/* RETORNANDO RESULTADO*/" + "\r\n" +
                     "DECLARE @ROWS_AFFECTED INT = 0 " + "\r\n" +
                     "SELECT @ROWS_AFFECTED=COUNT(IDPROC) FROM BBVA_GPS_INTERFAZ_REFERENCIAS_REG_PROC (NOLOCK) WHERE IDREGINI = "+ interfazReferencias_RegIniBE.Idregini.ToString() + " " + "\r\n" +
                     "SELECT CONVERT(VARCHAR(20), @ROWS_AFFECTED) + ';' + CONVERT(VARCHAR(20), @ID_ERROR)" + "\r\n" +
@@ -168,13 +168,29 @@ namespace Suplacorp.GPS.DAL
                 return result;
 
             }
-            catch (Exception ex)
-            {
-                throw ex;
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+                return result;
             }
         }
 
-    
+        public string ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
+        {
+            string sql = "";
+            string result = "";
+
+            try{
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return result;
+            }
+            return result;
+        }
+
+
 
     }
 }

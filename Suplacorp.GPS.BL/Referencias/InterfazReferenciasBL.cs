@@ -14,7 +14,6 @@ namespace Suplacorp.GPS.BL
 {
     public class InterfazReferenciasBL : BaseBL<InterfazReferencias_RegIniBE>, IInterfazRegIniBL<InterfazReferencias_RegIniBE, InterfazReferencias_RegProcBE>
     {
-
         public InterfazReferenciasBL(){
 
         }
@@ -23,7 +22,6 @@ namespace Suplacorp.GPS.BL
         {
             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
             string linea_actual;
-            string[] result_valores;
             String[] valores_linea_actual;
             string idTipoDetalle_TipoRegistro;
 
@@ -41,7 +39,6 @@ namespace Suplacorp.GPS.BL
 
                 using (StreamReader file = new StreamReader(ruta_fichero_lectura))
                 {
-
                     while ((linea_actual = file.ReadLine()) != null)
                     {
                         if (linea_actual.Length > 0 && linea_actual != "")
@@ -63,56 +60,61 @@ namespace Suplacorp.GPS.BL
                         }
                     }
                 }
-                
-                //Registrando en BD la entidad
-                interfazReferencias_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
-                interfazReferencias_RegIniBE.Nombre_fichero_detino = interfazReferencias_RegIniBE.Nombre_fichero + "_" + interfazReferencias_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfazReferencias_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
-                interfazReferencias_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
-                interfazReferencias_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
-                interfazReferencias_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
-                /* Registró el registro inicial correctamente */
-                result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfazReferencias_RegIniBE).Split(';');
-                if (int.Parse(result_valores[0]) != 0)
-                {
-
-                    //Identificando el "Idregini" del Registro Inicial que recién se acaba de registrar
-                    interfazReferencias_RegIniBE.Idregini = int.Parse(result_valores[0]);
-
-                    //Registrando proceso (detalle del registro inicial)
-                    result_valores = (new InterfazReferenciasDAL()).RegistrarProc(ref interfazReferencias_RegIniBE).Split(';');
-                    if (int.Parse(result_valores[0]) == interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Count())
-                    {
-                        //REALIZAR VALIDACIONES Y ACTUALIZAR CLIENTE_ARTICULO
-
-                        //Guardar fichero importado en ubicación segura para posterior auditoría de ser necesaria
-                        //base.GuardarFichero(interfazReferencias_RegIniBE.Nombre_fichero, GlobalVariables.Ruta_sftp, interfazReferencias_RegIniBE.Nombre_fichero_detino, interfazReferencias_RegIniBE.Ruta_fichero_detino);
-                    }
-                    else
-                    {
-                        /*Ocurrió un error y los "n" registros no se insertaron */
-                        //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
-                    }
-                }
-                else
-                {
-                    /* Ocurrió un error en el registro inicial */
-                    //NOTIFICAR POR CORREO (INCLUIR EL FICHERO)
-                }
-
 
             }
-            catch (Exception ex)
-            {
-                throw ex;
-                //Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
+            catch (Exception ex){
+                Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
             }
-            finally
-            {
-                //file.Close();
-            }
+
             return interfazReferencias_RegIniBE;
         }
 
+        public bool RegistrarInterfaz_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
+        {
+            string[] result_valores;
+            bool result = false;
+            try
+            {
+                //Registrando en BD la entidad
+                interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
+                interfaz_RegIniBE.Nombre_fichero_detino = interfaz_RegIniBE.Nombre_fichero + "_" + interfaz_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfaz_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
+                interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
+                interfaz_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
+                interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
+
+                /*  Registró el registro inicial correctamente */
+                result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
+                if (int.Parse(result_valores[0]) != 0)
+                {
+                    //Registrando el "Idregini" generado
+                    interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
+
+                    //Registrando proceso (detalle del registro inicial)
+                    result_valores = (new InterfazReferenciasDAL()).RegistrarProc(ref interfaz_RegIniBE).Split(';');
+                    if (int.Parse(result_valores[0]) == interfaz_RegIniBE.LstInterfazReferencias_RegProcBE.Count()){
+                        result =  true;
+                    }
+                    else{
+                        /*Ocurrió un error en alguno o algunos de los "n" registros del proceso */
+                        interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+                    }
+                }
+                else{
+                    /* Ocurrió un error en el registro inicial */
+                    interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+                }
+                return result;
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            
+        }
+        
+
+
+        #region LlenarEntidades
         public void LlenarEntidad_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE, ref String[] valores_linea_actual, ref List<ValidacionInterfazBE> lstValidacionRegIni)
         {
             try
@@ -183,7 +185,20 @@ namespace Suplacorp.GPS.BL
                 throw;
             }
         }
+        #endregion
 
+        public bool ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE) {
+            bool result = false;
+            try{
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return result;
+        }
 
     }
 }

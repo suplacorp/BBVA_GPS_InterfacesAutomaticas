@@ -27,6 +27,7 @@ namespace Suplacorp.GPS.BE
         private string _numero_total_registros_fin;
         private string _tipo_registro_fin;
         private DateTime _fecha_registro;
+        private int _id_error;
         #endregion
 
         #region constructores
@@ -268,6 +269,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _fecha_registro = value;
+            }
+        }
+
+        public int Id_error
+        {
+            get
+            {
+                return _id_error;
+            }
+
+            set
+            {
+                _id_error = value;
             }
         }
         #endregion
