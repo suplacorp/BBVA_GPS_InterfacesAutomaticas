@@ -188,9 +188,13 @@ namespace Suplacorp.GPS.BL
         #endregion
 
         public bool ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE) {
+            string[] result_valores;
             bool result = false;
             try{
-
+                result_valores = (new InterfazReferenciasDAL()).ActualizarClienteArticulo_IntRef(ref interfaz_RegIniBE).Split(';');
+                if (int.Parse(result_valores[0]) != 0){
+                    result = true;
+                }
             }
             catch (Exception ex)
             {

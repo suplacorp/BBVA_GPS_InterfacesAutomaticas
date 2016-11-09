@@ -68,5 +68,24 @@ namespace Suplacorp.GPS.DAL
             return _validacion;
         }
 
+        public Dictionary<string, object> CargarVariablesIniciales() {
+
+            Dictionary<string, object> lstVariables = new Dictionary<string, object>();
+            try
+            {
+                using (DbCommand _sqlCmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_CARGAR_VARIABLES_GLOBALES"))
+                {
+                    using (IDataReader dataReader = sqlDatabase.ExecuteReader(_sqlCmd)){
+                        while (dataReader.Read()){
+                            lstVariables.Add(Convert.IsDBNull(dataReader["IDTABLA"]) ? "" : Convert.ToString(dataReader["IDTABLA"]), dataReader["VALOR"]);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+            }
+            return lstVariables;
+        }
     }
 }

@@ -23,5 +23,15 @@ namespace Suplacorp.GPS.BL
             }
         }
 
+        public Dictionary<string, object> CargarVariablesIniciales()
+        {
+            try{
+                return (new ValidacionInterfazDAL()).CargarVariablesIniciales();
+            }
+            catch (Exception ex){
+                throw;
+            }
+        }
+
     }
 }

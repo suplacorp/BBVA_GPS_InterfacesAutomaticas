@@ -10,4 +10,7 @@ Public Module GlobalVariables
     Public Ruta_fichero_detino_Sum As String = ""
 
 
+    Public IdCliente As Integer = 0
+
+
 End Module

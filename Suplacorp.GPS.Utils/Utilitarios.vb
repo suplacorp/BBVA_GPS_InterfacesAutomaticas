@@ -140,7 +140,21 @@ Public Class Utilitarios
         End Try
 
         Return nombreFichero
+    End Function
 
+    Public Shared Function ObtenerNombreFicheroNeto(ByVal nombreFichero As String) As String
+
+        If nombreFichero.Contains("PE_OL1_REFER") Then
+            Return "PE_OL1_REFER"
+        ElseIf nombreFichero.Contains("PE_OL1_SUMIN") Then
+            Return "PE_OL1_SUMIN"
+        ElseIf nombreFichero.Contains("PE_OL1_PREFAC") Then
+            Return "PE_OL1_PREFAC"
+        ElseIf nombreFichero.Contains("PE_OL1_EXPED") Then
+            Return "PE_OL1_EXPED"
+        Else
+            Return ""
+        End If
     End Function
 
 End Class

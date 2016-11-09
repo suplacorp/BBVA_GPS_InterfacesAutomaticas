@@ -11,6 +11,8 @@ using System.Data.Common;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using Suplacorp.GPS.BE;
+using Suplacorp.GPS.Utils;
+
 
 namespace Suplacorp.GPS.DAL
 {
@@ -49,16 +51,7 @@ namespace Suplacorp.GPS.DAL
                 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
                 return result;
-                /* Registró el registro inicial correctamente */
-                /*
-                if (int.Parse(result_valores[0]) != 0){
-                    interfazReferencias_RegIniBE.Idregini = int.Parse(result_valores[0]);
-                    return true;
-                }
-                else {
-                    return false;
-                }
-                */
+
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.Message);
@@ -176,16 +169,17 @@ namespace Suplacorp.GPS.DAL
 
         public string ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
         {
-            string sql = "";
             string result = "";
 
             try{
-
-            }
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_UPD_IREF_ACT_CLIENT_ART");
+                sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, interfaz_RegIniBE.Idregini);
+                sqlDatabase.AddInParameter(cmd, "IDCLIENTE", DbType.Int32, GlobalVariables.IdCliente);
+                result = sqlDatabase.ExecuteScalar(cmd).ToString();
+            }   
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return result;
             }
             return result;
         }
