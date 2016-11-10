@@ -13,7 +13,7 @@ namespace Suplacorp.GPS.BE
         private int _idcab;
         private string _numeral;
         private string _tipo_registro;
-        private bool _procesado;
+        private int _procesado;
         #endregion
 
         #region constructores
@@ -74,7 +74,7 @@ namespace Suplacorp.GPS.BE
                 _tipo_registro = value;
             }
         }
-        public bool Procesado
+        public int Procesado
         {
             get
             {

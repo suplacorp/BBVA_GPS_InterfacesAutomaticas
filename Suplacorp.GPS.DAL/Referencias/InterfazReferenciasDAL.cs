@@ -16,7 +16,7 @@ using Suplacorp.GPS.Utils;
 
 namespace Suplacorp.GPS.DAL
 {
-    public class InterfazReferenciasDAL : BaseDAL, IInterfazRegIniDAL<InterfazReferencias_RegIniBE>
+    public class InterfazReferenciasDAL : BaseDAL, IInterfazRegIniDAL<InterfazReferencias_RegIniBE, InterfazSuministros_RegIniBE>
     {
         #region Constructor
         public InterfazReferenciasDAL()
@@ -183,7 +183,13 @@ namespace Suplacorp.GPS.DAL
             return result;
         }
 
-        public string RegistrarCab(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
+        public string RegistrarCab(ref InterfazReferencias_RegIniBE interfaz_RegIniBE,  InterfazSuministros_RegIniBE interfaz_RegCabBE)
+        {
+            //NO SE IMPLEMENTARÁ
+            throw new NotImplementedException();
+        }
+
+        public string RegistrarPos(InterfazSuministros_RegIniBE interfaz_RegCabBE)
         {
             throw new NotImplementedException();
         }

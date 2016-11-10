@@ -130,7 +130,7 @@ namespace Suplacorp.GPS.BL
                                     interfazReferencias_RegIniBE.LstInterfazReferencias_RegProcBE.Add(LlenarEntidad_RegProc(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroProceso));
                                     break;
                                 case "9": //3) Registros para fin
-                                    LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroInicial);
+                                    LlenarEntidad_RegFin(ref interfazReferencias_RegIniBE, ref valores_linea_actual, ref lstValidacionRegistroFin);
                                     break;
                             }
                         }
@@ -147,6 +147,7 @@ namespace Suplacorp.GPS.BL
 
         public bool RegistrarInterfaz_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
         {
+            
             string[] result_valores;
             bool result = false;
             try
@@ -158,6 +159,7 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
+                
                 /*  Registró el registro inicial correctamente */
                 result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
@@ -185,7 +187,6 @@ namespace Suplacorp.GPS.BL
                 Console.WriteLine(ex.Message);
                 return false;
             }
-            
         }
 
         public bool ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE) {

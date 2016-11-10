@@ -7,13 +7,16 @@ using Suplacorp.GPS.BE;
 
 namespace Suplacorp.GPS.DAL
 {
-    public interface IInterfazRegIniDAL<RegIni>
+    public interface IInterfazRegIniDAL<RegIni, RegCab>
     {
         string RegistrarRegIni(ref RegIni interfaz_RegIniBE);
 
         string RegistrarProc(ref RegIni interfaz_RegIniBE);
 
-        string RegistrarCab(ref RegIni interfaz_RegIniBE);
+        string RegistrarCab(ref RegIni interfaz_RegIniBE, RegCab interfaz_RegCabBE);
+
+        string RegistrarPos(RegCab interfaz_RegCabBE);
+        
 
     }       
 }

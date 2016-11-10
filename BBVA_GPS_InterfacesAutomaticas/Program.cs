@@ -25,14 +25,16 @@ namespace BBVA_GPS_InterfacesAutomaticas
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
 
-            /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO
-            //String[] valores_linea_actual;
-            //string cabecera_suministro = "000001	1	0100084795	SECRETARIA TECNICA	PE11000001	AV. REPUBLICA DE PANAMA 3055 P3H6 U		L0027	LIMA		01	PE	2111000		SAN ISIDRO	RB CORPAC		PE11		";
-            //valores_linea_actual = cabecera_suministro.Split('\t');
-            //string reg_posicion = "000002	2	0100084795	P	8500057950	00010	000000000210000226	07122016	PE11000001	1,000         	PAQ	";
-            //valores_linea_actual = reg_posicion.Split('\t');
-            'FIN PRUEBAS BBVA PROVISIONALES
-             */
+            /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO*/
+            /*
+            String[] valores_linea_actual;
+            string cabecera_suministro = "000002	2	0100084029  	P	8500057740	00010	000000000210000239	25112015	MX11003313	2,000         	PAQ	";
+            valores_linea_actual = cabecera_suministro.Split('\t');
+            */
+
+            //DateTime kike = DateTime.Today;
+            //Console.WriteLine(kike.ToString("yyyMMdd"));
+            
         }
 
         #region FileWatcher Listener
@@ -149,6 +151,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                             InterfazReferenciasBL interfazRefBL = new InterfazReferenciasBL();
 
+                            //Leer Fichero del BBVA
                             interfazReferencias_RegIniBE = interfazRefBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
                             if (interfazRefBL.RegistrarInterfaz_RegIni(ref interfazReferencias_RegIniBE)){
                                 //Actualizar el maestro "Cliente_Articulo"
@@ -167,9 +170,16 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
-
+                            
+                            //Leer Fichero del BBVA
                             interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+                            if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
+                            {
 
+                            }
+                            else {
+                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
+                            }
 
                             break;
                         case "PE_OL1_EXPED": /*Interfaz Expediciones*/
