@@ -129,14 +129,14 @@ namespace Suplacorp.GPS.BL
                 interfazReferencias_RegCabBE.Provincia = valores_linea_actual[8].ToString();
                 interfazReferencias_RegCabBE.Apartado_alternativo = valores_linea_actual[9].ToString();
                 interfazReferencias_RegCabBE.Region_departamento = valores_linea_actual[10].ToString();
-                interfazReferencias_RegCabBE.Pais = valores_linea_actual[12].ToString();
-                interfazReferencias_RegCabBE.Telefono_contacto = valores_linea_actual[13].ToString();
-                interfazReferencias_RegCabBE.Usuario = valores_linea_actual[14].ToString();
-                interfazReferencias_RegCabBE.Colonia_comuna_planta_distrito = valores_linea_actual[15].ToString();
-                interfazReferencias_RegCabBE.Entre_calle1 = valores_linea_actual[16].ToString();
-                interfazReferencias_RegCabBE.Entre_calle2 = valores_linea_actual[17].ToString();
-                interfazReferencias_RegCabBE.Centro = valores_linea_actual[18].ToString();
-                interfazReferencias_RegCabBE.Urgente = valores_linea_actual[19].ToString();
+                interfazReferencias_RegCabBE.Pais = valores_linea_actual[11].ToString();
+                interfazReferencias_RegCabBE.Telefono_contacto = valores_linea_actual[12].ToString();
+                interfazReferencias_RegCabBE.Usuario = valores_linea_actual[13].ToString();
+                interfazReferencias_RegCabBE.Colonia_comuna_planta_distrito = valores_linea_actual[14].ToString();
+                interfazReferencias_RegCabBE.Entre_calle1 = valores_linea_actual[15].ToString();
+                interfazReferencias_RegCabBE.Entre_calle2 = valores_linea_actual[16].ToString();
+                interfazReferencias_RegCabBE.Centro = valores_linea_actual[17].ToString();
+                interfazReferencias_RegCabBE.Urgente = valores_linea_actual[18].ToString();
             }
             catch (Exception ex)
             {
