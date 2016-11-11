@@ -81,7 +81,6 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "PROVINCIA", DbType.String, interfaz_RegCabBE.Provincia);
                 sqlDatabase.AddInParameter(cmd, "APARTADO_ALTERNATIVO", DbType.String, interfaz_RegCabBE.Apartado_alternativo);
                 sqlDatabase.AddInParameter(cmd, "REGION_DEPARTAMENTO", DbType.String, interfaz_RegCabBE.Region_departamento);
-                sqlDatabase.AddInParameter(cmd, "CIUDAD_POBLACION_PROVINCIA", DbType.String, interfaz_RegCabBE.Ciudad_poblacion_provincia);
                 sqlDatabase.AddInParameter(cmd, "PAIS", DbType.String, interfaz_RegCabBE.Pais);
                 sqlDatabase.AddInParameter(cmd, "TELEFONO_CONTACTO", DbType.String, interfaz_RegCabBE.Telefono_contacto);
                 sqlDatabase.AddInParameter(cmd, "USUARIO", DbType.String, interfaz_RegCabBE.Usuario);

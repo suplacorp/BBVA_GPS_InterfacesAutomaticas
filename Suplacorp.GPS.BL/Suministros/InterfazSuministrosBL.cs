@@ -129,7 +129,6 @@ namespace Suplacorp.GPS.BL
                 interfazReferencias_RegCabBE.Provincia = valores_linea_actual[8].ToString();
                 interfazReferencias_RegCabBE.Apartado_alternativo = valores_linea_actual[9].ToString();
                 interfazReferencias_RegCabBE.Region_departamento = valores_linea_actual[10].ToString();
-                interfazReferencias_RegCabBE.Ciudad_poblacion_provincia = valores_linea_actual[11].ToString();
                 interfazReferencias_RegCabBE.Pais = valores_linea_actual[12].ToString();
                 interfazReferencias_RegCabBE.Telefono_contacto = valores_linea_actual[13].ToString();
                 interfazReferencias_RegCabBE.Usuario = valores_linea_actual[14].ToString();
@@ -209,7 +208,7 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
                 interfaz_RegIniBE.Nombre_fichero_detino = interfaz_RegIniBE.Nombre_fichero + "_" + interfaz_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfaz_RegIniBE.Hora_proceso.Replace(":", "").Trim();
                 interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
-                interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS    */
+                interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros   */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
                 /*  Registrando el REGISTRO INICIAL */

@@ -18,14 +18,13 @@ namespace Suplacorp.GPS.BE
         private string _provincia;
         private string _apartado_alternativo;
         private string _region_departamento;
-        private string _ciudad_poblacion_provincia;
         private string _pais;
         private string _telefono_contacto;
         private string _usuario;
         private string _colonia_comuna_planta_distrito;
         private string _entre_calle1;
         private string _entre_calle2;
-        private string _Centro;
+        private string _centro;
         private string _urgente;
         private List<InterfazSuministros_RegPosBE> _lstInterfazSuministros_RegPosBE;
         #endregion
@@ -154,19 +153,6 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string Ciudad_poblacion_provincia
-        {
-            get
-            {
-                return _ciudad_poblacion_provincia;
-            }
-
-            set
-            {
-                _ciudad_poblacion_provincia = value;
-            }
-        }
-
         public string Pais
         {
             get
@@ -249,12 +235,12 @@ namespace Suplacorp.GPS.BE
         {
             get
             {
-                return _Centro;
+                return _centro;
             }
 
             set
             {
-                _Centro = value;
+                _centro = value;
             }
         }
 

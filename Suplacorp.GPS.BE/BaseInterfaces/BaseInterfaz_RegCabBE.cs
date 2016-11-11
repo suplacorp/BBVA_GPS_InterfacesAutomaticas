@@ -11,8 +11,10 @@ namespace Suplacorp.GPS.BE
         #region variables
         private int _idcab;
         private int _idregini;
+
         private string _numeral;
         private string _tipo_registro;
+
         private bool _procesado;
         #endregion
 

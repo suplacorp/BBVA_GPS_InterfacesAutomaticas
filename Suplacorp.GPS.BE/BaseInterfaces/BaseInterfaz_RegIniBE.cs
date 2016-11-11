@@ -20,12 +20,16 @@ namespace Suplacorp.GPS.BE
         private string _nombre_fichero_detino;
         private DateTime _fecha_ejecucion;
         private string _hora_proceso;
+
         private string _ruta_fichero_detino;
+
         private TipoInterfazBE interfaz;
         private TipoRegistroBE tiporegistro;
         private int _procesado;
+
         private string _numero_total_registros_fin;
         private string _tipo_registro_fin;
+
         private DateTime _fecha_registro;
         private int _id_error;
         #endregion
