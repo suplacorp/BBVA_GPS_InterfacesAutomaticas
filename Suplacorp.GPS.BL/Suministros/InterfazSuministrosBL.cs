@@ -211,7 +211,7 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros   */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
-                /*  Registrando el REGISTRO INICIAL */
+                /*  Registrando el "REGISTRO INICIAL" */
                 result_valores = (new InterfazSuministrosDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
@@ -248,6 +248,8 @@ namespace Suplacorp.GPS.BL
                         }
                     }
 
+                    //GENERAR PEDIDOS
+                    //interfaz_RegIniBE
 
                 }
                 else
