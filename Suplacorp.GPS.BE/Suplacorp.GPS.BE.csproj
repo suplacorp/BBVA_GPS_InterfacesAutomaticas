@@ -43,6 +43,7 @@
     <Compile Include="BaseInterfaces\BaseInterfaz_RegCabBE.cs" />
     <Compile Include="Expediciones\InterfazExpediciones_RegCabBE.cs" />
     <Compile Include="Prefacturas\InterfazPrefacturas_RegCabBE.cs" />
+    <Compile Include="Suministros\InterfazSuministros_PedidoBE.cs" />
     <Compile Include="Suministros\InterfazSuministros_RegCabBE.cs" />
     <Compile Include="BaseInterfaces\BaseInterfaz_RegIniBE.cs" />
     <Compile Include="BaseInterfaces\BaseInterfaz_RegPosBE.cs" />

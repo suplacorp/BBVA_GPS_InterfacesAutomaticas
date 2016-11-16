@@ -153,8 +153,7 @@ namespace Suplacorp.GPS.BL
             try
             {
                 //Registrando en BD la entidad
-                interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;          /* ACTUALIZAR ESTO  */
-                interfaz_RegIniBE.Nombre_fichero_detino = interfaz_RegIniBE.Nombre_fichero + "_" + interfaz_RegIniBE.Fecha_ejecucion.ToString("yyyyMMdd").Trim() + "_" + interfaz_RegIniBE.Hora_proceso.Replace(":", "").Trim();        /* ACTUALIZAR ESTO  */
+                interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;
                 interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
                 interfaz_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */

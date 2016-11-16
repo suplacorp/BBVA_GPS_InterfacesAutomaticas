@@ -201,5 +201,90 @@ namespace Suplacorp.GPS.DAL
                 return result;
             }
         }
+
+        public string GenerarPedidosInterfazSum(int idregini) {
+            string result = "";
+
+            try{
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
+                sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
+                result = sqlDatabase.ExecuteScalar(cmd).ToString();
+                return result;
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+                return result;
+            }
+        }
+
+        public List<InterfazSuministros_PedidoBE> ObtenerPedidosGenerados_Log(int idregini) {
+
+            List<InterfazSuministros_PedidoBE> lstPedidosGenerados = new List<InterfazSuministros_PedidoBE>();
+            InterfazSuministros_PedidoBE pedido;
+
+            try
+            {
+                using (DbCommand _sqlCmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_CARGAR_PEDIDOS_GENERADOS"))
+                {
+                    sqlDatabase.AddInParameter(_sqlCmd, "IDREGINI", DbType.Int32, idregini);
+                    sqlDatabase.AddInParameter(_sqlCmd, "IDCLIENTE", DbType.Int32, GlobalVariables.IdCliente);
+
+                    using (IDataReader dataReader = sqlDatabase.ExecuteReader(_sqlCmd))
+                    {
+                        while (dataReader.Read())
+                        {
+
+                            pedido = new InterfazSuministros_PedidoBE();
+
+
+                            pedido.IDREGINI = (Convert.IsDBNull(dataReader["IDREGINI"]) ? 0 : Convert.ToInt32(dataReader["IDREGINI"]));
+                            pedido.NRO_PROCESO = (Convert.IsDBNull(dataReader["NRO_PROCESO"]) ? 0 : Convert.ToInt32(dataReader["NRO_PROCESO"]));
+                            pedido.NOMBRE_FICHERO_DESTINO = (Convert.IsDBNull(dataReader["NOMBRE_FICHERO_DESTINO"]) ? "" : Convert.ToString(dataReader["NOMBRE_FICHERO_DESTINO"]));
+                            pedido.FECHA_EJECUCION = (Convert.IsDBNull(dataReader["FECHA_EJECUCION"]) ? "" : Convert.ToString(dataReader["FECHA_EJECUCION"]));
+                            pedido.HORA_PROCESO = (Convert.IsDBNull(dataReader["HORA_PROCESO"]) ? "" : Convert.ToString(dataReader["HORA_PROCESO"]));
+                            pedido.RUTA_FICHERO = (Convert.IsDBNull(dataReader["RUTA_FICHERO"]) ? "" : Convert.ToString(dataReader["RUTA_FICHERO"]));
+                            pedido.FECHA_REGISTRO = (Convert.IsDBNull(dataReader["FECHA_REGISTRO"]) ? "" : Convert.ToString(dataReader["FECHA_REGISTRO"]));
+                            pedido.IDCAB = (Convert.IsDBNull(dataReader["IDCAB"]) ? 0 : Convert.ToInt32(dataReader["IDCAB"]));
+                            pedido.CODIGO_CESTA = (Convert.IsDBNull(dataReader["CODIGO_CESTA"]) ? "" : Convert.ToString(dataReader["CODIGO_CESTA"]));
+                            pedido.NOMBRE_DESTINATARIO = (Convert.IsDBNull(dataReader["NOMBRE_DESTINATARIO"]) ? "" : Convert.ToString(dataReader["NOMBRE_DESTINATARIO"]));
+                            pedido.DESC_UNID_OFI_ESTAB = (Convert.IsDBNull(dataReader["DESC_UNID_OFI_ESTAB"]) ? "" : Convert.ToString(dataReader["DESC_UNID_OFI_ESTAB"]));
+                            pedido.CALLE_DIRECCION = (Convert.IsDBNull(dataReader["CALLE_DIRECCION"]) ? "" : Convert.ToString(dataReader["CALLE_DIRECCION"]));
+                            pedido.PROVINCIA = (Convert.IsDBNull(dataReader["PROVINCIA"]) ? "" : Convert.ToString(dataReader["PROVINCIA"]));
+                            pedido.REGION_DEPARTAMENTO = (Convert.IsDBNull(dataReader["REGION_DEPARTAMENTO"]) ? "" : Convert.ToString(dataReader["REGION_DEPARTAMENTO"]));
+                            pedido.TELEFONO_CONTACTO = (Convert.IsDBNull(dataReader["TELEFONO_CONTACTO"]) ? "" : Convert.ToString(dataReader["TELEFONO_CONTACTO"]));
+                            pedido.USUARIO = (Convert.IsDBNull(dataReader["USUARIO"]) ? "" : Convert.ToString(dataReader["USUARIO"]));
+                            pedido.COLONIA_COMUNA_PLANTA_DISTRITO = (Convert.IsDBNull(dataReader["COLONIA_COMUNA_PLANTA_DISTRITO"]) ? "" : Convert.ToString(dataReader["COLONIA_COMUNA_PLANTA_DISTRITO"]));
+                            pedido.URGENTE = (Convert.IsDBNull(dataReader["URGENTE"]) ? "" : Convert.ToString(dataReader["URGENTE"]));
+                            pedido.PROCESADO_CAB = (Convert.IsDBNull(dataReader["PROCESADO_CAB"]) ? "" : Convert.ToString(dataReader["PROCESADO_CAB"]));
+                            pedido.MENSAJE_ERROR_CAB = (Convert.IsDBNull(dataReader["MENSAJE_ERROR_CAB"]) ? "" : Convert.ToString(dataReader["MENSAJE_ERROR_CAB"]));
+                            pedido.IDPOS = (Convert.IsDBNull(dataReader["IDPOS"]) ? 0 : Convert.ToInt32(dataReader["IDPOS"]));
+                            pedido.PEDIDO_REF_RESERVA = (Convert.IsDBNull(dataReader["PEDIDO_REF_RESERVA"]) ? "" : Convert.ToString(dataReader["PEDIDO_REF_RESERVA"]));
+                            pedido.IDARTICULO = (Convert.IsDBNull(dataReader["IDARTICULO"]) ? 0 : Convert.ToInt32(dataReader["IDARTICULO"]));
+                            pedido.MATERIAL = (Convert.IsDBNull(dataReader["MATERIAL"]) ? "" : Convert.ToString(dataReader["MATERIAL"]));
+                            pedido.CANTIDAD_PEDIDO_RESERVA = (Convert.IsDBNull(dataReader["CANTIDAD_PEDIDO_RESERVA"]) ? 0.000 : Convert.ToDouble(dataReader["CANTIDAD_PEDIDO_RESERVA"]));
+                            pedido.QPEDIDO = (Convert.IsDBNull(dataReader["QPEDIDO"]) ? 0 : Convert.ToDouble(dataReader["QPEDIDO"]));
+                            pedido.PRECIO = (Convert.IsDBNull(dataReader["PRECIO"]) ? 0 : Convert.ToDouble(dataReader["PRECIO"]));
+                            pedido.PROCESADO_POS = (Convert.IsDBNull(dataReader["PROCESADO_POS"]) ? 0 : Convert.ToInt32(dataReader["PROCESADO_POS"]));
+                            pedido.MENSAJE_ERROR_POS = (Convert.IsDBNull(dataReader["MENSAJE_ERROR_POS"]) ? "" : Convert.ToString(dataReader["MENSAJE_ERROR_POS"]));
+                            pedido.IDMONEDA = (Convert.IsDBNull(dataReader["IDMONEDA"]) ? 0 : Convert.ToInt32(dataReader["IDMONEDA"]));
+
+                            lstPedidosGenerados.Add(pedido);
+                            
+                        }
+                    }
+                }
+                return lstPedidosGenerados;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
+
+
+
+        
+
     }
 }

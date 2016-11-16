@@ -23,7 +23,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             DefinirVariablesGlobales();
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
-            ActivarFileWatcher_SuplaSFTP();
+            //ActivarFileWatcher_SuplaSFTP();
+
 
             /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO*/
             /*
@@ -32,9 +33,11 @@ namespace BBVA_GPS_InterfacesAutomaticas
             valores_linea_actual = cabecera_suministro.Split('\t');
             */
 
-            //DateTime kike = DateTime.Today;
-            //Console.WriteLine(kike.ToString("yyyMMdd"));
-            
+            List<InterfazSuministros_PedidoBE> _lstObjectos = new List<InterfazSuministros_PedidoBE>();
+            _lstObjectos = (new InterfazSuministrosBL()).Kike();
+
+            (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(_lstObjectos);
+
         }
 
         #region FileWatcher Listener
@@ -84,7 +87,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     Console.WriteLine("Fichero " + e.FullPath + " detectado, comienza la copia: " + DateTime.Now.ToString());
                     nombreFicheroBBVA = e.Name;
                     rutaFicheroBBVA = e.FullPath;
-
                     nombreFicheroSuplacorp = Utilitarios.QuitarExtensionNombreFichero_BBVA(nombreFicheroBBVA) + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
                     
                     //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) Y QUE NO HAYA UNA EXCEPCIÓN POR RECURSO AÚN EN USO
@@ -135,12 +137,11 @@ namespace BBVA_GPS_InterfacesAutomaticas
         private static void EventoDetectado_Crearon(string nombreFicheroSuplacorp, string Ruta_fichero_detino_Ref)
         {
             List<ValidacionInterfazBE> _lstValidacion;
-            string nombreFicheroBBVA; 
+            string nombreFicheroBBVA;
             try
             {
                 if (nombreFicheroSuplacorp.Length > 0 & nombreFicheroSuplacorp.Contains(".")){
 
-                    //nombreFicheroBBVA = nombreFicheroSuplacorp.Remove(nombreFicheroSuplacorp.Length - 19);
                     nombreFicheroBBVA = Utilitarios.ObtenerNombreFicheroNeto(nombreFicheroSuplacorp);
                     _lstValidacion = new List<ValidacionInterfazBE>();
                     _lstValidacion = (new ValidacionInterfazBL()).ListarValidaciones_xInterfaz(nombreFicheroBBVA);
@@ -153,6 +154,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                             //Leer Fichero del BBVA
                             interfazReferencias_RegIniBE = interfazRefBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+                            interfazReferencias_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
                             if (interfazRefBL.RegistrarInterfaz_RegIni(ref interfazReferencias_RegIniBE)){
                                 //Actualizar el maestro "Cliente_Articulo"
                                 if (interfazRefBL.ActualizarClienteArticulo_IntRef(ref interfazReferencias_RegIniBE)){
@@ -170,9 +172,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
-                            
+
                             //Leer Fichero del BBVA
-                            interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
+                            interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
+                            interfazSum_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
                             if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
                             {
 
@@ -198,8 +201,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
             }
          
         }
-
-
 
 
         private static void DefinirVariablesGlobales()
