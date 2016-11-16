@@ -33,10 +33,16 @@ namespace BBVA_GPS_InterfacesAutomaticas
             valores_linea_actual = cabecera_suministro.Split('\t');
             */
 
+            
             List<InterfazSuministros_PedidoBE> _lstObjectos = new List<InterfazSuministros_PedidoBE>();
             _lstObjectos = (new InterfazSuministrosBL()).Kike();
-
-            (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(_lstObjectos);
+            
+            Email email = new Email();
+            email.emailTo = "emolina@suplacorp.com.pe";
+            email.subject = "Asunto";
+            email.isBodyHtml = true;
+            email.body = (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(_lstObjectos);
+            email.EnviaCorreo();
 
         }
 
