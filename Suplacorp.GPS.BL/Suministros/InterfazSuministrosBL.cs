@@ -247,15 +247,22 @@ namespace Suplacorp.GPS.BL
                         }
                     }
 
-                    //Generar TODOS los Pedidos del proceso [MUY IMPORTANTE]
+                    //GENERAR "TODOS" los Pedidos del proceso actual [MUY IMPORTANTE]
                     if (result_importacion == true){
                         result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
                         if (int.Parse(result_valores[0]) != 0)
                         {
-                            //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
-                            //List<object> _lstObjectos = new List<object>();
-                            //_lstObjectos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
+                            //Obtener lista de los pedidos que se acaban de generar
+                            List<InterfazSuministros_PedidoBE> lstPedidos = new List<InterfazSuministros_PedidoBE>();
+                            lstPedidos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
 
+                            
+                            //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
+                            base.EnviarCorreoElectronico("emolina@suplacorp.com.pe", 
+                                "", 
+                                "Reporte de pedidos importados BBVA - Interfaz Suministros",
+                                (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO), 
+                                (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
                             result = true;
                         }
                         else

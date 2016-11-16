@@ -23,9 +23,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
             DefinirVariablesGlobales();
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
-            //ActivarFileWatcher_SuplaSFTP();
-
-
+            ActivarFileWatcher_SuplaSFTP();
+    
             /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO*/
             /*
             String[] valores_linea_actual;
@@ -33,17 +32,19 @@ namespace BBVA_GPS_InterfacesAutomaticas
             valores_linea_actual = cabecera_suministro.Split('\t');
             */
 
-            
+            /*
             List<InterfazSuministros_PedidoBE> _lstObjectos = new List<InterfazSuministros_PedidoBE>();
             _lstObjectos = (new InterfazSuministrosBL()).Kike();
             
             Email email = new Email();
             email.emailTo = "emolina@suplacorp.com.pe";
+            email.emailCC = "";
             email.subject = "Asunto";
             email.isBodyHtml = true;
+            email.fileName = @"D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Suministros\PE_OL1_SUMIN_20161115_14223.txt";
             email.body = (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(_lstObjectos);
             email.EnviaCorreo();
-
+            */
         }
 
         #region FileWatcher Listener

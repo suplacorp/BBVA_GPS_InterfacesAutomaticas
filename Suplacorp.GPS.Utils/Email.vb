@@ -10,6 +10,9 @@ Public Class Email
     Public Property isBodyHtml As Boolean
     Public Property body As String = String.Empty
     Public Property subject As String = String.Empty
+    Public Property fileName As String = String.Empty
+
+    Public attachment As System.Net.Mail.Attachment
 
 #Region "constantes"
     Private emailFrom As String = "suplacorp@suplacorp.com.pe"
@@ -39,6 +42,13 @@ Public Class Email
         For Each destinatarioCCO As String In CCO
             If destinatarioCCO <> "" Then message.Bcc.Add(New MailAddress(destinatarioCCO))
         Next
+
+        'Attach file
+        If (Me.fileName.Length > 0 And System.IO.File.Exists(fileName)) Then
+            attachment = New System.Net.Mail.Attachment(Me.fileName)
+            message.Attachments.Add(attachment)
+        End If
+
         message.Subject = subject
         message.IsBodyHtml = isBodyHtml
         message.Body = body

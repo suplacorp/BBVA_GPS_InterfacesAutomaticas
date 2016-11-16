@@ -233,9 +233,7 @@ namespace Suplacorp.GPS.DAL
                     {
                         while (dataReader.Read())
                         {
-
                             pedido = new InterfazSuministros_PedidoBE();
-
 
                             pedido.IDREGINI = (Convert.IsDBNull(dataReader["IDREGINI"]) ? 0 : Convert.ToInt32(dataReader["IDREGINI"]));
                             pedido.NRO_PROCESO = (Convert.IsDBNull(dataReader["NRO_PROCESO"]) ? 0 : Convert.ToInt32(dataReader["NRO_PROCESO"]));
@@ -269,7 +267,6 @@ namespace Suplacorp.GPS.DAL
                             pedido.IDMONEDA = (Convert.IsDBNull(dataReader["IDMONEDA"]) ? 0 : Convert.ToInt32(dataReader["IDMONEDA"]));
 
                             lstPedidosGenerados.Add(pedido);
-                            
                         }
                     }
                 }
@@ -279,10 +276,7 @@ namespace Suplacorp.GPS.DAL
             {
                 throw;
             }
-            
         }
-
-
 
         
 
