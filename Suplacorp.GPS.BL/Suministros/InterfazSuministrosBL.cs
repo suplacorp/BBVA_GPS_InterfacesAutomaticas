@@ -250,37 +250,32 @@ namespace Suplacorp.GPS.BL
                     //GENERAR "TODOS" los Pedidos del proceso actual [MUY IMPORTANTE]
                     if (result_importacion == true){
                         result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
-                        if (int.Parse(result_valores[0]) != 0)
-                        {
+                        if (int.Parse(result_valores[0]) != 0){
                             //Obtener lista de los pedidos que se acaban de generar
                             List<InterfazSuministros_PedidoBE> lstPedidos = new List<InterfazSuministros_PedidoBE>();
                             lstPedidos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
 
-                            
                             //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
-                            base.EnviarCorreoElectronico("emolina@suplacorp.com.pe", 
-                                "", 
+                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz(2), 
+                                "", /* Emails con copia */
                                 "Reporte de pedidos importados BBVA - Interfaz Suministros",
                                 (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO), 
                                 (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
                             result = true;
                         }
-                        else
-                        {
+                        else{
                             /*Ocurrió un error*/
+                            interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                         }
                     }
-
                 }
-                else
-                {
+                else{
                     /* Ocurrió un error en el registro inicial */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                 }
                 return result;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 Console.WriteLine(ex.Message);
                 return false;
             }
@@ -312,10 +307,6 @@ namespace Suplacorp.GPS.BL
 
                     correoAux = 
                     "<style type='text/css'>" + "\r\n" +
-                    ".error {" + "\r\n" +
-                    "   background-color:red;" + "\r\n" +
-                    "   color: white " + "\r\n" +
-                    "} " + "\r\n" +
                     ".espacioIzquierda { " + "\r\n" +
                     "   width: 150px; " + "\r\n" +
                     "} " + "\r\n" +
@@ -406,7 +397,7 @@ namespace Suplacorp.GPS.BL
                         "        <td>Urgente</td> " + "\r\n" +
                         "        <td>" + lstPedidos_xCabecera[0].URGENTE.ToString() + "</td> " + "\r\n" +
                         "    </tr> " + "\r\n" +
-                        "    <tr class='"+ (lstPedidos_xCabecera[0].MENSAJE_ERROR_CAB.ToString().Length > 0 ? "error" : "") +"'> " + "\r\n" +
+                        "    <tr style='"+ (lstPedidos_xCabecera[0].MENSAJE_ERROR_CAB.ToString().Length > 0 ? "background-color:red;color: white" : "") +"'> " + "\r\n" +
                         "        <td>Mensaje Error</td> " + "\r\n" +
                         "        <td>" + lstPedidos_xCabecera[0].MENSAJE_ERROR_CAB.ToString() + "</td> " + "\r\n" +
                         "    </tr> " + "\r\n" +
@@ -430,7 +421,7 @@ namespace Suplacorp.GPS.BL
 
                             total_pedido = total_pedido + (pos.CANTIDAD_PEDIDO_RESERVA * pos.PRECIO);
                             correoAux = 
-                            "<tr class='"+(pos.MENSAJE_ERROR_POS.ToString().Length > 0 ? "error": "") +"'> " + "\r\n" +
+                            "<tr style='"+(pos.MENSAJE_ERROR_POS.ToString().Length > 0 ? "background-color:red;color: white" : "") +"'> " + "\r\n" +
                             "   <td align='center'>" + pos.IDPOS.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.IDARTICULO.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.MATERIAL.ToString() + "</td> " + "\r\n" +
@@ -459,11 +450,11 @@ namespace Suplacorp.GPS.BL
                     correoReporte.Append(correoAux);
 
                 }
-                return correoReporte.ToString();
             }
             catch (Exception ex) {
-                throw;
+                Console.WriteLine(ex.Message);
             }
+            return correoReporte.ToString();
         }
 
         public List<InterfazSuministros_PedidoBE> Kike() {

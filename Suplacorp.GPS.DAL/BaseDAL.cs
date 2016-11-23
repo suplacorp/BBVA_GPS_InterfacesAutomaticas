@@ -26,11 +26,20 @@ namespace Suplacorp.GPS.DAL
             sqlDatabase = new SqlDatabase(this.strConnectionString);
         }
 
-        public string ObtenerDestinatariosReporteInterfaz(int idInterfaz)
-        {
+        public string ObtenerDestinatariosReporteInterfaz(int idInterfaz){
+            string result = "";
 
-            return "";
+            try{
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_SEL_OBTENER_DESTINATARIOS_NOTIFICACION");
+                sqlDatabase.AddInParameter(cmd, "@IDINTERFAZ", DbType.Int32, idInterfaz);
+                result = sqlDatabase.ExecuteScalar(cmd).ToString();
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+            }
+            return result;
         }
+
 
     }
 }
