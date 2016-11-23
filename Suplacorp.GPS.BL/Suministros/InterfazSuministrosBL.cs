@@ -19,21 +19,19 @@ namespace Suplacorp.GPS.BL
                                             IInterfazRegPosBL<InterfazSuministros_RegIniBE, InterfazSuministros_RegCabBE, InterfazSuministros_RegPosBE>
     {
         #region Constructor
-        public InterfazSuministrosBL()
-        {
+        public InterfazSuministrosBL(){
 
         }
         #endregion
 
         public InterfazSuministros_RegIniBE LeerFicheroInterfaz(string nombre_fichero, string ruta_fichero_lectura, List<ValidacionInterfazBE> lstValidacion)
         {
-            //EN PROCESO
             InterfazSuministros_RegIniBE interfazSuministros_RegIniBE = new InterfazSuministros_RegIniBE();
             string linea_actual;
             String[] valores_linea_actual;
             string idTipoDetalle_TipoRegistro;
 
-            string codigo_cesta_actual = "";
+            //string codigo_cesta_actual = "";
 
             try
             {
@@ -84,8 +82,7 @@ namespace Suplacorp.GPS.BL
                 }
 
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 Console.WriteLine(ex.Message + ";" + ex.Source.ToString() + ";" + ex.StackTrace.ToString());
             }
             return interfazSuministros_RegIniBE;
@@ -197,10 +194,8 @@ namespace Suplacorp.GPS.BL
 
         #endregion
 
-
         public bool RegistrarInterfaz_RegIni(ref InterfazSuministros_RegIniBE interfaz_RegIniBE)
         {
-            
             string[] result_valores;
             bool result = false;
             bool result_importacion = false;
@@ -209,8 +204,8 @@ namespace Suplacorp.GPS.BL
                 //Registrando en BD la entidad
                 interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Sum;
                 interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
-                interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros   */
-                interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
+                interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros(2) */
+                interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS */
 
                 /*  Registrando el "REGISTRO INICIAL" */
                 result_valores = (new InterfazSuministrosDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
@@ -249,8 +244,10 @@ namespace Suplacorp.GPS.BL
 
                     //GENERAR "TODOS" los Pedidos del proceso actual [MUY IMPORTANTE]
                     if (result_importacion == true){
+
                         result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
                         if (int.Parse(result_valores[0]) != 0){
+                            
                             //Obtener lista de los pedidos que se acaban de generar
                             List<InterfazSuministros_PedidoBE> lstPedidos = new List<InterfazSuministros_PedidoBE>();
                             lstPedidos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
@@ -285,7 +282,6 @@ namespace Suplacorp.GPS.BL
         {
             throw new NotImplementedException();
         }
-
 
         public string GenerarReporte_GeneracionPedidos(List<InterfazSuministros_PedidoBE> lstPedidos) {
             NameValueCollection lstCabeceras = new NameValueCollection();
@@ -420,13 +416,13 @@ namespace Suplacorp.GPS.BL
                         foreach (var pos in lstPedidos_xCabecera) {
 
                             total_pedido = total_pedido + (pos.CANTIDAD_PEDIDO_RESERVA * pos.PRECIO);
-                            correoAux = 
-                            "<tr style='"+(pos.MENSAJE_ERROR_POS.ToString().Length > 0 ? "background-color:red;color: white" : "") +"'> " + "\r\n" +
+                            correoAux =
+                            "<tr style='" + (pos.MENSAJE_ERROR_POS.ToString().Length > 0 ? "background-color:red;color: white" : "") + "'> " + "\r\n" +
                             "   <td align='center'>" + pos.IDPOS.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.IDARTICULO.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.MATERIAL.ToString() + "</td> " + "\r\n" +
                             "   <td align='right'>" + pos.CANTIDAD_PEDIDO_RESERVA.ToString() + "</td> " + "\r\n" +
-                            "   <td align='right'>" + pos.PRECIO.ToString() + "</td> " + "\r\n" +
+                            "   <td align='right'><font style='" + (pos.PRECIO == 0 ? "font-size:x-large" : "") + "'>" + String.Format("{0:0.00}", pos.PRECIO) + "</font></td> " + "\r\n" +
                             "   <td align='center'>" + pos.PROCESADO_POS.ToString() + "</td> " + "\r\n" +
                             "   <td>" + pos.MENSAJE_ERROR_POS.ToString() + "</td> " + "\r\n" +
                             "</tr>";

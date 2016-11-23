@@ -228,6 +228,7 @@ namespace Suplacorp.GPS.DAL
                 trans = conn.BeginTransaction();
                 try{
 
+                    /*1) Generar Pedidos*/
                     DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
                     sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
 
