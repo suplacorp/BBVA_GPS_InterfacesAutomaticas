@@ -202,19 +202,43 @@ namespace Suplacorp.GPS.DAL
             }
         }
 
-        public string GenerarPedidosInterfazSum(int idregini) {
-            string result = "";
+        //public string GenerarPedidosInterfazSum(int idregini) {
+        //    string result = "";
 
-            try{
-                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
-                sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
-                result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
+        //    try{
+        //        DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
+        //        sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
+        //        result = sqlDatabase.ExecuteScalar(cmd).ToString();
+        //        return result;
+        //    }
+        //    catch (Exception ex){
+        //        Console.WriteLine(ex.Message);
+        //        return result;
+        //    }
+        //}
+
+        public string GenerarPedidosInterfazSum(int idregini)
+        {
+            string result = "";
+            DbTransaction trans;
+
+            using (DbConnection conn = sqlDatabase.CreateConnection())
+            {
+                conn.Open();
+                trans = conn.BeginTransaction();
+                try{
+
+                    DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
+                    sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
+
+                    result = sqlDatabase.ExecuteScalar(cmd, trans).ToString();
+                    trans.Commit();
+                }
+                catch{
+                    trans.Rollback();                }
             }
-            catch (Exception ex){
-                Console.WriteLine(ex.Message);
-                return result;
-            }
+
+            return result;
         }
 
         public List<InterfazSuministros_PedidoBE> ObtenerPedidosGenerados_Log(int idregini) {

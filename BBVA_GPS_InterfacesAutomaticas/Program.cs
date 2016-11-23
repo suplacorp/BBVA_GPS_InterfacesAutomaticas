@@ -183,14 +183,13 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //Leer Fichero del BBVA
                             interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
                             interfazSum_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
-                            if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
-                            {
-
+                            if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE)){
+                                Console.WriteLine("Culminó la importación de Int. Suministros, pedidos generados correctamente.");
                             }
                             else {
                                 //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
+                                Console.WriteLine("Ocurrió un error en la importación de Int. Suministros.");
                             }
-
                             break;
                         case "PE_OL1_EXPED": /*Interfaz Expediciones*/
                             Console.WriteLine("Expediciones: " + _lstValidacion.Count.ToString());
