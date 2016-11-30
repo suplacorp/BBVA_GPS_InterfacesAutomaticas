@@ -125,9 +125,12 @@ Public Class Utilitarios
 
     Public Shared Function DecimalFormato_BBVA(ByVal cantidad As String) As String
         'CAMBIANDO LA COMA (",") SEPARADORA DE DECIMALES EUROPEA POR EL PUNTO (".") SEPARADOR DE DECIMALES PERUANO
-        cantidad = cantidad.Replace(",", ".")
-
-        Return cantidad
+        If cantidad <> "" Then
+            cantidad = cantidad.Replace(",", ".")
+            Return cantidad
+        Else
+            Return 0
+        End If
     End Function
 
     Public Shared Function QuitarExtensionNombreFichero_BBVA(ByVal nombreFichero As String) As String

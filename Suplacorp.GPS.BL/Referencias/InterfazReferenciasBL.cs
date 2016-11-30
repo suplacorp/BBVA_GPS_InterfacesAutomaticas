@@ -69,9 +69,8 @@ namespace Suplacorp.GPS.BL
                 interfazReferencias_RegProcBE.Codigo_antiguo_material = valores_linea_actual[17].ToString();
                 interfazReferencias_RegProcBE.Centro = valores_linea_actual[18].ToString();
             }
-            catch (Exception ex)
-            {
-                throw;
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
             }
             return interfazReferencias_RegProcBE;
         }
