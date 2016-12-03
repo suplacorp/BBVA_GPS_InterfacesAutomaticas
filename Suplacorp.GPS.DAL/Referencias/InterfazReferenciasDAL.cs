@@ -176,8 +176,7 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "IDCLIENTE", DbType.Int32, GlobalVariables.IdCliente);
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
             }   
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 Console.WriteLine(ex.Message);
             }
             return result;
