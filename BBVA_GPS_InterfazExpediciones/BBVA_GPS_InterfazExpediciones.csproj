@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{257780C1-C5A8-45A6-A3A6-0ECB09C4F6FF}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{BB22DD32-565A-401C-B551-BF16DEBA0B01}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Suplacorp.GPS.DAL</RootNamespace>
-    <AssemblyName>Suplacorp.GPS.DAL</AssemblyName>
+    <RootNamespace>BBVA_GPS_InterfazExpediciones</RootNamespace>
+    <AssemblyName>BBVA_GPS_InterfazExpediciones</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,18 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,22 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseDAL.cs" />
-    <Compile Include="DAL.cs" />
-    <Compile Include="Expediciones\InterfazExpedicionesDAL.cs" />
-    <Compile Include="IInterfazRegIniDAL.cs" />
-    <Compile Include="Referencias\InterfazReferenciasDAL.cs" />
-    <Compile Include="Suministros\InterfazSuministrosDAL.cs" />
-    <Compile Include="ValidacionInterfazDAL.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Suplacorp.GPS.BE\Suplacorp.GPS.BE.csproj">
       <Project>{032aecaf-ee90-4828-8158-f9b96e4338d1}</Project>
       <Name>Suplacorp.GPS.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Suplacorp.GPS.BL\Suplacorp.GPS.BL.csproj">
+      <Project>{4ea56c35-03b1-4a01-934c-88acb823db94}</Project>
+      <Name>Suplacorp.GPS.BL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Suplacorp.GPS.Utils\Suplacorp.GPS.Utils.vbproj">
       <Project>{856b3af3-475c-4de8-9b59-b27280e8b2af}</Project>

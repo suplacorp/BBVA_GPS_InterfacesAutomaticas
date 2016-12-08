@@ -8,6 +8,7 @@ namespace Suplacorp.GPS.BE
 {
     public class InterfazSuministros_PedidoBE 
     {
+         
         #region Variables
         private int _IDREGINI;
         private int _NRO_PROCESO;

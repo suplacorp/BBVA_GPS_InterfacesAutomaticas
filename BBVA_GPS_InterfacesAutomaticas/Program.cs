@@ -16,7 +16,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
     {
         //enum Interfaces { PE_OL1_REFER, PE_OL1_SUMIN, PE_OL1_EXPED, PE_OL1_PREFAC };
 
-
         static void Main(string[] args)
         {
             /*DEFINIENDO VARIABLES GLOBALES*/
@@ -31,8 +30,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
             string cabecera_suministro = "000002	2	0100084029  	P	8500057740	00010	000000000210000239	25112015	MX11003313	2,000         	PAQ	";
             valores_linea_actual = cabecera_suministro.Split('\t');
             */
-
-            
 
         }
 
