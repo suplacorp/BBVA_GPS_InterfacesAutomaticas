@@ -22,28 +22,33 @@ namespace BBVA_GPS_InterfazExpediciones
         public static bool GenerarInterfazExpediciones() {
 
             bool result = false;
-
             int idregini = 0;
-            /*1) Primero GENERAR el @IDREGINI */
+            List<InterfazExpediciones_ExpedicionBE> lstExpediciones;
+            /*1) GENERAR INTERFAZ DE EXPEDICIONES */
             if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini)) {
   
-                /*2) Obtener la lista total de la expedición */
-                //Obtener lista de los pedidos que se acaban de generar
-                List<InterfazExpediciones_ExpedicionBE> lstExpediciones = new List<InterfazExpediciones_ExpedicionBE>();
+                /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
+                lstExpediciones = new List<InterfazExpediciones_ExpedicionBE>();
                 lstExpediciones = (new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas_Log(idregini);
 
                 if (lstExpediciones.Count > 0)
                 {
-                    /*3) armar fichero de expediciones */
+                    /*3) ARMAR FICHERO DE EXPEDICIONES */
 
-                    /*4) notificar por email el fichero y el reporte  */
+                    /*4) NOTIFICAR POR EMAIL EL FICHERO Y EL REPORTE  */
 
                     result = true;
                 }
 
-                /*5) probar todo el flujo completo!!!  */
-                
+                /*5) PROBAR TODO EL FLUJO COMPLETO!!!  */
             }
+
+
+            /*PROVISIONAL - BORRAR LUEGO*/
+            idregini = 320;
+            lstExpediciones = new List<InterfazExpediciones_ExpedicionBE>();
+            lstExpediciones = (new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas_Log(idregini);
+            /*FIN PROVISIONAL - BORRAR LUEGO*/
 
             return result;
 

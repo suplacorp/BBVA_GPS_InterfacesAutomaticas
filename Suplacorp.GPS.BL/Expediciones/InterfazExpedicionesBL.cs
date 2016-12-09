@@ -31,14 +31,14 @@ namespace Suplacorp.GPS.BL
             bool result = false;
             
             try{
-                //Registrando en BD la entidad (Generando la interfaz de expediciones)
+                //Registrando en BD la Interfaz de Expediciones (Generando la interfaz de expediciones)
                 result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones("NOMBRE_FICHERO_DESTINO_KIKE").Split(';');
                 idregini = int.Parse(result_valores[0]);
 
                 if (idregini != 0){
                     result = true;
                 }
-                else {
+                else if(int.Parse(result_valores[1]) != 0) {
                     /*Ocurrió un error, mostrar el mensaje con el id error, notificar ejecutivo, etc etc etc*/
                 }
             }
