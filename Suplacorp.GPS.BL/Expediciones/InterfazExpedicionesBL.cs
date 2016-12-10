@@ -16,15 +16,6 @@ namespace Suplacorp.GPS.BL
     public class InterfazExpedicionesBL : BaseBL<InterfazExpediciones_ExpedicionBE>
     {
 
-        //public List<InterfazExpediciones_ExpedicionBE> ObtenerExpedicionesGeneradas_Log(int idregini)
-        //{
-        //    try{
-        //        return (new InterfazExpedicionesDAL()).ObtenerExpedicionesGeneradas_Log(idregini);
-        //    }
-        //    catch (Exception ex){
-        //        throw;
-        //    }
-        //}
         public bool ObtenerExpedicionesGeneradas(ref InterfazExpediciones_RegIniBE intExpediciones)
         {
             try{
@@ -41,7 +32,7 @@ namespace Suplacorp.GPS.BL
             
             try{
                 //Registrando en BD la Interfaz de Expediciones (Generando la interfaz de expediciones)
-                result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones("NOMBRE_FICHERO_DESTINO_KIKE").Split(';');
+                result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones("CAMBIAR_NOMBRE_FICHERO_DESTINO_KIKE").Split(';');
                 idregini = int.Parse(result_valores[0]);
 
                 if (idregini != 0){

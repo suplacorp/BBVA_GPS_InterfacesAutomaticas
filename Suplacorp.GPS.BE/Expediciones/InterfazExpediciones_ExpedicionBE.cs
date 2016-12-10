@@ -19,7 +19,7 @@ namespace Suplacorp.GPS.BE
         private string _IDENTIFICADOR_INTERFAZ;
         private string _NOMBRE_FICHERO;
         private string _NOMBRE_FICHERO_DESTINO;
-        private string _FECHA_EJECUCION;
+        private DateTime _FECHA_EJECUCION;
         private string _HORA_PROCESO;
         private string _RUTA_FICHERO;
         private int _IDINTERFAZ;
@@ -36,7 +36,7 @@ namespace Suplacorp.GPS.BE
         private string _TIPO_MOVIMIENTO;
         private string _TIPO_EXPEDICION;
         private string _NRO_DOC_COMPRAS_RESERVA;
-        private string _FECHA_CONTABILIZACION;
+        private DateTime _FECHA_CONTABILIZACION;
         private string _NUMERO_CESTA;
         private string _TEXTO_CABECERA_DOCUMENTO;
         private int _PROCESADO_CAB;
@@ -49,7 +49,7 @@ namespace Suplacorp.GPS.BE
         private int _IDARTICULO;
         private string _DESCRIPCION_ART;
         private string _UNIDAD_MEDIDA_PEDIDO;
-        private double _CANTIDAD;
+        private decimal _CANTIDAD;
         private string _INDICADOR_ENTREGA_FINAL;
         private string _BULTO;
         private string _NUMERO_LOTE;
@@ -176,7 +176,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string FECHA_EJECUCION
+        public DateTime FECHA_EJECUCION
         {
             get
             {
@@ -397,7 +397,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public string FECHA_CONTABILIZACION
+        public DateTime FECHA_CONTABILIZACION
         {
             get
             {
@@ -566,7 +566,7 @@ namespace Suplacorp.GPS.BE
             }
         }
 
-        public double CANTIDAD
+        public decimal CANTIDAD
         {
             get
             {

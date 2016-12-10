@@ -298,7 +298,7 @@ namespace Suplacorp.GPS.BL
                 {
                     /* Obteniendo todas las cabeceras de los pedidos generados */
                     foreach (var cab in lstPedidos){
-                        lstCabeceras.Add(cab.GetType().GetProperty("IDCAB").GetValue(cab, null).ToString(), "");
+                        lstCabeceras.Add(cab.GetType().GetProperty("IDCAB").GetValue(cab, null).ToString(), ""); /* NameValueCollection[KEY,"VACÍO"] */
                     }
 
                     correoAux = 
