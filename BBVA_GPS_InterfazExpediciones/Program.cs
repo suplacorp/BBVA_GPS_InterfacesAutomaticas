@@ -35,8 +35,11 @@ namespace BBVA_GPS_InterfazExpediciones
                 if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones)) {
                     if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0) {
 
-                        /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " */
-
+                        /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " 
+                         - Validar que el SFTP Funcione bien, sino tomar acción.
+                         - Validar que si ya dejé un fichero de expedición anterior y no ha sido descargado, entonces, versionar 1,2,3,4...
+                         - Detectar los logs (en el otro aplicativo) y tomar acción (eviar por correo).
+                         */
 
                         /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
 
