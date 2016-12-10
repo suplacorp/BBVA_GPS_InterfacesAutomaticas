@@ -24,14 +24,35 @@ namespace BBVA_GPS_InterfazExpediciones
             bool result = false;
             int idregini = 0;
             List<InterfazExpediciones_ExpedicionBE> lstExpediciones;
+            InterfazExpediciones_RegIniBE intExpediciones;
+            
             /*1) GENERAR INTERFAZ DE EXPEDICIONES */
             if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini)) {
-  
-                /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
-                lstExpediciones = new List<InterfazExpediciones_ExpedicionBE>();
-                lstExpediciones = (new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas_Log(idregini);
 
-                if (lstExpediciones.Count > 0)
+                intExpediciones = new InterfazExpediciones_RegIniBE();
+                intExpediciones.Idregini = idregini;
+
+                /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
+                if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones)) {
+                    if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0) {
+                        
+                        /*3) ARMAR FICHERO DE EXPEDICIONES */
+
+                        /*4) NOTIFICAR POR EMAIL EL FICHERO Y EL REPORTE  */
+
+                        result = true;
+                    }        
+                }
+                /*5) PROBAR TODO EL FLUJO COMPLETO!!!  */
+            }
+
+
+            /*PROVISIONAL - BORRAR LUEGO*/
+            intExpediciones = new InterfazExpediciones_RegIniBE();
+            intExpediciones.Idregini = 320;
+            if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones))
+            {
+                if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
                 {
                     /*3) ARMAR FICHERO DE EXPEDICIONES */
 
@@ -39,20 +60,11 @@ namespace BBVA_GPS_InterfazExpediciones
 
                     result = true;
                 }
-
-                /*5) PROBAR TODO EL FLUJO COMPLETO!!!  */
             }
-
-
-            /*PROVISIONAL - BORRAR LUEGO*/
-            idregini = 320;
-            lstExpediciones = new List<InterfazExpediciones_ExpedicionBE>();
-            lstExpediciones = (new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas_Log(idregini);
             /*FIN PROVISIONAL - BORRAR LUEGO*/
 
+
             return result;
-
-
         }
     }
 }

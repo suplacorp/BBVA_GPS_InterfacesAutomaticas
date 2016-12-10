@@ -16,10 +16,19 @@ namespace Suplacorp.GPS.BL
     public class InterfazExpedicionesBL : BaseBL<InterfazExpediciones_ExpedicionBE>
     {
 
-        public List<InterfazExpediciones_ExpedicionBE> ObtenerExpedicionesGeneradas_Log(int idregini)
+        //public List<InterfazExpediciones_ExpedicionBE> ObtenerExpedicionesGeneradas_Log(int idregini)
+        //{
+        //    try{
+        //        return (new InterfazExpedicionesDAL()).ObtenerExpedicionesGeneradas_Log(idregini);
+        //    }
+        //    catch (Exception ex){
+        //        throw;
+        //    }
+        //}
+        public bool ObtenerExpedicionesGeneradas(ref InterfazExpediciones_RegIniBE intExpediciones)
         {
             try{
-                return (new InterfazExpedicionesDAL()).ObtenerExpedicionesGeneradas_Log(idregini);
+                return (new InterfazExpedicionesDAL()).ObtenerExpedicionesGeneradas(ref intExpediciones);
             }
             catch (Exception ex){
                 throw;

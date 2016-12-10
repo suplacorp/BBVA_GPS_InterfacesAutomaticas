@@ -11,6 +11,8 @@ namespace Suplacorp.GPS.BE
         #region Variables
         private string _nro_posic_ped_reserva;
         private string _nro_material;
+        private int _idarticulo;
+        private string _descripcion_art;
         private string _unidad_medida_pedido;
         private decimal _cantidad;
         private string _indicador_entrega_final;
@@ -114,6 +116,32 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _numero_lote = value;
+            }
+        }
+
+        public int Idarticulo
+        {
+            get
+            {
+                return _idarticulo;
+            }
+
+            set
+            {
+                _idarticulo = value;
+            }
+        }
+
+        public string Descripcion_art
+        {
+            get
+            {
+                return _descripcion_art;
+            }
+
+            set
+            {
+                _descripcion_art = value;
             }
         }
 
