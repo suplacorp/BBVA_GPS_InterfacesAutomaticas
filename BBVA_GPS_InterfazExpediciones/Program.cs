@@ -23,7 +23,6 @@ namespace BBVA_GPS_InterfazExpediciones
 
             bool result = false;
             int idregini = 0;
-            List<InterfazExpediciones_ExpedicionBE> lstExpediciones;
             InterfazExpediciones_RegIniBE intExpediciones;
             
             /*1) GENERAR INTERFAZ DE EXPEDICIONES */
@@ -35,10 +34,11 @@ namespace BBVA_GPS_InterfazExpediciones
                 /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
                 if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones)) {
                     if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0) {
-                        
-                        /*3) ARMAR FICHERO DE EXPEDICIONES */
 
-                        /*4) NOTIFICAR POR EMAIL EL FICHERO Y EL REPORTE  */
+                        /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " */
+
+
+                        /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
 
                         result = true;
                     }        
@@ -54,9 +54,10 @@ namespace BBVA_GPS_InterfazExpediciones
             {
                 if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
                 {
-                    /*3) ARMAR FICHERO DE EXPEDICIONES */
+                    /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " */
 
-                    /*4) NOTIFICAR POR EMAIL EL FICHERO Y EL REPORTE  */
+
+                    /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
 
                     result = true;
                 }
