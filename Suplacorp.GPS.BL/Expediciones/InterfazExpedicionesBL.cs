@@ -49,5 +49,165 @@ namespace Suplacorp.GPS.BL
             return result;
         }
 
+        public string ObtenerDestinatariosReporteInterfaz(int idInterfaz)
+        {
+            string result = "";
+
+            try{
+                result = (new InterfazExpedicionesDAL()).ObtenerDestinatariosReporteInterfaz(idInterfaz);   
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+            }
+
+            return result;
+        }
+
+        public string GenerarReporte_GeneracionInterfazExpediciones(InterfazExpediciones_RegIniBE intExpediciones)
+        {
+            StringBuilder correoReporte = new StringBuilder();
+            string correoAux = "";
+            
+            try
+            {
+                if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
+                {
+                    /*ESCRIBIENDO EL [REGISTRO INICIAL] DE LA INTERFAZ DE EXPEDICIONES */
+                    correoAux =
+                    "<style type='text/css'>" + "\r\n" +
+                    ".espacioIzquierda { " + "\r\n" +
+                    "   width: 150px; " + "\r\n" +
+                    "} " + "\r\n" +
+                    ".tamanoTabla { " + "\r\n" +
+                    "   width: 800px; " + "\r\n" +
+                    "} " + "\r\n" +
+                    "</style > " + "\r\n" +
+                    "<br/><br/> " + "\r\n" +
+                    "<b><u>Información General del Proceso</u></b>" + "\r\n" +
+                    " " + "\r\n" +
+                    "<table> " + "\r\n" +
+                    "   <tr> " + "\r\n" +
+                    "       <td class='espacioIzquierda'>Nro.Proceso</td> " + "\r\n" +
+                    "       <td>" + intExpediciones.Nro_proceso.ToString() + "</td> " + "\r\n" +
+                    "   </tr> " + "\r\n" +
+                    "   <tr>" + "\r\n" +
+                    "        <td>Fecha Ejecución</td> " + "\r\n" +
+                    "        <td>" + intExpediciones.Fecha_ejecucion.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Hora Proceso</td> " + "\r\n" +
+                    "        <td>" + intExpediciones.Hora_proceso.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Archivo</td> " + "\r\n" +
+                    "        <td>" + intExpediciones.Nombre_fichero_detino.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Fecha Registro</td> " + "\r\n" +
+                    "        <td>" + intExpediciones.Fecha_registro + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "</table> " + "\r\n" +
+                    "<br /> " + "\r\n" +
+                    "<b><u>Cabeceras generadas:</u></b>" + "\r\n" +
+                    " " + "\r\n" +
+                    " " + "\r\n" +
+                    "";
+                    correoReporte.Append(correoAux);
+
+                    /*ESCRIBIENDO CADA [REGISTRO CABECERA] DE LA INTERFAZ DE EXPEDICIONES */
+                    foreach (var cab in intExpediciones.LstInterfazExpediciones_RegCabBE)
+                    {
+                        correoAux = "<hr /> " + "\r\n" +
+                         "<table border='0' class='tamanoTabla'> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td colspan = '2' align='center' style='background-color:dodgerblue'><b>[" + cab.Idcab.ToString() + "/" + cab.LstInterfazExpediciones_RegPosBE.Count.ToString() + "] Pedido </b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>IdCab</td> " + "\r\n" +
+                         "        <td>" + cab.Idcab.ToString() + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td><b>Numeral</b></td> " + "\r\n" +
+                         "        <td><b>" + Utilitarios.FormatearNumeralIntExpediciones(cab.Numeral) + "</b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Tipo de registro</td> " + "\r\n" +
+                         "        <td>" + cab.Tipo_registro + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Tipo de movimiento</td> " + "\r\n" +
+                         "        <td>" + cab.Tipo_movimiento + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Tipo expedición</td> " + "\r\n" +
+                         "        <td>" + cab.Tipo_expedicion + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Número documento compra reserva</td> " + "\r\n" +
+                         "        <td>" + cab.Nro_doc_compras_reserva + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Fecha contabilización</td> " + "\r\n" +
+                         "        <td>" + cab.Fecha_contabilizacion + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Número de cesta</td> " + "\r\n" +
+                         "        <td>" + cab.Numero_cesta + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Texto cabecera documento</td> " + "\r\n" +
+                         "        <td>" + cab.Texto_cabecera_documento + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "</table>";
+                        correoReporte.Append(correoAux);
+
+                        correoAux =
+                            "<table border='1' class='tamanoTabla'> " + "\r\n" +
+                            "<tr style='text-align:center;background-color:#A5A5A5;font-weight:bold'> " + "\r\n" +
+                            "    <td>IDPos</td> " + "\r\n" +
+                            "    <td>Numeral</td> " + "\r\n" +
+                            "    <td>Tipo registro</td> " + "\r\n" +
+                            "    <td>Nro. Posic ped. Reserva</td> " + "\r\n" +
+                            "    <td>Nro. Material</td> " + "\r\n" +
+                            "    <td>Unidad medida pedido</td> " + "\r\n" +
+                            "    <td>Cantidad</td> " + "\r\n" +
+                            "    <td>Indicador entrega final</td> " + "\r\n" +
+                            "    <td>Bulto</td> " + "\r\n" +
+                            "    <td>Numero lote</td> " + "\r\n" +
+                            "</tr>";
+                        correoReporte.Append(correoAux);
+
+                        /*ESCRIBIENDO CADA [POSICIÓN DE LA CABECERA ACTUAL] DE LA INTERFAZ DE EXPEDICIONES */
+                        foreach (var pos in cab.LstInterfazExpediciones_RegPosBE)
+                        {
+                            correoAux =
+                           "<tr> " + "\r\n" +
+                           "   <td align='center'>" + pos.Idpos.ToString() + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Numeral.ToString() + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Tipo_registro.ToString() + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Nro_posic_ped_reserva + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Nro_material + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Unidad_medida_pedido + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Cantidad.ToString() + "</td> " + "\r\n" +
+                           "   <td align='right'>" + pos.Indicador_entrega_final + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Bulto + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Numero_lote + "</td> " + "\r\n" +
+                           "</tr>";
+                            correoReporte.Append(correoAux);
+                        }
+                    }
+
+                    correoAux = "<br /><br /><font style='background-color:yellow;font-size:x-large'></b></font>";
+                    correoReporte.Append(correoAux);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return correoReporte.ToString();
+        }
+
+
     }
 }

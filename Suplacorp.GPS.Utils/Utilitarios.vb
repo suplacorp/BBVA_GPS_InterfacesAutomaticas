@@ -175,4 +175,17 @@ Public Class Utilitarios
         End If
     End Function
 
+    Public Shared Function FormatearNumeralIntExpediciones(ByVal numeral As String) As String
+
+        If (numeral <> "") Then
+            While (numeral.Length < 6)
+                numeral = "0" + numeral
+            End While
+
+        End If
+
+        Return numeral
+
+    End Function
+
 End Class

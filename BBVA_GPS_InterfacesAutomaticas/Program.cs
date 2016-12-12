@@ -208,7 +208,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
             lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
 
             GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
-
         }
 
 

@@ -9,12 +9,16 @@ using Suplacorp.GPS.Utils;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Threading;
+using System.Collections;
+using System.Text;
 
 namespace BBVA_GPS_InterfazExpediciones
 {
     class Program
     {
         static void Main(string[] args){
+
+            DefinirVariablesGlobales();
 
             GenerarInterfazExpediciones();
         }
@@ -23,51 +27,195 @@ namespace BBVA_GPS_InterfazExpediciones
 
             bool result = false;
             int idregini = 0;
-            InterfazExpediciones_RegIniBE intExpediciones;
+            string drive = "";
+            string fileName_Expediciones = "";
+            string fileName_Expediciones_fullpath = "";
             
-            /*1) GENERAR INTERFAZ DE EXPEDICIONES */
-            if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini)) {
 
+            InterfazExpediciones_RegIniBE intExpediciones;
+
+            /*1) GENERAR INTERFAZ DE EXPEDICIONES */
+            //if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini)) { /*DESCOMENTAR!*/
+            if (1 == 1) /*BORRAR*/
+            {
                 intExpediciones = new InterfazExpediciones_RegIniBE();
-                intExpediciones.Idregini = idregini;
+                //intExpediciones.Idregini = idregini; /*DESCOMENTAR!*/
+                intExpediciones.Idregini = 322; /*BORRAR*/
+
 
                 /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
-                if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones)) {
-                    if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0) {
+                drive = Path.GetPathRoot(GlobalVariables.Ruta_sftp);
+                if (Directory.Exists(drive))
+                {
+                    if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones))
+                    {
+                        if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
+                        {
+                            /*
+                             3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA" 
+                             - VALIDAR QUE SI YA DEJÓ UN FICHERO DE EXPEDICIÓN ANTERIOR Y NO HA SIDO DESCARGADO POR BBVA, ENTONCES, VERSIONAR 1,2,3,4...
+                             - DETECTAR LOS LOGS (EN EL OTRO APLICATIVO) Y TOMAR ACCIÓN (EVIAR POR CORREO).
+                            */
+                            fileName_Expediciones = GenerarNombreFicheroExpediciones();
+                            fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
+                            if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
+                            {
+                                /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
+                                //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
+                                (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
+                                    "", /* Emails con copia */
+                                    "Reporte de generación de Interfaz de Expediciones",
+                                    fileName_Expediciones_fullpath,
+                                    (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones));
 
-                        /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " 
-                         - Validar que el SFTP Funcione bien, sino tomar acción.
-                         - Validar que si ya dejé un fichero de expedición anterior y no ha sido descargado, entonces, versionar 1,2,3,4...
-                         - Detectar los logs (en el otro aplicativo) y tomar acción (eviar por correo).
-                         */
-
-                        /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
-
-                        result = true;
-                    }        
+                                result = true;
+                            }
+                            else {
+                                /*
+                                 - Notificar por email que hubo un error en la generación del fichero de expediciones
+                                 - Deshacer toda la generación de la interfaz de expediciones
+                                 */
+                            }
+                        }
+                    }
                 }
-                /*5) PROBAR TODO EL FLUJO COMPLETO!!!  */
+                else
+                {
+                    /*
+                     - Notificar por email que hay un error en acceso a la ruta SFTP
+                     - Deshacer toda la generación de la interfaz de expediciones     
+                    */
+                }
+
+                /* 5) PROBAR TODO EL FLUJO COMPLETO!  */
             }
 
+            return result;
+        }
 
-            /*PROVISIONAL - BORRAR LUEGO*/
-            intExpediciones = new InterfazExpediciones_RegIniBE();
-            intExpediciones.Idregini = 320;
-            if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones))
+        private static string GenerarNombreFicheroExpediciones() {
+
+            string[] files = System.IO.Directory.GetFiles(GlobalVariables.Ruta_sftp, "*.txt");
+            string currentFileName = "";
+            string fileName = "PE_OL1_EXPED";
+            int qFicherosExpedicionesPrevios = 0;
+            ArrayList arrayList = new ArrayList();
+
+            try
             {
-                if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
+                for (int i = 0; i < files.Length; i++)
                 {
-                    /*3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA " */
+                    currentFileName = files[i].ToString().Split('\\')[1].Split('.')[0];
+                    if (currentFileName.Contains("PE_OL1_EXPED"))
+                    {
+                        if (currentFileName.Length == 12){
+                            arrayList.Add(0);
+                        }
+                        else{
+                            arrayList.Add(currentFileName.Substring(12, 2));
+                        }
+                    }
+                }
 
+                arrayList.Reverse();
+                if (arrayList.Count > 0){
+                    qFicherosExpedicionesPrevios = arrayList.Count;
+                    fileName = "PE_OL1_EXPED" + ((qFicherosExpedicionesPrevios + 1) > 9 ? (Convert.ToInt32(arrayList[0]) + 1).ToString() : "0" + (Convert.ToInt32(arrayList[0]) + 1).ToString());
+                }
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+            }
 
-                    /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
+            return fileName;
+        }
+
+        private static void DefinirVariablesGlobales()
+        {
+            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+
+            //CARGANDO VARIABLES DE BD
+            Dictionary<string, object> lstVariables = new Dictionary<string, object>();
+            lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
+
+            GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+        }
+
+        private static bool GenerarFicheroInterfazExpediciones(string fileName_Expediciones, string fileName_Expediciones_fullpath, InterfazExpediciones_RegIniBE intExpediciones) {
+            bool result = false;
+            StringBuilder strBuilder = new StringBuilder();
+            var delimiter = "\t";
+
+            try
+            {
+                using (FileStream fs = new FileStream(fileName_Expediciones_fullpath, FileMode.Append, FileAccess.Write))
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+
+                    /*ESCRIBIENDO EL [REGISTRO INICIAL] DE LA INTERFAZ DE EXPEDICIONES */
+                    strBuilder.Append(Utilitarios.FormatearNumeralIntExpediciones(intExpediciones.Numeral) + delimiter);
+                    strBuilder.Append(intExpediciones.Tipo_registro + delimiter);
+                    strBuilder.Append(intExpediciones.Tipo_interfaz + delimiter);
+                    strBuilder.Append(intExpediciones.Pais + delimiter);
+                    strBuilder.Append(intExpediciones.Identificador_interfaz + delimiter);
+                    strBuilder.Append(intExpediciones.Nombre_fichero + delimiter);
+                    strBuilder.Append(intExpediciones.Fecha_ejecucion.ToString("ddMMyyyy") + delimiter);
+                    strBuilder.Append(intExpediciones.Hora_proceso);
+                    sw.WriteLine(strBuilder.ToString());
+                    strBuilder.Clear();
+
+                    /*ESCRIBIENDO CADA [REGISTRO CABECERA] DE LA INTERFAZ DE EXPEDICIONES */
+                    foreach (var cab in intExpediciones.LstInterfazExpediciones_RegCabBE)
+                    {
+                        strBuilder.Append(Utilitarios.FormatearNumeralIntExpediciones(cab.Numeral) + delimiter);
+                        strBuilder.Append(cab.Tipo_registro + delimiter);
+                        strBuilder.Append(cab.Tipo_movimiento + delimiter);
+                        strBuilder.Append(cab.Tipo_expedicion + delimiter);
+                        strBuilder.Append(cab.Nro_doc_compras_reserva + delimiter);
+                        strBuilder.Append(cab.Fecha_contabilizacion.ToString("ddMMyyyy") + delimiter);
+                        strBuilder.Append(cab.Numero_cesta + delimiter);
+                        strBuilder.Append(cab.Texto_cabecera_documento.Trim() + delimiter);
+                        strBuilder.Append(delimiter);
+                        sw.WriteLine(strBuilder.ToString());
+                        strBuilder.Clear();
+
+                        /*ESCRIBIENDO CADA [POSICIÓN DE LA CABECERA ACTUAL] DE LA INTERFAZ DE EXPEDICIONES */
+                        foreach (var pos in cab.LstInterfazExpediciones_RegPosBE)
+                        {
+                            strBuilder.Append(Utilitarios.FormatearNumeralIntExpediciones(pos.Numeral) + delimiter);
+                            strBuilder.Append(pos.Tipo_registro + delimiter);
+                            strBuilder.Append(pos.Nro_posic_ped_reserva + delimiter);
+                            strBuilder.Append(pos.Nro_material + delimiter);
+                            strBuilder.Append(pos.Unidad_medida_pedido + delimiter);
+                            strBuilder.Append(pos.Cantidad + delimiter);
+                            strBuilder.Append(pos.Indicador_entrega_final + delimiter);
+                            strBuilder.Append(pos.Bulto + delimiter);
+                            strBuilder.Append(pos.Numero_lote + delimiter);
+                            strBuilder.Append(delimiter);
+                            sw.WriteLine(strBuilder.ToString());
+                            strBuilder.Clear();
+                        }
+                    }
+
+                    /*ESCRIBIENDO REGISTRO FINAL DE LA INTERFAZ DE EXPEDICIONES */
+                    strBuilder.Append(Utilitarios.FormatearNumeralIntExpediciones(intExpediciones.Numero_total_registros_fin) + delimiter);
+                    strBuilder.Append(intExpediciones.Tipo_registro_fin + delimiter);
+                    strBuilder.Append(intExpediciones.Numero_registros_cab_fin + delimiter);
+                    strBuilder.Append(intExpediciones.Numero_registros_tipo3_fin);
+                    sw.Write(strBuilder.ToString());
+                    strBuilder.Clear();
 
                     result = true;
                 }
             }
-            /*FIN PROVISIONAL - BORRAR LUEGO*/
-
-
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+            
             return result;
         }
     }
