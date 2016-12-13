@@ -133,10 +133,19 @@ Public Class Utilitarios
         End If
     End Function
 
+    Public Shared Function DecimalFormato_SUPLA_BBVA(ByVal cantidad As String) As String
+        'CAMBIANDO EL PUNTO (".") SEPARADOR DE DECIMALES PERUANO POR LA COMA (",") SEPARADOR DE DECIMALES EUROPEA
+        If cantidad <> "" Then
+            cantidad = cantidad.Replace(".", ",")
+            Return cantidad
+        Else
+            Return 0
+        End If
+    End Function
+
     Public Shared Function QuitarExtensionNombreFichero_BBVA(ByVal nombreFichero As String) As String
 
         Try
-            'nombreFichero = nombreFichero.Remove((nombreFichero.Length - 1) - 3, 4)
             nombreFichero = nombreFichero.Remove(nombreFichero.Length - 4)
         Catch ex As Exception
             Throw
@@ -175,17 +184,15 @@ Public Class Utilitarios
         End If
     End Function
 
-    Public Shared Function FormatearNumeralIntExpediciones(ByVal numeral As String) As String
 
-        If (numeral <> "") Then
-            While (numeral.Length < 6)
-                numeral = "0" + numeral
+    Public Shared Function CompletarConCeros_Izquierda(ByVal valor As String, ByVal longitudMax As Integer) As String
+        If (valor <> "") Then
+            While (valor.Length < longitudMax)
+                valor = "0" + valor
             End While
-
         End If
-
-        Return numeral
-
+        Return valor
     End Function
+
 
 End Class

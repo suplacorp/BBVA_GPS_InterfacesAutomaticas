@@ -104,7 +104,7 @@ namespace Suplacorp.GPS.BL
                     "    </tr> " + "\r\n" +
                     "    <tr> " + "\r\n" +
                     "        <td>Fecha Registro</td> " + "\r\n" +
-                    "        <td>" + intExpediciones.Fecha_registro + "</td> " + "\r\n" +
+                    "        <td>" + intExpediciones.Fecha_ejecucion + "</td> " + "\r\n" +
                     "    </tr> " + "\r\n" +
                     "</table> " + "\r\n" +
                     "<br /> " + "\r\n" +
@@ -114,13 +114,13 @@ namespace Suplacorp.GPS.BL
                     "";
                     correoReporte.Append(correoAux);
 
-                    /*ESCRIBIENDO CADA [REGISTRO CABECERA] DE LA INTERFAZ DE EXPEDICIONES */
+                    /* ESCRIBIENDO CADA [REGISTRO CABECERA] DE LA INTERFAZ DE EXPEDICIONES */
                     foreach (var cab in intExpediciones.LstInterfazExpediciones_RegCabBE)
                     {
                         correoAux = "<hr /> " + "\r\n" +
                          "<table border='0' class='tamanoTabla'> " + "\r\n" +
                          "    <tr> " + "\r\n" +
-                         "        <td colspan = '2' align='center' style='background-color:dodgerblue'><b>[" + cab.Idcab.ToString() + "/" + cab.LstInterfazExpediciones_RegPosBE.Count.ToString() + "] Pedido </b></td> " + "\r\n" +
+                         "        <td colspan = '2' align='center' style='background-color:dodgerblue'><b>[" + cab.LstInterfazExpediciones_RegPosBE.Count.ToString() + " items] </b></td> " + "\r\n" +
                          "    </tr> " + "\r\n" +
                          "    <tr> " + "\r\n" +
                          "        <td class='espacioIzquierda'>IdCab</td> " + "\r\n" +
@@ -128,7 +128,7 @@ namespace Suplacorp.GPS.BL
                          "    </tr> " + "\r\n" +
                          "    <tr> " + "\r\n" +
                          "        <td><b>Numeral</b></td> " + "\r\n" +
-                         "        <td><b>" + Utilitarios.FormatearNumeralIntExpediciones(cab.Numeral) + "</b></td> " + "\r\n" +
+                         "        <td><b>" + Utilitarios.CompletarConCeros_Izquierda(cab.Numeral, 6) + "</b></td> " + "\r\n" +
                          "    </tr> " + "\r\n" +
                          "    <tr> " + "\r\n" +
                          "        <td>Tipo de registro</td> " + "\r\n" +
@@ -155,7 +155,7 @@ namespace Suplacorp.GPS.BL
                          "        <td>" + cab.Numero_cesta + "</td> " + "\r\n" +
                          "    </tr> " + "\r\n" +
                          "    <tr> " + "\r\n" +
-                         "        <td>Texto cabecera documento</td> " + "\r\n" +
+                         "        <td>Texto cabecera documento (guías/albarán)</td> " + "\r\n" +
                          "        <td>" + cab.Texto_cabecera_documento + "</td> " + "\r\n" +
                          "    </tr> " + "\r\n" +
                          "</table>";
@@ -163,12 +163,14 @@ namespace Suplacorp.GPS.BL
 
                         correoAux =
                             "<table border='1' class='tamanoTabla'> " + "\r\n" +
-                            "<tr style='text-align:center;background-color:#A5A5A5;font-weight:bold'> " + "\r\n" +
+                            "<tr style='text-align:center;background-color:#A5A5A5;font-weight:bold'>" + "\r\n" +
                             "    <td>IDPos</td> " + "\r\n" +
                             "    <td>Numeral</td> " + "\r\n" +
                             "    <td>Tipo registro</td> " + "\r\n" +
                             "    <td>Nro. Posic ped. Reserva</td> " + "\r\n" +
                             "    <td>Nro. Material</td> " + "\r\n" +
+                            "    <td>IDArtículo</td> " + "\r\n" +
+                            "    <td>Descripción</td> " + "\r\n" +
                             "    <td>Unidad medida pedido</td> " + "\r\n" +
                             "    <td>Cantidad</td> " + "\r\n" +
                             "    <td>Indicador entrega final</td> " + "\r\n" +
@@ -183,18 +185,22 @@ namespace Suplacorp.GPS.BL
                             correoAux =
                            "<tr> " + "\r\n" +
                            "   <td align='center'>" + pos.Idpos.ToString() + "</td> " + "\r\n" +
-                           "   <td align='center'>" + pos.Numeral.ToString() + "</td> " + "\r\n" +
+                           "   <td align='center'>" + Utilitarios.CompletarConCeros_Izquierda(pos.Numeral.ToString(), 6) + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Tipo_registro.ToString() + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Nro_posic_ped_reserva + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Nro_material + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Idarticulo + "</td> " + "\r\n" +
+                           "   <td align='left'>" + pos.Descripcion_art + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Unidad_medida_pedido + "</td> " + "\r\n" +
-                           "   <td align='center'>" + pos.Cantidad.ToString() + "</td> " + "\r\n" +
-                           "   <td align='right'>" + pos.Indicador_entrega_final + "</td> " + "\r\n" +
+                           "   <td align='right'>" + pos.Cantidad.ToString() + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Indicador_entrega_final + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Bulto + "</td> " + "\r\n" +
                            "   <td align='center'>" + pos.Numero_lote + "</td> " + "\r\n" +
                            "</tr>";
                             correoReporte.Append(correoAux);
                         }
+                        correoAux = "</table> " + "\r\n";
+                        correoReporte.Append(correoAux);
                     }
 
                     correoAux = "<br /><br /><font style='background-color:yellow;font-size:x-large'></b></font>";
