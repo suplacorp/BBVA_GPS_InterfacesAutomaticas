@@ -46,6 +46,7 @@
     <Compile Include="IInterfazRegCabBL.cs" />
     <Compile Include="IInterfazRegIniBL.cs" />
     <Compile Include="IInterfazRegPosBL.cs" />
+    <Compile Include="Prefactura\InterfazPrefacturaBL.cs" />
     <Compile Include="Suministros\InterfazSuministrosBL.cs" />
     <Compile Include="Referencias\InterfazReferenciasBL.cs" />
     <Compile Include="ValidacionInterfazBL.cs" />

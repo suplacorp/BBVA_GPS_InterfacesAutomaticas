@@ -202,21 +202,6 @@ namespace Suplacorp.GPS.DAL
             }
         }
 
-        //public string GenerarPedidosInterfazSum(int idregini) {
-        //    string result = "";
-
-        //    try{
-        //        DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
-        //        sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
-        //        result = sqlDatabase.ExecuteScalar(cmd).ToString();
-        //        return result;
-        //    }
-        //    catch (Exception ex){
-        //        Console.WriteLine(ex.Message);
-        //        return result;
-        //    }
-        //}
-
         public string GenerarPedidosInterfazSum(int idregini)
         {
             string result = "";

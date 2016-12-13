@@ -141,8 +141,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
                     switch (nombreFicheroBBVA)
                     {
+                        /* #################################################################################### */
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
-                            /* #################################################################################### */
                             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                             InterfazReferenciasBL interfazRefBL = new InterfazReferenciasBL();
 
@@ -163,8 +163,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             }
                             break;
 
+                        /* #################################################################################### */
                         case "PE_OL1_SUMIN": /*Interfaz Suministros*/
-                            /* #################################################################################### */
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
 
@@ -180,19 +180,31 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             }
                             break;
 
+                        /* #################################################################################### */
                         case "PE_OL1_EXPED": /*Interfaz Expediciones*/
-                            /* #################################################################################### */
                             /*ESTA INTERFAZ NO SE TRABAJARÁ AQUÍ, SINO EN EL OTRO APLICATIVO DENTRO DE ESTA SOLUCIÓN: "BBVA_GPS_INTERFAZEXPEDICIONES" */
                             break;
-
+                        /* #################################################################################### */
                         case "PE_OL1_PREFAC": /*Interfaz Prefacturas*/
-                            /* #################################################################################### */
 
-                            Console.WriteLine("Prefacturas: " + _lstValidacion.Count.ToString());
+                            InterfazPrefacturas_RegIniBE interfazPreFact_RegIniBE = new InterfazPrefacturas_RegIniBE();
+                            InterfazPrefacturaBL interfazPreFactBL = new InterfazPrefacturaBL();
+
+                            //LEER FICHERO DEL BBVA
+                            interfazPreFact_RegIniBE = interfazPreFactBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
+                            interfazPreFact_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
+                            if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE)){
+                                Console.WriteLine("Culminó la importación de Int. de Prefactura.");
+                            }
+                            else
+                            {
+                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
+                                Console.WriteLine("Ocurrió un error en la importación de Int. de Prefactura.");
+                            }
                             break;
-                                                        
+
+                        /* #################################################################################### */
                         case "PE_OL1_EXPED_LOG_EXTERNO": /*Interfaz Prefacturas*/
-                            /* #################################################################################### */
                             //LEER FICHERO DE LOG
                             LogExternoExpedicionesBL logExtExpBL = new LogExternoExpedicionesBL();
                             string lectura = logExtExpBL.LeerFicheroInterfazLogExterno(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref);
