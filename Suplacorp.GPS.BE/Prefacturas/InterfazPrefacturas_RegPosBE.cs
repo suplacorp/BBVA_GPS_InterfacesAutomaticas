@@ -16,6 +16,8 @@ namespace Suplacorp.GPS.BE
         private decimal _importe_total_posicion_sin_impuestos;
         private decimal _porcentaje_impuesto;
         private string _numero_material_servicio;
+        private int _idarticulo;
+        private string _descripcion_art;
         private decimal _cantidad;
         private string _unidad_medida_base;
         #endregion
@@ -141,6 +143,32 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _unidad_medida_base = value;
+            }
+        }
+
+        public int Idarticulo
+        {
+            get
+            {
+                return _idarticulo;
+            }
+
+            set
+            {
+                _idarticulo = value;
+            }
+        }
+
+        public string Descripcion_art
+        {
+            get
+            {
+                return _descripcion_art;
+            }
+
+            set
+            {
+                _descripcion_art = value;
             }
         }
 

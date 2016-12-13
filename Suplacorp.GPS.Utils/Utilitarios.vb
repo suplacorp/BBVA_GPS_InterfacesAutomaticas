@@ -161,6 +161,8 @@ Public Class Utilitarios
             Return "PE_OL1_SUMIN"
         ElseIf nombreFichero.Contains("PE_OL1_PREFAC") Then
             Return "PE_OL1_PREFAC"
+        ElseIf nombreFichero.Contains("PE_OL1_EXPED_LOG_EXTERNO") Then
+            Return "PE_OL1_EXPED_LOG_EXTERNO"
         ElseIf nombreFichero.Contains("PE_OL1_EXPED") Then
             Return "PE_OL1_EXPED"
         Else
@@ -177,6 +179,8 @@ Public Class Utilitarios
             Return GlobalVariables.Ruta_fichero_detino_Sum
         ElseIf nombreFichero.Contains("PE_OL1_PREFAC") Then
             Return GlobalVariables.Ruta_fichero_detino_Pref
+        ElseIf nombreFichero.Contains("PE_OL1_EXPED_LOG_EXTERNO") Then
+            Return GlobalVariables.Ruta_fichero_detino_Log_Exp
         ElseIf nombreFichero.Contains("PE_OL1_EXPED") Then
             Return GlobalVariables.Ruta_fichero_detino_Exp
         Else

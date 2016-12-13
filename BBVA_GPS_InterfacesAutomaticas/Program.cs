@@ -142,6 +142,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     switch (nombreFicheroBBVA)
                     {
                         case "PE_OL1_REFER": /*Interfaz Referencias*/
+                            /* #################################################################################### */
                             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                             InterfazReferenciasBL interfazRefBL = new InterfazReferenciasBL();
 
@@ -161,8 +162,9 @@ namespace BBVA_GPS_InterfacesAutomaticas
                                 //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
                             }
                             break;
-                        case "PE_OL1_SUMIN": /*Interfaz Suministros*/
 
+                        case "PE_OL1_SUMIN": /*Interfaz Suministros*/
+                            /* #################################################################################### */
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
 
@@ -177,12 +179,33 @@ namespace BBVA_GPS_InterfacesAutomaticas
                                 Console.WriteLine("Ocurrió un error en la importación de Int. Suministros.");
                             }
                             break;
+
                         case "PE_OL1_EXPED": /*Interfaz Expediciones*/
-                            Console.WriteLine("Expediciones: " + _lstValidacion.Count.ToString());
+                            /* #################################################################################### */
+                            /*ESTA INTERFAZ NO SE TRABAJARÁ AQUÍ, SINO EN EL OTRO APLICATIVO DENTRO DE ESTA SOLUCIÓN: "BBVA_GPS_INTERFAZEXPEDICIONES" */
                             break;
+
                         case "PE_OL1_PREFAC": /*Interfaz Prefacturas*/
+                            /* #################################################################################### */
+
                             Console.WriteLine("Prefacturas: " + _lstValidacion.Count.ToString());
                             break;
+                                                        
+                        case "PE_OL1_EXPED_LOG_EXTERNO": /*Interfaz Prefacturas*/
+                            /* #################################################################################### */
+                            //LEER FICHERO DE LOG
+                            LogExternoExpedicionesBL logExtExpBL = new LogExternoExpedicionesBL();
+                            string lectura = logExtExpBL.LeerFicheroInterfazLogExterno(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref);
+
+                            if(!(lectura.Trim().Length == 44 && lectura.Trim().Contains("Fichero procesado correctamenteXX"))){
+                                logExtExpBL.EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
+                                        "", /* Emails con copia */
+                                        "Reporte log externo [HAY ERRORES] - Int. Expediciones",
+                                        (Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroBBVA) + nombreFicheroSuplacorp),
+                                        lectura);
+                            }
+                            break;
+                            /* #################################################################################### */
                     }
                 }
             }
@@ -194,7 +217,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
          
         }
 
-
         private static void DefinirVariablesGlobales()
         {
             GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
@@ -202,6 +224,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
             GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
             GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
             GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+            GlobalVariables.Ruta_fichero_detino_Log_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_LogExp"].ToString();
 
             //CARGANDO VARIABLES DE BD
             Dictionary<string, object> lstVariables = new Dictionary<string, object>();
@@ -209,8 +232,6 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
             GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
         }
-
-
     }
 
 

@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BaseBL.cs" />
     <Compile Include="Expediciones\InterfazExpedicionesBL.cs" />
+    <Compile Include="Expediciones\LogExternoExpedicionesBL.cs" />
     <Compile Include="IInterfazRegCabBL.cs" />
     <Compile Include="IInterfazRegIniBL.cs" />
     <Compile Include="IInterfazRegPosBL.cs" />

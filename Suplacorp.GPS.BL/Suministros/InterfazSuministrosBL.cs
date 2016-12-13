@@ -31,8 +31,6 @@ namespace Suplacorp.GPS.BL
             String[] valores_linea_actual;
             string idTipoDetalle_TipoRegistro;
 
-            //string codigo_cesta_actual = "";
-
             try
             {
                 //1) Validaciones - registro de control inicial para el inicio del fichero
