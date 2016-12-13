@@ -193,8 +193,12 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //LEER FICHERO DEL BBVA
                             interfazPreFact_RegIniBE = interfazPreFactBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
                             interfazPreFact_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
+                            
+                            //REGISTRAR EN BD LA ENTIDAD
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE)){
                                 Console.WriteLine("Culminó la importación de Int. de Prefactura.");
+
+                                //LUEGO ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
                             }
                             else
                             {

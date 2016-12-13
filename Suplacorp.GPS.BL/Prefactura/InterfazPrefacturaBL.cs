@@ -97,11 +97,9 @@ namespace Suplacorp.GPS.BL
                 interfazPreFact_RegCabBE.Fact_importe_posit_negat = valores_linea_actual[5].ToString();
                 interfazPreFact_RegCabBE.Importe_total_factura_sin_impuestos = Convert.ToDecimal(Utilitarios.DecimalFormato_BBVA(valores_linea_actual[6]));
                 interfazPreFact_RegCabBE.Importe_total_impuestos = Convert.ToDecimal(Utilitarios.DecimalFormato_BBVA(valores_linea_actual[7]));
-                //interfazPreFact_RegCabBE.Fecha_factura = Convert.ToDateTime(valores_linea_actual[8]);
-
                 interfazPreFact_RegCabBE.Fecha_factura = DateTime.ParseExact(valores_linea_actual[8], "ddMMyyyy", CultureInfo.InvariantCulture);
-
                 interfazPreFact_RegCabBE.Ejercicio = valores_linea_actual[9].ToString();
+                interfazPreFact_RegCabBE.Procesado = true;
             }
             catch (Exception ex)
             {
@@ -164,6 +162,7 @@ namespace Suplacorp.GPS.BL
                 interfazPrefact_RegPosBE.Numero_material_servicio = valores_linea_actual[8].ToString();
                 interfazPrefact_RegPosBE.Cantidad = Convert.ToDecimal(Utilitarios.DecimalFormato_BBVA(valores_linea_actual[9]));
                 interfazPrefact_RegPosBE.Unidad_medida_base = valores_linea_actual[10].ToString();
+                interfazPrefact_RegPosBE.Procesado = 1;
             }
             catch (Exception ex)
             {
@@ -200,6 +199,38 @@ namespace Suplacorp.GPS.BL
                 result_valores = (new InterfazPrefacturaDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
+                    //Obteniendo el "Idregini" generado
+                    interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
+
+                    //Registrando cada una de la(s) CABECERA(s) del pedido
+                    foreach (var cab in interfaz_RegIniBE.LstInterfazPrefacturas_RegCabBE)
+                    {
+                        //Registrando CABECERA(s) (cabecera del pedido)
+                        result_valores = (new InterfazPrefacturaDAL()).RegistrarCab(ref interfaz_RegIniBE, cab).Split(';');
+                        if (int.Parse(result_valores[0]) != 0)
+                        {
+                            //Obteniendo el "IdCab" generado
+                            cab.Idcab = int.Parse(result_valores[0]);
+
+                            //Registrando POSICIONES de la cabecera actual
+                            result_valores = (new InterfazPrefacturaDAL()).RegistrarPos(cab).Split(';');
+                            if (int.Parse(result_valores[0]) != 0)
+                            {
+                                //Todo ok
+                                result_importacion = true;
+                            }
+                            else
+                            {
+                                /*Ocurrió un error*/
+                            }
+                        }
+                        else
+                        {
+                            /*Ocurrió un error en alguno o algunos de los "n" registros del proceso */
+                            interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+                        }
+                    }
+
 
                     result = true;
                 }
