@@ -117,7 +117,8 @@ namespace Suplacorp.GPS.BL
                 interfaz_RegIniBE.Tipo_registro_fin = valores_linea_actual[1].ToString();
                 interfaz_RegIniBE.Numero_registros_cab_fin = valores_linea_actual[2].ToString();
                 interfaz_RegIniBE.Numero_registros_pos_fin = valores_linea_actual[3].ToString();
-                interfaz_RegIniBE.Numero_registros_tipo3_fin = valores_linea_actual[4].ToString();
+                //interfaz_RegIniBE.Numero_registros_tipo3_fin = valores_linea_actual[4].ToString();
+                interfaz_RegIniBE.Numero_registros_tipo3_fin = "00000"; /*LO PUSE ESTÁTICO, HASTA QUE EL BBVA RESPONDA SI VIAJARÁ O NO.*/
             }
             catch (Exception ex){
                 throw;
@@ -199,6 +200,10 @@ namespace Suplacorp.GPS.BL
                 result_valores = (new InterfazPrefacturaDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
+
+                    //BORRAR
+                    //throw new System.InvalidOperationException("Logfile cannot be read-only");
+
                     //Obteniendo el "Idregini" generado
                     interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
 
@@ -233,17 +238,23 @@ namespace Suplacorp.GPS.BL
                     result = true;
                 }
                 else{
-                    /* Ocurrió un error en el registro inicial */
+                    /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+                    base.EnviarCorreoElectronico(
+                        new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4),"", "ERROR Int. Prefactura", "",
+                        (base.FormatearMensajeError_HTML(null, int.Parse(result_valores[1]), "Int. Prefactura")));
                 }
-                return result;
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                return false;
+                /*NOTIFICACIÓN POR EMAIL*/
+                base.EnviarCorreoElectronico(
+                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "ERROR Int. Prefactura", "",
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
+                /*NOTIFICACIÓN POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
             }
-
-       }
+            return result;
+        }
 
         /*BORRAR ESTE MÉTODO DE ABAJO, LO USÉ DE MODELO DE OTRA INTERFAZ */
         public bool RegistrarInterfaz_RegIni(ref InterfazSuministros_RegIniBE interfaz_RegIniBE)

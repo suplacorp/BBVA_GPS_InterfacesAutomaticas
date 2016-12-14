@@ -20,7 +20,6 @@ namespace Suplacorp.GPS.DAL
         public string RegistrarCab(ref InterfazPrefacturas_RegIniBE interfaz_RegIniBE, InterfazPrefacturas_RegCabBE interfaz_RegCabBE)
         {
             string result = "";
-
             try
             {
                 DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_IPREFACT_AGREGAR_REGCAB");
@@ -38,14 +37,11 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "PROCESADO", DbType.Int32, interfaz_RegCabBE.Procesado);
 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
 
         public string RegistrarPos(InterfazPrefacturas_RegCabBE interfaz_RegCabBE)
@@ -132,14 +128,11 @@ namespace Suplacorp.GPS.DAL
 
                 DbCommand cmd = sqlDatabase.GetSqlStringCommand(sql2.ToString());
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
 
         public string RegistrarProc(ref InterfazPrefacturas_RegIniBE interfaz_RegIniBE)
@@ -176,14 +169,11 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "NUMERO_REGISTROS_TIPO3_FIN", DbType.String, interfaz_RegIniBE.Numero_registros_tipo3_fin);
                 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
     }
 }

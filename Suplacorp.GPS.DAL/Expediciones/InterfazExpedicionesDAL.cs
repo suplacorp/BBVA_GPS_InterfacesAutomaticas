@@ -174,8 +174,7 @@ namespace Suplacorp.GPS.DAL
                     result = true;
                 }
             }
-            catch (Exception ex)
-            {
+            catch{
                 throw;
             }
             return result;
@@ -190,16 +189,13 @@ namespace Suplacorp.GPS.DAL
                 DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_REGISTRAR_IEXP");
 
                 sqlDatabase.AddInParameter(cmd, "NOMBRE_FICHERO_DESTINO", DbType.String, nombre_fichero_destino);
-
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return result;
+                throw;
             }
+            return result;
         }
 
 

@@ -199,19 +199,20 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //REGISTRAR EN BD LA ENTIDAD
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE))
                             {
+                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, "Int. Prefactura", "Se completó correctamente el proceso de importación."));
+
                                 if (interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count > 0) {
-                                    if((new InterfazPrefacturaBL()).NotificarInterfazPreFactura(interfazPreFact_RegIniBE)){
-                                        //ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
-                                        Console.WriteLine("Envió correctamente el correo de notificación Interfaz de Prefactura.");
+                                    //ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
+                                    if ((new InterfazPrefacturaBL()).NotificarInterfazPreFactura(interfazPreFact_RegIniBE)){
+                                        Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(2, "Int. Prefactura", "Se envió correctamente el e-amil de notificación del proceso de importación."));
                                     }
                                 }
-                                Console.WriteLine("Culminó la importación de Int. de Prefactura.");
                             }
-                            else
-                            {
+                            /*
+                            else {
                                 //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
                                 Console.WriteLine("Ocurrió un error en la importación de Int. de Prefactura.");
-                            }
+                            }*/
                             #endregion
                             break;
                         /* #################################################################################### */

@@ -52,7 +52,7 @@ namespace Suplacorp.GPS.DAL
                     }
                 }
             }
-            catch (Exception ex){
+            catch{
                 throw;
             }
             return lstArticulosBBVA;

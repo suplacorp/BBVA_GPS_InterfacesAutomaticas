@@ -21,7 +21,7 @@ namespace Suplacorp.GPS.BL
             try{
                 return (new InterfazExpedicionesDAL()).ObtenerExpedicionesGeneradas(ref intExpediciones);
             }
-            catch (Exception ex){
+            catch{
                 throw;
             }
         }

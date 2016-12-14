@@ -52,14 +52,12 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "NUMERO_REGISTROS_TIPO3_FIN", DbType.String, interfaz_RegIniBE.Numero_registros_tipo3_fin);
 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return result;
+                throw;
             }
+            return result;
         }
 
         public string RegistrarCab(ref InterfazSuministros_RegIniBE interfaz_RegIniBE,  InterfazSuministros_RegCabBE interfaz_RegCabBE)
@@ -92,14 +90,12 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "PROCESADO", DbType.Int32, interfaz_RegCabBE.Procesado);
 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return result;
+                throw;
             }
+            return result;
         }
 
         public string RegistrarProc(ref InterfazSuministros_RegIniBE interfaz_RegIniBE)
@@ -192,14 +188,11 @@ namespace Suplacorp.GPS.DAL
 
                 DbCommand cmd = sqlDatabase.GetSqlStringCommand(sql2.ToString());
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
 
         public string GenerarPedidosInterfazSum(int idregini)
@@ -207,23 +200,31 @@ namespace Suplacorp.GPS.DAL
             string result = "";
             DbTransaction trans;
 
-            using (DbConnection conn = sqlDatabase.CreateConnection())
+            try
             {
-                conn.Open();
-                trans = conn.BeginTransaction();
-                try{
+                using (DbConnection conn = sqlDatabase.CreateConnection())
+                {
+                    conn.Open();
+                    trans = conn.BeginTransaction();
+                    try
+                    {
 
-                    /*1) Generar Pedidos*/
-                    DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
-                    sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
+                        /*1) Generar Pedidos*/
+                        DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_ISUM_GENERAR_PEDIDOS");
+                        sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, idregini);
 
-                    result = sqlDatabase.ExecuteScalar(cmd, trans).ToString();
-                    trans.Commit();
+                        result = sqlDatabase.ExecuteScalar(cmd, trans).ToString();
+                        trans.Commit();
+                    }
+                    catch
+                    {
+                        trans.Rollback();
+                    }
                 }
-                catch{
-                    trans.Rollback();                }
             }
-
+            catch {
+                throw;
+            }
             return result;
         }
 
@@ -282,7 +283,7 @@ namespace Suplacorp.GPS.DAL
                 }
                 return lstPedidosGenerados;
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }

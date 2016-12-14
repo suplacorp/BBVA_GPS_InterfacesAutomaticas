@@ -34,8 +34,8 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "@IDINTERFAZ", DbType.Int32, idInterfaz);
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
             }
-            catch (Exception ex){
-                Console.WriteLine(ex.Message);
+            catch{
+                throw;
             }
             return result;
         }

@@ -50,13 +50,11 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "NUMERO_REGISTROS_TIPO3_FIN", DbType.String, interfazReferencias_RegIniBE.Numero_registros_tipo3_fin);
                 
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
 
         public string RegistrarProc(ref InterfazReferencias_RegIniBE interfazReferencias_RegIniBE) {
@@ -157,13 +155,11 @@ namespace Suplacorp.GPS.DAL
                 
                 DbCommand cmd = sqlDatabase.GetSqlStringCommand(sql2.ToString());
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-                return result;
-
             }
-            catch (Exception ex){
-                Console.WriteLine(ex.Message);
-                return result;
+            catch{
+                throw;
             }
+            return result;
         }
 
         public string ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
@@ -175,9 +171,9 @@ namespace Suplacorp.GPS.DAL
                 sqlDatabase.AddInParameter(cmd, "IDREGINI", DbType.Int32, interfaz_RegIniBE.Idregini);
                 sqlDatabase.AddInParameter(cmd, "IDCLIENTE", DbType.Int32, GlobalVariables.IdCliente);
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
-            }   
-            catch (Exception ex){
-                Console.WriteLine(ex.Message);
+            }
+            catch{
+                throw;
             }
             return result;
         }

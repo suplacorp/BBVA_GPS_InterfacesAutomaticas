@@ -35,66 +35,72 @@ namespace BBVA_GPS_InterfazExpediciones
             string fileName_Expediciones_fullpath = "";
             InterfazExpediciones_RegIniBE intExpediciones;
 
-            /*1) GENERAR INTERFAZ DE EXPEDICIONES */
-            //if (1 == 1) /*BORRAR, SOLO PARA PRUEBAS*/
-            if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini))
-            { /*DESCOMENTAR!*/
-                {
-                    intExpediciones = new InterfazExpediciones_RegIniBE();
-                    intExpediciones.Idregini = idregini; /*DESCOMENTAR!*/
-                                                         //intExpediciones.Idregini = 322; /*BORRAR, SOLO PARA PRUEBAS*/
-
-                    /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
-                    drive = Path.GetPathRoot(GlobalVariables.Ruta_sftp);
-                    if (Directory.Exists(drive))
+            try
+            {
+                /*1) GENERAR INTERFAZ DE EXPEDICIONES */
+                //if (1 == 1) /*BORRAR, SOLO PARA PRUEBAS*/
+                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini))
+                { /*DESCOMENTAR!*/
                     {
-                        if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones))
+                        intExpediciones = new InterfazExpediciones_RegIniBE();
+                        intExpediciones.Idregini = idregini; /*DESCOMENTAR!*/
+                                                             //intExpediciones.Idregini = 322; /*BORRAR, SOLO PARA PRUEBAS*/
+
+                        /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
+                        drive = Path.GetPathRoot(GlobalVariables.Ruta_sftp);
+                        if (Directory.Exists(drive))
                         {
-                            if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
+                            if ((new InterfazExpedicionesBL()).ObtenerExpedicionesGeneradas(ref intExpediciones))
                             {
-                                /*
-                                 3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA" 
-                                 - VALIDAR QUE SI YA DEJÓ UN FICHERO DE EXPEDICIÓN ANTERIOR Y NO HA SIDO DESCARGADO POR BBVA, ENTONCES, VERSIONAR 1,2,3,4...
-                                 - DETECTAR LOS LOGS (EN EL OTRO APLICATIVO) Y TOMAR ACCIÓN (EVIAR POR CORREO).
-                                */
-                                fileName_Expediciones = GenerarNombreFicheroExpediciones();
-                                fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
-                                fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
-
-                                if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
-                                {
-                                    File.Copy(fileName_Expediciones_fullpath, Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp);
-
-                                    /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
-                                    //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
-                                    (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
-                                        "", /* Emails con copia */
-                                        "Reporte de generación de Interfaz de Expediciones",
-                                        (Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp),
-                                        (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones));
-
-                                    result = true;
-                                }
-                                else
+                                if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
                                 {
                                     /*
-                                     - Notificar por email que hubo un error en la generación del fichero de expediciones
-                                     - Deshacer toda la generación de la interfaz de expediciones
-                                     */
+                                     3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA" 
+                                     - VALIDAR QUE SI YA DEJÓ UN FICHERO DE EXPEDICIÓN ANTERIOR Y NO HA SIDO DESCARGADO POR BBVA, ENTONCES, VERSIONAR 1,2,3,4...
+                                     - DETECTAR LOS LOGS (EN EL OTRO APLICATIVO) Y TOMAR ACCIÓN (EVIAR POR CORREO).
+                                    */
+                                    fileName_Expediciones = GenerarNombreFicheroExpediciones();
+                                    fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
+                                    fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
+
+                                    if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
+                                    {
+                                        File.Copy(fileName_Expediciones_fullpath, Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp);
+
+                                        /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
+                                        //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
+                                        (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
+                                            "", /* Emails con copia */
+                                            "Reporte de generación de Interfaz de Expediciones",
+                                            (Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp),
+                                            (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones));
+
+                                        result = true;
+                                    }
+                                    else
+                                    {
+                                        /*
+                                         - Notificar por email que hubo un error en la generación del fichero de expediciones
+                                         - Deshacer toda la generación de la interfaz de expediciones
+                                         */
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        /*
-                         - Notificar por email que hay un error en acceso a la ruta SFTP
-                         - Deshacer toda la generación de la interfaz de expediciones     
-                        */
-                    }
+                        else
+                        {
+                            /*
+                             - Notificar por email que hay un error en acceso a la ruta SFTP
+                             - Deshacer toda la generación de la interfaz de expediciones     
+                            */
+                        }
 
-                    /* 5) PROBAR TODO EL FLUJO COMPLETO!  */
+                        /* 5) PROBAR TODO EL FLUJO COMPLETO!  */
+                    }
                 }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("ERROR");
             }
             return result;
         }
