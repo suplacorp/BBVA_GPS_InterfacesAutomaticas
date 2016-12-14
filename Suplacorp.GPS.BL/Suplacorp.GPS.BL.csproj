@@ -49,6 +49,7 @@
     <Compile Include="Prefactura\InterfazPrefacturaBL.cs" />
     <Compile Include="Suministros\InterfazSuministrosBL.cs" />
     <Compile Include="Referencias\InterfazReferenciasBL.cs" />
+    <Compile Include="UtilBL.cs" />
     <Compile Include="ValidacionInterfazBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

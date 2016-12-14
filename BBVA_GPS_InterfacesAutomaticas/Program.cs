@@ -24,13 +24,13 @@ namespace BBVA_GPS_InterfacesAutomaticas
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
 
-            /* PRUEBAS BBVA PROVISIONALES - BORRAR LUEGO*/
             /*
-            String[] valores_linea_actual;
-            string cabecera_suministro = "000002	2	0100084029  	P	8500057740	00010	000000000210000239	25112015	MX11003313	2,000         	PAQ	";
-            valores_linea_actual = cabecera_suministro.Split('\t');
+            ListaArticulosNegociadosBBVA lstArticulosNegociados = new ListaArticulosNegociadosBBVA();
+            lstArticulosNegociados = (new UtilBL()).ObtenerListaArticulosNegociadosBBVA();
+            string descripcion1 = (lstArticulosNegociados.Exists(x => x.Key == 10397) ? lstArticulosNegociados.Find(x => x.Key == 10397).Value.DescripcionArticulo : "");
+            string descripcion2 = (lstArticulosNegociados.Exists(x => x.Key == 10401) ? lstArticulosNegociados.Find(x => x.Key == 10401).Value.DescripcionArticulo : "");
+            string descripcion3 = (lstArticulosNegociados.Exists(x => x.Key == 777) ? lstArticulosNegociados.Find(x => x.Key == 777).Value.DescripcionArticulo : "");
             */
-
         }
 
         #region FileWatcher Listener
@@ -196,9 +196,21 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             
                             //REGISTRAR EN BD LA ENTIDAD
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE)){
+                                
+                                /* CONSULTAR LAS "DESCRIPCIONES DE "TODOS" LOS ARTÍCULOS NEGOCIADOS" PARA ENVIAR POR CORREO EL REPORTE CON LAS DESCRIPCIONES CORRECTAS
+                                 * SE HACE ÉSTO YA QUE EN ESTE PUNTO NO CONTAMOS CON LOS "IDARTÍCULOS" NI "DESCRIPCIONES", SOLO CON EL CODIGOEXTERNO QUE VINIERON DE LA INTERFAZ
+                                 */
+                                ListaArticulosNegociadosBBVA lstArticulosNegociados = new ListaArticulosNegociadosBBVA();
+                                lstArticulosNegociados = (new UtilBL()).ObtenerListaArticulosNegociadosBBVA();
+                                foreach (var cab in interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE) {
+                                    foreach (var pos in cab.LstInterfazPrefacturas_RegPosBE) {
+                                        pos.Idarticulo = (lstArticulosNegociados.Exists(x => x.Key == Int32.Parse(pos.Numero_material_servicio)) ? lstArticulosNegociados.Find(x => x.Key == Int32.Parse(pos.Numero_material_servicio)).Value.Idarticulo : 0);
+                                        pos.Descripcion_art = (lstArticulosNegociados.Exists(x => x.Key == Int32.Parse(pos.Numero_material_servicio)) ? lstArticulosNegociados.Find(x => x.Key == Int32.Parse(pos.Numero_material_servicio)).Value.DescripcionArticulo : "NO SE ENCONTRÓ EL ARTÍCULO");
+                                    }
+                                }
+                                //AQUÍ ME QUEDÉ
+                                //ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
                                 Console.WriteLine("Culminó la importación de Int. de Prefactura.");
-
-                                //LUEGO ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
                             }
                             else
                             {

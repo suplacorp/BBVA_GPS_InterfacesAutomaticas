@@ -59,6 +59,7 @@
     <Compile Include="Prefactura\InterfazPrefacturaDAL.cs" />
     <Compile Include="Referencias\InterfazReferenciasDAL.cs" />
     <Compile Include="Suministros\InterfazSuministrosDAL.cs" />
+    <Compile Include="UtilDAL.cs" />
     <Compile Include="ValidacionInterfazDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
