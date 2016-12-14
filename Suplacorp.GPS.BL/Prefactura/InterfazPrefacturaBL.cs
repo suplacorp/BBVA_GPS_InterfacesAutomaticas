@@ -230,12 +230,9 @@ namespace Suplacorp.GPS.BL
                             interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                         }
                     }
-
-
                     result = true;
                 }
-                else
-                {
+                else{
                     /* Ocurrió un error en el registro inicial */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                 }
@@ -339,7 +336,285 @@ namespace Suplacorp.GPS.BL
             }
         }
 
+        public bool NotificarInterfazPreFactura(InterfazPrefacturas_RegIniBE interfazPreFact_RegIniBE) {
+            bool result = false;
 
+            try
+            {
+                /* CONSULTAR LAS DESCRIPCIONES DE [TODOS] LOS ARTÍCULOS NEGOCIADOS CON BBVA PARA ENVIAR POR CORREO EL REPORTE CON LAS DESCRIPCIONES CORRECTAS
+                * SE HACE ÉSTO YA QUE EN ESTE PUNTO NO CONTAMOS CON LOS "IDARTÍCULOS" NI "DESCRIPCIONES", SOLO CON EL CODIGOEXTERNO QUE VINIERON DE LA INTERFAZ
+                */
+                ListaArticulosNegociadosBBVA lstArticulosNegociados = new ListaArticulosNegociadosBBVA();
+                lstArticulosNegociados = (new UtilBL()).ObtenerListaArticulosNegociadosBBVA();
+                foreach (var cab in interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE)
+                {
+                    foreach (var pos in cab.LstInterfazPrefacturas_RegPosBE)
+                    {
+                        pos.Idarticulo = (lstArticulosNegociados.Exists(x => x.Key == Int32.Parse(pos.Numero_material_servicio)) ? lstArticulosNegociados.Find(x => x.Key == Int32.Parse(pos.Numero_material_servicio)).Value.Idarticulo : 0);
+                        pos.Descripcion_art = (lstArticulosNegociados.Exists(x => x.Key == Int32.Parse(pos.Numero_material_servicio)) ? lstArticulosNegociados.Find(x => x.Key == Int32.Parse(pos.Numero_material_servicio)).Value.DescripcionArticulo : "NO SE ENCONTRÓ EL ARTÍCULO");
+                    }
+                }
+
+                //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
+                base.EnviarCorreoElectronico((new InterfazPrefacturaDAL()).ObtenerDestinatariosReporteInterfaz(2),
+                    "", /* Emails con copia */
+                    "Reporte de Prefactura BBVA - Interfaz Prefactura.",
+                    (interfazPreFact_RegIniBE.Ruta_fichero_detino + interfazPreFact_RegIniBE.Nombre_fichero_detino),
+                    (new InterfazPrefacturaBL()).GenerarReporte_InterfazPreFactura(interfazPreFact_RegIniBE));
+
+                result = true;
+            }
+            catch (Exception ex) {
+                throw;
+            }
+            return result;
+        }
+
+        public string GenerarReporte_InterfazPreFactura(InterfazPrefacturas_RegIniBE interfazPreFact_RegIniBE) {
+
+            StringBuilder correoReporte = new StringBuilder();
+            string correoAux = "";
+
+            decimal importe_sin_impuesto_xpos = 0;
+            decimal importe_impuesto_xpos = 0;
+            decimal importe_total_con_impuesto_xpos = 0;
+
+            decimal total_sin_impuesto_xpos = 0;
+            decimal total_impuesto_xpos = 0;
+            decimal total_general_xpos = 0;
+
+            decimal total_sin_impuesto_xcab = 0;
+            decimal total_impuesto_xcab = 0;
+            decimal total_general_xcab = 0;
+
+            try
+            {
+                if (interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count > 0)
+                {
+                    /*ESCRIBIENDO EL [REGISTRO INICIAL] DE LA INTERFAZ DE PREFACTURA */
+                    correoAux =
+                    "<style type='text/css'>" + "\r\n" +
+                    ".espacioIzquierda { " + "\r\n" +
+                    "   width: 150px; " + "\r\n" +
+                    "} " + "\r\n" +
+                    ".tamanoTabla { " + "\r\n" +
+                    "   width: 800px; " + "\r\n" +
+                    "} " + "\r\n" +
+                    "</style > " + "\r\n" +
+                    "<br/><br/> " + "\r\n" +
+                    "<b><u>Información General del Proceso</u></b>" + "\r\n" +
+                    " " + "\r\n" +
+                    "<table> " + "\r\n" +
+                    "   <tr> " + "\r\n" +
+                    "       <td class='espacioIzquierda'>Numeral</td> " + "\r\n" +
+                    "       <td>" + interfazPreFact_RegIniBE.Numeral.ToString() + "</td> " + "\r\n" +
+                    "   </tr> " + "\r\n" +
+                    "   <tr> " + "\r\n" +
+                    "       <td class='espacioIzquierda'>País</td> " + "\r\n" +
+                    "       <td>" + interfazPreFact_RegIniBE.Pais.ToString() + "</td> " + "\r\n" +
+                    "   </tr> " + "\r\n" +
+                    "   <tr>" + "\r\n" +
+                    "        <td>Fecha Ejecución</td> " + "\r\n" +
+                    "        <td>" + interfazPreFact_RegIniBE.Fecha_ejecucion.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Hora Proceso</td> " + "\r\n" +
+                    "        <td>" + interfazPreFact_RegIniBE.Hora_proceso.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Archivo</td> " + "\r\n" +
+                    "        <td>" + interfazPreFact_RegIniBE.Nombre_fichero_detino.ToString() + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Número total de registros</td> " + "\r\n" +
+                    "        <td>" + Utilitarios.CompletarConCeros_Izquierda(interfazPreFact_RegIniBE.Numero_total_registros_fin,6) + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Número de registros cabecera</td> " + "\r\n" +
+                    "        <td>" + Utilitarios.CompletarConCeros_Izquierda(interfazPreFact_RegIniBE.Numero_registros_cab_fin,6) + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "    <tr> " + "\r\n" +
+                    "        <td>Número de registros posición</td> " + "\r\n" +
+                    "        <td>" + Utilitarios.CompletarConCeros_Izquierda(interfazPreFact_RegIniBE.Numero_registros_pos_fin,6) + "</td> " + "\r\n" +
+                    "    </tr> " + "\r\n" +
+                    "</table> " + "\r\n" +
+                    "<br /> " + "\r\n" +
+                    "<b><u>Cabeceras generadas:</u></b>" + "\r\n" +
+                    " " + "\r\n" +
+                    " " + "\r\n" +
+                    "";
+                    correoReporte.Append(correoAux);
+
+                    /* ESCRIBIENDO CADA [REGISTRO CABECERA] DE LA INTERFAZ DE EXPEDICIONES */
+                    foreach (var cab in interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE)
+                    {
+                        correoAux = "<hr /> " + "\r\n" +
+                         "<table border='0' class='tamanoTabla'> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td colspan = '2' align='center' style='background-color:dodgerblue'><b>[" + cab.LstInterfazPrefacturas_RegPosBE.Count.ToString() + " items] </b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>IdCab</td> " + "\r\n" +
+                         "        <td>" + cab.Idcab.ToString() + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td><b>Numeral</b></td> " + "\r\n" +
+                         "        <td><b>" + Utilitarios.CompletarConCeros_Izquierda(cab.Numeral, 6) + "</b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Tipo de registro</td> " + "\r\n" +
+                         "        <td>" + cab.Tipo_registro + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Número documento preliminar</td> " + "\r\n" +
+                         "        <td>" + cab.Numero_documento_preliminar + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Sociedad</td> " + "\r\n" +
+                         "        <td>" + cab.Sociedad + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Moneda</td> " + "\r\n" +
+                         "        <td>" + cab.Clave_moneda + " (S/.)</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Fact. Importe Positivo Negativo</td> " + "\r\n" +
+                         "        <td>" + cab.Fact_importe_posit_negat + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td><b>Importe Total Fact. SIN IMPUESTOS</b></td> " + "\r\n" +
+                         "        <td><b>" + cab.Importe_total_factura_sin_impuestos.ToString("N") + "</b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td><b>Importe Total IMPUESTOS</b></td> " + "\r\n" +
+                         "        <td><b>" + cab.Importe_total_impuestos.ToString("N") + "</b></td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td>Fecha Factura</td> " + "\r\n" +
+                         "        <td>" + cab.Fecha_factura.ToString("ddMMyyyy") + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "        <td>Ejercicio</td> " + "\r\n" +
+                         "        <td>" + cab.Ejercicio + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "</table>";
+                        correoReporte.Append(correoAux);
+
+                        correoAux =
+                            "<table border='1' class='tamanoTabla'> " + "\r\n" +
+                            "<tr style='text-align:center;background-color:#A5A5A5;font-weight:bold'>" + "\r\n" +
+                            "    <td>Numeral</td> " + "\r\n" +
+                            "    <td>Nro. doc. compras</td> " + "\r\n" +
+                            "    <td>Posición doc. compras</td> " + "\r\n" +
+                            "    <td>Numero doc. Ref Albaran (GUIAS)</td> " + "\r\n" +
+                            "    <td>Posición Fact. Import. Post. Negit.</td> " + "\r\n" +
+                            "    <td>Importe total Posicion SIN IMPUESTOS</td> " + "\r\n" +
+                            "    <td>% Impuesto</td> " + "\r\n" +
+                            "    <td>Importe IMPUESTOS</td> " + "\r\n" +
+                            "    <td>Importe total CON IMPUESTOS</td> " + "\r\n" +
+                            "    <td>Número material servicio</td> " + "\r\n" +
+                            "    <td>IDArtículo</td> " + "\r\n" +
+                            "    <td>Desc. Artículo</td> " + "\r\n" +
+                            "    <td>Cantidad</td> " + "\r\n" +
+                            "    <td>Unidad Medida Base</td> " + "\r\n" +
+                            "</tr>";
+                        correoReporte.Append(correoAux);
+
+                        /*ESCRIBIENDO CADA [POSICIÓN DE LA CABECERA ACTUAL] DE LA INTERFAZ DE EXPEDICIONES */
+                        foreach (var pos in cab.LstInterfazPrefacturas_RegPosBE)
+                        {
+
+                            importe_sin_impuesto_xpos = pos.Importe_total_posicion_sin_impuestos;
+                            importe_impuesto_xpos = (pos.Importe_total_posicion_sin_impuestos * (pos.Porcentaje_impuesto / 100));
+                            importe_total_con_impuesto_xpos = (pos.Importe_total_posicion_sin_impuestos * ((pos.Porcentaje_impuesto / 100) + 1));
+
+                            correoAux =
+                           "<tr> " + "\r\n" +
+                           "   <td align='center'>" + Utilitarios.CompletarConCeros_Izquierda(pos.Numeral.ToString(), 6) + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Numero_documento_compras + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Posicion_documento_compras + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Numero_doc_ref_albaran + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Posicion_fact_import_post_neg + "</td> " + "\r\n" +
+                           "   <td align='right'>" + importe_sin_impuesto_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "   <td align='right'>" + pos.Porcentaje_impuesto + "</td> " + "\r\n" +
+                           "   <td align='right'>" + importe_impuesto_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "   <td align='right'>" + importe_total_con_impuesto_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Numero_material_servicio + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Idarticulo + "</td> " + "\r\n" +
+                           "   <td align='left'>" + pos.Descripcion_art + "</td> " + "\r\n" +
+                           "   <td align='right'>" + pos.Cantidad + "</td> " + "\r\n" +
+                           "   <td align='center'>" + pos.Unidad_medida_base + "</td> " + "\r\n" +
+                           "</tr>";
+                            correoReporte.Append(correoAux);
+
+                            total_sin_impuesto_xpos = total_sin_impuesto_xpos + importe_sin_impuesto_xpos;
+                            total_impuesto_xpos = total_impuesto_xpos + importe_impuesto_xpos;
+                            total_general_xpos = total_general_xpos + importe_total_con_impuesto_xpos;
+                        }
+
+                        /*TOTALES POR CABECERA ACTUAL*/
+                        correoAux =
+                           "<tr style='text-align:center;background-color:yellow;font-weight:bold'> " + "\r\n" +
+                           "   <td align='Left' colspan='5'>Totales</td> " + "\r\n" +
+                           "   <td align='right'>" + total_sin_impuesto_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "   <td align='right'></td> " + "\r\n" +
+                           "   <td align='right'>" + total_impuesto_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "   <td align='right'>" + total_general_xpos.ToString("N") + "</td> " + "\r\n" +
+                           "</tr>";
+                        correoReporte.Append(correoAux);
+
+                        /*CERRANDO CABECERA ACTUAL*/
+                        correoAux = "</table> " + "\r\n";
+                        correoReporte.Append(correoAux);
+
+                        /*VARIABLES ACUMULADORES DE TODO EL PROCESO*/
+                        total_sin_impuesto_xcab = total_sin_impuesto_xcab + total_sin_impuesto_xpos;
+                        total_impuesto_xcab = total_impuesto_xcab + total_impuesto_xpos;
+                        total_general_xcab = total_general_xcab + total_general_xpos;
+
+                        /*RESET DE VARIABLES ACUMULADORES POR CABECERA*/
+                        total_sin_impuesto_xpos = 0;
+                        total_impuesto_xpos = 0;
+                        total_general_xpos = 0;
+                    }
+                    correoAux = "<br /><br /><font style='background-color:yellow;font-size:x-large'></b></font>";
+                    correoReporte.Append(correoAux);
+
+
+                    correoAux = "<hr /> " + "\r\n" +
+                         "<table border='1' class='tamanoTabla' style='background-color:yellow;font-size:large'> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>Cant. Prefacturas</td> " + "\r\n" +
+                         "        <td>" + interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>Moneda</td> " + "\r\n" +
+                         "        <td>" + interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE[0].Clave_moneda + " (S/.)</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>Importe total sin impuestos</td> " + "\r\n" +
+                         "        <td>" + total_sin_impuesto_xcab.ToString("N") + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>Importe total impuestos</td> " + "\r\n" +
+                         "        <td>" + total_impuesto_xcab.ToString("N") + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "    <tr> " + "\r\n" +
+                         "        <td class='espacioIzquierda'>Importe total con impuestos</td> " + "\r\n" +
+                         "        <td>" + total_general_xcab.ToString("N") + "</td> " + "\r\n" +
+                         "    </tr> " + "\r\n" +
+                         "</table>";
+                    correoReporte.Append(correoAux);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return correoReporte.ToString();
+        }
 
     }
 }
