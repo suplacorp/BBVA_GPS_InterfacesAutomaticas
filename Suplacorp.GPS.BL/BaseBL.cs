@@ -177,5 +177,12 @@ namespace Suplacorp.GPS.BL
             return strBuilding.ToString();
         }
 
+        public enum Interfaz
+        {
+            Referencias = 1,
+            Suministros = 2,
+            Expediciones = 3,
+            Prefacturas = 4
+        }
     }
 }

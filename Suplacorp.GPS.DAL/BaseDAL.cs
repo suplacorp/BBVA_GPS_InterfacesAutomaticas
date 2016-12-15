@@ -40,6 +40,25 @@ namespace Suplacorp.GPS.DAL
             return result;
         }
 
+        public string Resetear_Proceso_Interfaz(int idinterfaz, int idregini)
+        {
+            string result = "";
+
+            try
+            {
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_RESET_PROCESO_INTERFACES");
+                sqlDatabase.AddInParameter(cmd, "@IDINTERFAZ", DbType.Int32, idinterfaz);
+                sqlDatabase.AddInParameter(cmd, "@IDREGINI", DbType.Int32, idregini);
+                result = sqlDatabase.ExecuteNonQuery(cmd).ToString();
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+
 
     }
 }

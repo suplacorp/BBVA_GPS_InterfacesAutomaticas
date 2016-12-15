@@ -200,12 +200,8 @@ namespace Suplacorp.GPS.BL
                 result_valores = (new InterfazPrefacturaDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
-
-                    //BORRAR
-                    //throw new System.InvalidOperationException("Logfile cannot be read-only");
-
                     //Obteniendo el "Idregini" generado
-                    interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
+                    interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]); 
 
                     //Registrando cada una de la(s) CABECERA(s) del pedido
                     foreach (var cab in interfaz_RegIniBE.LstInterfazPrefacturas_RegCabBE)
@@ -224,10 +220,6 @@ namespace Suplacorp.GPS.BL
                                 //Todo ok
                                 result_importacion = true;
                             }
-                            else
-                            {
-                                /*Ocurrió un error*/
-                            }
                         }
                         else
                         {
@@ -242,109 +234,20 @@ namespace Suplacorp.GPS.BL
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                     base.EnviarCorreoElectronico(
                         new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4),"", "ERROR Int. Prefactura", "",
-                        (base.FormatearMensajeError_HTML(null, int.Parse(result_valores[1]), "Int. Prefactura")));
+                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Prefactura")));
                 }
             }
             catch (Exception ex) {
-                /*NOTIFICACIÓN POR EMAIL*/
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "ERROR Int. Prefactura", "",
                     (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
-                /*NOTIFICACIÓN POR CONSOLA DEL APLICATIVO*/
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
+                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET" DE TODO EL PROCESO */
+                (new InterfazPrefacturaDAL()).Resetear_Proceso_Interfaz((int)Interfaz.Prefacturas, interfaz_RegIniBE.Idregini);
             }
             return result;
-        }
-
-        /*BORRAR ESTE MÉTODO DE ABAJO, LO USÉ DE MODELO DE OTRA INTERFAZ */
-        public bool RegistrarInterfaz_RegIni(ref InterfazSuministros_RegIniBE interfaz_RegIniBE)
-        {
-            string[] result_valores;
-            bool result = false;
-            bool result_importacion = false;
-            try
-            {
-                //Registrando en BD la entidad
-                interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Sum;
-                interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
-                interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros(2) */
-                interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS */
-
-                /*  Registrando el "REGISTRO INICIAL" */
-                result_valores = (new InterfazSuministrosDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
-                if (int.Parse(result_valores[0]) != 0)
-                {
-                    //Obteniendo el "Idregini" generado
-                    interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
-
-                    //Registrando cada una de la(s) CABECERA(s) del pedido
-                    foreach (var cab in interfaz_RegIniBE.LstInterfazSuministros_RegCabBE)
-                    {
-                        //Registrando CABECERA(s) (cabecera del pedido)
-                        result_valores = (new InterfazSuministrosDAL()).RegistrarCab(ref interfaz_RegIniBE, cab).Split(';');
-                        if (int.Parse(result_valores[0]) != 0)
-                        {
-                            //Obteniendo el "IdCab" generado
-                            cab.Idcab = int.Parse(result_valores[0]);
-
-                            //Registrando POSICIONES de la cabecera actual
-                            result_valores = (new InterfazSuministrosDAL()).RegistrarPos(cab).Split(';');
-                            if (int.Parse(result_valores[0]) != 0)
-                            {
-                                //Todo ok
-                                result_importacion = true;
-                            }
-                            else
-                            {
-                                /*Ocurrió un error*/
-                            }
-                        }
-                        else
-                        {
-                            /*Ocurrió un error en alguno o algunos de los "n" registros del proceso */
-                            interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
-                        }
-                    }
-
-                    //GENERAR "TODOS" los Pedidos del proceso actual [MUY IMPORTANTE]
-                    if (result_importacion == true)
-                    {
-
-                        result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
-                        if (int.Parse(result_valores[0]) != 0)
-                        {
-
-                            //Obtener lista de los pedidos que se acaban de generar
-                            List<InterfazSuministros_PedidoBE> lstPedidos = new List<InterfazSuministros_PedidoBE>();
-                            lstPedidos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
-
-                            //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
-                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz(2),
-                                "", /* Emails con copia */
-                                "Reporte de pedidos importados BBVA - Interfaz Suministros",
-                                (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO),
-                                (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
-                            result = true;
-                        }
-                        else
-                        {
-                            /*Ocurrió un error*/
-                            interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
-                        }
-                    }
-                }
-                else
-                {
-                    /* Ocurrió un error en el registro inicial */
-                    interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
         }
 
         public bool NotificarInterfazPreFactura(InterfazPrefacturas_RegIniBE interfazPreFact_RegIniBE) {
