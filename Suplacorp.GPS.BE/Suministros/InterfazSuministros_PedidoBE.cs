@@ -34,6 +34,7 @@ namespace Suplacorp.GPS.BE
         private string _PEDIDO_REF_RESERVA;
         private int _IDARTICULO;
         private string _MATERIAL;
+        private string _DESCRIPCION_ART;
         private double _CANTIDAD_PEDIDO_RESERVA;
         private double _QPEDIDO;
         private double _PRECIO;
@@ -428,6 +429,19 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _IDMONEDA = value;
+            }
+        }
+
+        public string DESCRIPCION_ART
+        {
+            get
+            {
+                return _DESCRIPCION_ART;
+            }
+
+            set
+            {
+                _DESCRIPCION_ART = value;
             }
         }
 

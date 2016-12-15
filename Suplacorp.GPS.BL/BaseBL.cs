@@ -184,5 +184,7 @@ namespace Suplacorp.GPS.BL
             Expediciones = 3,
             Prefacturas = 4
         }
+
+        
     }
 }

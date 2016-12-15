@@ -13,5 +13,7 @@ Public Module GlobalVariables
 
     Public IdCliente As Integer = 0
 
+    Public ListaDepartamentosBBVA As New Dictionary(Of Integer, String)
+
 
 End Module

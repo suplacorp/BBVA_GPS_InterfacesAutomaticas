@@ -14,6 +14,8 @@ namespace Suplacorp.GPS.BE
         private string _pedido_ref_reserva;
         private string _posicion_ped_reserva;
         private string _material;
+        private int _idarticulo;
+        private string _descripcion_art;
         private DateTime _fecha_entrega;
         private string _centro_coste;
         private decimal _cantidad_pedido_reserva;
@@ -141,6 +143,32 @@ namespace Suplacorp.GPS.BE
             set
             {
                 _unidad_medida_pedido = value;
+            }
+        }
+
+        public int Idarticulo
+        {
+            get
+            {
+                return _idarticulo;
+            }
+
+            set
+            {
+                _idarticulo = value;
+            }
+        }
+
+        public string Descripcion_art
+        {
+            get
+            {
+                return _descripcion_art;
+            }
+
+            set
+            {
+                _descripcion_art = value;
             }
         }
 

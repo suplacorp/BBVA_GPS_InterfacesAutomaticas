@@ -16,19 +16,29 @@ namespace Suplacorp.GPS.BL
 {
     public class UtilBL
     {
-        public UtilBL()
-        {
-
+        
+        public UtilBL(){
+            
         }
-
+        
         public ListaArticulosNegociadosBBVA ObtenerListaArticulosNegociadosBBVA()
         {
             try{
                 return (new UtilDAL()).ObtenerListaArticulosNegociadosBBVA();
             }
-            catch (Exception ex){
+            catch{
                 throw;
             }
         }
+
+        public Dictionary<int, string> ObtenerListaDepartamentosBBVA() {
+            try{
+                return (new UtilDAL()).ObtenerListaDepartamentosBBVA();
+            }
+            catch{
+                throw;
+            }
+        }
+        
     }
 }

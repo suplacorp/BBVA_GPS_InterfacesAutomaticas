@@ -199,73 +199,82 @@ namespace Suplacorp.GPS.BL
             bool result_importacion = false;
             try
             {
-                //Registrando en BD la entidad
+                //REGISTRANDO EN BD LA ENTIDAD
                 interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Sum;
                 interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
                 interfaz_RegIniBE.Interfaz.Idinterface = 2;          /* VALORES FIJOS: Interfaz Suministros(2) */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS */
 
-                /*  Registrando el "REGISTRO INICIAL" */
+                /*  REGISTRANDO EL "REGISTRO INICIAL" */
                 result_valores = (new InterfazSuministrosDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
-                    //Obteniendo el "Idregini" generado
+                    //OBTENIENDO EL "IDREGINI" GENERADO
                     interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
 
-                    //Registrando cada una de la(s) CABECERA(s) del pedido
+                    //REGISTRANDO CADA UNA DE LA(S) CABECERA(S) DEL PEDIDO
                     foreach (var cab in interfaz_RegIniBE.LstInterfazSuministros_RegCabBE)
                     {
-                        //Registrando CABECERA(s) (cabecera del pedido)
+                        //REGISTRANDO CABECERA(S) (CABECERA DEL PEDIDO)
                         result_valores = (new InterfazSuministrosDAL()).RegistrarCab(ref interfaz_RegIniBE, cab).Split(';');
                         if (int.Parse(result_valores[0]) != 0)
                         {
-                            //Obteniendo el "IdCab" generado
+                            //OBTENIENDO EL "IDCAB" GENERADO
                             cab.Idcab = int.Parse(result_valores[0]);
 
-                            //Registrando POSICIONES de la cabecera actual
+                            //REGISTRANDO POSICIONES DE LA CABECERA ACTUAL
                             result_valores = (new InterfazSuministrosDAL()).RegistrarPos(cab).Split(';');
                             if (int.Parse(result_valores[0]) != 0)
                             {
-                                //Todo ok
+                                //TODO OK
                                 result_importacion = true;
                             }
                             else {
-                                /*Ocurrió un error*/
+                                /*OCURRIÓ UN ERROR*/
                             }
                         }
                         else
                         {
-                            /*Ocurrió un error en alguno o algunos de los "n" registros del proceso */
-                                interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+                            /*OCURRIÓ UN ERROR EN ALGUNO O ALGUNOS DE LOS "N" REGISTROS DEL PROCESO */
+                            interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                         }
                     }
 
-                    //GENERAR "TODOS" los Pedidos del proceso actual [MUY IMPORTANTE]
+                    //GENERAR "TODOS" LOS PEDIDOS DEL PROCESO ACTUAL [MUY IMPORTANTE]
                     if (result_importacion == true){
 
                         result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
                         if (int.Parse(result_valores[0]) != 0){
                             
-                            //Obtener lista de los pedidos que se acaban de generar
+                            //OBTENER LISTA DE LOS PEDIDOS QUE SE ACABAN DE GENERAR
                             List<InterfazSuministros_PedidoBE> lstPedidos = new List<InterfazSuministros_PedidoBE>();
                             lstPedidos = (new InterfazSuministrosDAL()).ObtenerPedidosGenerados_Log(interfaz_RegIniBE.Idregini);
 
-                            //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
-                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz(2), 
-                                "", /* Emails con copia */
+                            /* CONSULTAR LAS DESCRIPCIONES DE [TODOS] LOS ARTÍCULOS NEGOCIADOS CON BBVA PARA ENVIAR POR CORREO EL REPORTE CON LAS DESCRIPCIONES CORRECTAS
+                            * SE HACE ÉSTO YA QUE EN ESTE PUNTO NO CONTAMOS CON LOS "IDARTÍCULOS" NI "DESCRIPCIONES", SOLO CON EL CODIGOEXTERNO QUE VINIERON DE LA INTERFAZ
+                            */
+                            ListaArticulosNegociadosBBVA lstArticulosNegociados = new ListaArticulosNegociadosBBVA();
+                            lstArticulosNegociados = (new UtilBL()).ObtenerListaArticulosNegociadosBBVA();
+                            foreach (var ped in lstPedidos) {
+                                ped.DESCRIPCION_ART = (lstArticulosNegociados.Exists(x => x.Key == Int32.Parse(ped.MATERIAL)) ? lstArticulosNegociados.Find(x => x.Key == Int32.Parse(ped.MATERIAL)).Value.DescripcionArticulo : "NO SE ENCONTRÓ EL ARTÍCULO");
+                            }
+                            
+                            //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LOS PEDIDOS
+                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz((int)Interfaz.Suministros), 
+                                "", /* EMAILS CON COPIA */
                                 "Reporte de pedidos importados BBVA - Interfaz Suministros",
                                 (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO), 
                                 (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
                             result = true;
                         }
                         else{
-                            /*Ocurrió un error*/
+                            /*OCURRIÓ UN ERROR*/
                             interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                         }
                     }
                 }
                 else{
-                    /* Ocurrió un error en el registro inicial */
+                    /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                 }
                 return result;
@@ -377,7 +386,7 @@ namespace Suplacorp.GPS.BL
                         "    </tr> " + "\r\n" +
                         "    <tr> " + "\r\n" +
                         "        <td>Departamento</td> " + "\r\n" +
-                        "        <td>" + lstPedidos_xCabecera[0].REGION_DEPARTAMENTO.ToString() + "</td> " + "\r\n" +
+                        "        <td>" + "(" + lstPedidos_xCabecera[0].REGION_DEPARTAMENTO.ToString() + ") " + (GlobalVariables.ListaDepartamentosBBVA.ContainsKey(Convert.ToInt32(lstPedidos_xCabecera[0].REGION_DEPARTAMENTO)) ? GlobalVariables.ListaDepartamentosBBVA[Convert.ToInt32(lstPedidos_xCabecera[0].REGION_DEPARTAMENTO)] : "NO EXISTE DEPARTAMENTO EL CÓDIGO ASIGNADO") + "</td> " + "\r\n" +
                         "    </tr> " + "\r\n" +
                         "    <tr> " + "\r\n" +
                         "        <td>Provincia</td> " + "\r\n" +
@@ -404,6 +413,7 @@ namespace Suplacorp.GPS.BL
                             "    <td>IDPos</td> " + "\r\n" +
                             "    <td>IDArtículo</td> " + "\r\n" +
                             "    <td>Cod. Externo</td> " + "\r\n" +
+                            "    <td>Descripción</td> " + "\r\n" +
                             "    <td>Cantidad</td> " + "\r\n" +
                             "    <td>Precio</td> " + "\r\n" +
                             "    <td>Procesado</td> " + "\r\n" +
@@ -419,6 +429,7 @@ namespace Suplacorp.GPS.BL
                             "   <td align='center'>" + pos.IDPOS.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.IDARTICULO.ToString() + "</td> " + "\r\n" +
                             "   <td align='center'>" + pos.MATERIAL.ToString() + "</td> " + "\r\n" +
+                            "   <td align='left'>" + pos.DESCRIPCION_ART.ToString() + "</td> " + "\r\n" +
                             "   <td align='right'>" + pos.CANTIDAD_PEDIDO_RESERVA.ToString() + "</td> " + "\r\n" +
                             "   <td align='right'><font style='" + (pos.PRECIO == 0 ? "font-size:x-large" : "") + "'>" + String.Format("{0:0.00}", pos.PRECIO) + "</font></td> " + "\r\n" +
                             "   <td align='center'>" + pos.PROCESADO_POS.ToString() + "</td> " + "\r\n" +
@@ -429,7 +440,7 @@ namespace Suplacorp.GPS.BL
                         /*Total por cabecera */
                         correoAux = 
                             "<tr> " + "\r\n" +
-                            "        <td colspan='3'><b>Total</b></td> " + "\r\n" +
+                            "        <td colspan='4'><b>Total</b></td> " + "\r\n" +
                             "        <td colspan='2' align='right'><b>S/. "+ total_pedido.ToString() + "</b></td> " + "\r\n" +
                             "    </tr> " + "\r\n" +
                             "</table> " + "\r\n" +

@@ -15,14 +15,16 @@ namespace BBVA_GPS_InterfacesAutomaticas
     class Program
     {
         //enum Interfaces { PE_OL1_REFER, PE_OL1_SUMIN, PE_OL1_EXPED, PE_OL1_PREFAC };
+        //public static Dictionary<int, string> ListaDepartamentosBBVA = new Dictionary<int, string>();
 
         static void Main(string[] args)
-        {
+        {            
             /*DEFINIENDO VARIABLES GLOBALES*/
             DefinirVariablesGlobales();
 
             /* Activando el FileWatcher para detectar actividad en el SFTP */
             ActivarFileWatcher_SuplaSFTP();
+
         }
 
         #region FileWatcher Listener
@@ -166,17 +168,22 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
 
-                            //Leer Fichero del BBVA
+                            //LEER FICHERO DEL BBVA
                             interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
                             interfazSum_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
                             if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
                             {
-                                Console.WriteLine("Culminó la importación de Int. Suministros, pedidos generados correctamente.");
+                                //[NOTIFICAR POR CONSOLA]
+                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, "Int. Prefactura", "Se completó correctamente el proceso de importación de Int.Suministros, pedidos generados correctamente."));
                             }
                             else
                             {
-                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
+                                //PENDIENTE-ERROR Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
                                 Console.WriteLine("Ocurrió un error en la importación de Int. Suministros.");
+
+                                (new InterfazSuministrosBL()).EnviarCorreoElectronico(
+                                new InterfazSuministrosBL().ObtenerDestinatariosReporteInterfaz(4), "", "ERROR Int. Suministros", "",
+                                (new InterfazSuministrosBL().FormatearMensajeError_HTML(null, interfazSum_RegIniBE.Id_error, "Int. Suministros")));
                             }
                             #endregion
                             break;
@@ -199,10 +206,11 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //REGISTRAR EN BD LA ENTIDAD
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE))
                             {
+                                //[NOTIFICAR POR CONSOLA]
                                 Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, "Int. Prefactura", "Se completó correctamente el proceso de importación."));
 
                                 if (interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count > 0) {
-                                    //ENVIAR CORREO (HTML Y ARCHIVO ADJUNTO)
+                                    //[NOTIFICAR] EJECUTIVO E INVOLUCRADOS (ENVIAR CORREO HTML Y ARCHIVO ADJUNTO)
                                     if ((new InterfazPrefacturaBL()).NotificarInterfazPreFactura(interfazPreFact_RegIniBE)){
                                         Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(2, "Int. Prefactura", "Se envió correctamente el e-amil de notificación del proceso de importación."));
                                     }
@@ -255,8 +263,11 @@ namespace BBVA_GPS_InterfacesAutomaticas
             //CARGANDO VARIABLES DE BD
             Dictionary<string, object> lstVariables = new Dictionary<string, object>();
             lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
-
             GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+
+            /*LISTA DE CÓDIGO DE DEPARTAMENTOS SEGÚN BBVA (ELLOS MANEJAN SUS PROPIOS CÓDIGOS EN LA INTERFAZ)*/
+            GlobalVariables.ListaDepartamentosBBVA = (new UtilBL()).ObtenerListaDepartamentosBBVA();
+
         }
     }
 

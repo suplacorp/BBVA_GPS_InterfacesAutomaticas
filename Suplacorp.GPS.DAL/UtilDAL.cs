@@ -57,5 +57,28 @@ namespace Suplacorp.GPS.DAL
             }
             return lstArticulosBBVA;
         }
+
+
+        public Dictionary<int, string> ObtenerListaDepartamentosBBVA()
+        {
+            Dictionary<int, string> lstDepartamentos = new Dictionary<int, string>();
+            try
+            {
+                using (IDataReader reader = sqlDatabase.ExecuteReader(CommandType.Text, "SELECT * FROM BBVA_GPS_DEPARTAMENTOS (NOLOCK)"))
+                {
+                    while (reader.Read())
+                    {
+                        lstDepartamentos.Add(
+                            (Convert.IsDBNull(reader["CODIGO_BBVA"]) ? 0 : Convert.ToInt32(reader["CODIGO_BBVA"])),
+                            (Convert.IsDBNull(reader["DESCRIPCION_BBVA"]) ? "" : Convert.ToString(reader["DESCRIPCION_BBVA"])));
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return lstDepartamentos;
+        }
     }
 }

@@ -244,7 +244,7 @@ namespace Suplacorp.GPS.BL
                     (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
-                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET" DE TODO EL PROCESO */
+                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
                 (new InterfazPrefacturaDAL()).Resetear_Proceso_Interfaz((int)Interfaz.Prefacturas, interfaz_RegIniBE.Idregini);
             }
             return result;
