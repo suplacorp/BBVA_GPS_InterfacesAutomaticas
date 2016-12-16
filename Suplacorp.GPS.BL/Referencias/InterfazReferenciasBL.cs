@@ -146,51 +146,60 @@ namespace Suplacorp.GPS.BL
 
         public bool RegistrarInterfaz_RegIni(ref InterfazReferencias_RegIniBE interfaz_RegIniBE)
         {
-            
             string[] result_valores;
             bool result = false;
             try
             {
-                //Registrando en BD la entidad
+                //REGISTRANDO EN BD LA ENTIDAD
                 interfaz_RegIniBE.Ruta_fichero_detino = GlobalVariables.Ruta_fichero_detino_Ref;
                 interfaz_RegIniBE.Procesado = 0;                     /* AUN NO SE PROCESA DEBE IR "0" */
                 interfaz_RegIniBE.Interfaz.Idinterface = 1;          /* VALORES FIJOS    */
                 interfaz_RegIniBE.Tiporegistro.Idtiporegistro = 1;   /* VALORES FIJOS    */
 
-                
-                /*  Registró el registro inicial correctamente */
+                /*  REGISTRÓ EL REGISTRO INICIAL CORRECTAMENTE */
                 result_valores = (new InterfazReferenciasDAL()).RegistrarRegIni(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0)
                 {
-                    //Registrando el "Idregini" generado
+                    //REGISTRANDO EL "IDREGINI" GENERADO
                     interfaz_RegIniBE.Idregini = int.Parse(result_valores[0]);
 
-                    //Registrando proceso (detalle del registro inicial)
+                    //REGISTRANDO PROCESO (DETALLE DEL REGISTRO INICIAL)
                     result_valores = (new InterfazReferenciasDAL()).RegistrarProc(ref interfaz_RegIniBE).Split(';');
                     if (int.Parse(result_valores[0]) == interfaz_RegIniBE.LstInterfazReferencias_RegProcBE.Count()){
                         result =  true;
                     }
                     else{
-                        /*Ocurrió un error en alguno o algunos de los "n" registros del proceso */
+                        /*OCURRIÓ UN ERROR EN ALGUNO O ALGUNOS DE LOS "N" REGISTROS DEL PROCESO */
                         interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
                     }
                 }
                 else{
-                    /* Ocurrió un error en el registro inicial */
+                    /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+
+                    base.EnviarCorreoElectronico(
+                        new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
+                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Referencias")));
                 }
-                return result;
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                return false;
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                base.EnviarCorreoElectronico(
+                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Referencias"));
+                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
+                (new InterfazReferenciasDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Referencias, interfaz_RegIniBE.Idregini);
             }
+            return result;
         }
 
         public bool ActualizarClienteArticulo_IntRef(ref InterfazReferencias_RegIniBE interfaz_RegIniBE) {
             string[] result_valores;
             bool result = false;
             try{
+
                 result_valores = (new InterfazReferenciasDAL()).ActualizarClienteArticulo_IntRef(ref interfaz_RegIniBE).Split(';');
                 if (int.Parse(result_valores[0]) != 0){
                     result = true;
@@ -198,8 +207,15 @@ namespace Suplacorp.GPS.BL
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return false;
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                base.EnviarCorreoElectronico(
+                    new InterfazReferenciasDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Referencias"));
+                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
+                (new InterfazReferenciasDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Referencias, interfaz_RegIniBE.Idregini);
+
             }
             return result;
         }

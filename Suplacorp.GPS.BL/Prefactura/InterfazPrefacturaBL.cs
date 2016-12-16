@@ -232,20 +232,21 @@ namespace Suplacorp.GPS.BL
                 else{
                     /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+
                     base.EnviarCorreoElectronico(
-                        new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4),"", "ERROR Int. Prefactura", "",
+                        new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4),"", "[ERROR - Int. Prefactura]", "",
                         (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Prefactura")));
                 }
             }
             catch (Exception ex) {
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
-                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "ERROR Int. Prefactura", "",
+                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "[ERROR - Int. Prefactura]", "",
                     (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
                 /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
-                (new InterfazPrefacturaDAL()).Resetear_Proceso_Interfaz((int)Interfaz.Prefacturas, interfaz_RegIniBE.Idregini);
+                (new InterfazPrefacturaDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Prefacturas, interfaz_RegIniBE.Idregini);
             }
             return result;
         }
@@ -269,10 +270,10 @@ namespace Suplacorp.GPS.BL
                     }
                 }
 
-                //Enviar correo bien detallado al ejecutivo e interesados sobre la generación de los pedidos
+                //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LOS PEDIDOS
                 base.EnviarCorreoElectronico((new InterfazPrefacturaDAL()).ObtenerDestinatariosReporteInterfaz(2),
                     "", /* Emails con copia */
-                    "Reporte de Prefactura BBVA - Interfaz Prefactura.",
+                    "[Int. Prefactura] Reporte.",
                     (interfazPreFact_RegIniBE.Ruta_fichero_detino + interfazPreFact_RegIniBE.Nombre_fichero_detino),
                     (new InterfazPrefacturaBL()).GenerarReporte_InterfazPreFactura(interfazPreFact_RegIniBE));
 

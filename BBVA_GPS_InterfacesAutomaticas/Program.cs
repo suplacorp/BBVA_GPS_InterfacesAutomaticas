@@ -18,13 +18,25 @@ namespace BBVA_GPS_InterfacesAutomaticas
         //public static Dictionary<int, string> ListaDepartamentosBBVA = new Dictionary<int, string>();
 
         static void Main(string[] args)
-        {            
-            /*DEFINIENDO VARIABLES GLOBALES*/
-            DefinirVariablesGlobales();
+        {
 
-            /* Activando el FileWatcher para detectar actividad en el SFTP */
-            ActivarFileWatcher_SuplaSFTP();
+            try
+            {
+                /*DEFINIENDO VARIABLES GLOBALES*/
+                DefinirVariablesGlobales();
 
+                /* Activando el FileWatcher para detectar actividad en el SFTP */
+                ActivarFileWatcher_SuplaSFTP();
+            }
+            catch(Exception ex) {
+                InterfazReferenciasBL objBL = new InterfazReferenciasBL();
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                objBL.EnviarCorreoElectronico(
+                    objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
+            }    
         }
 
         #region FileWatcher Listener
@@ -136,34 +148,28 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     switch (nombreFicheroBBVA)
                     {
                         /* #################################################################################### */
-                        case "PE_OL1_REFER": /*Interfaz Referencias*/
+                        case "PE_OL1_REFER": /*INTERFAZ REFERENCIAS*/
                             #region INTERFAZ DE REFERENCIA
                             InterfazReferencias_RegIniBE interfazReferencias_RegIniBE = new InterfazReferencias_RegIniBE();
                             InterfazReferenciasBL interfazRefBL = new InterfazReferenciasBL();
 
-                            //Leer Fichero del BBVA
+                            //LEER FICHERO DEL BBVA
                             interfazReferencias_RegIniBE = interfazRefBL.LeerFicheroInterfaz(nombreFicheroBBVA, Ruta_fichero_detino_Ref, _lstValidacion);
                             interfazReferencias_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
                             if (interfazRefBL.RegistrarInterfaz_RegIni(ref interfazReferencias_RegIniBE))
                             {
-                                //Actualizar el maestro "Cliente_Articulo"
+                                //ACTUALIZAR EL MAESTRO "CLIENTE_ARTICULO"
                                 if (interfazRefBL.ActualizarClienteArticulo_IntRef(ref interfazReferencias_RegIniBE))
                                 {
-                                    /*Notificar por EMAIL los artículos que se actualizaron, resaltando los que no pudieron ser actualizados (procesado = 0) */
+                                    //[NOTIFICAR POR CONSOLA]
+                                    Console.WriteLine(interfazRefBL.FormatearMensajeCulminacionCorrecta_CONSOLA(1,
+                                        "Int. Referencias", "Se completó correctamente el proceso de importación y actualización."));
                                 }
-                                else
-                                {
-                                    //Notificar por correo el problema
-                                }
-                            }
-                            else
-                            {
-                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
                             }
                             #endregion
                             break;
                         /* #################################################################################### */
-                        case "PE_OL1_SUMIN": /*Interfaz Suministros*/
+                        case "PE_OL1_SUMIN": /*INTERFAZ SUMINISTROS*/
                             #region INTERFAZ DE SUMINISTROS
                             InterfazSuministros_RegIniBE interfazSum_RegIniBE = new InterfazSuministros_RegIniBE();
                             InterfazSuministrosBL interfazSumBL = new InterfazSuministrosBL();
@@ -174,27 +180,19 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
                             {
                                 //[NOTIFICAR POR CONSOLA]
-                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, "Int. Prefactura", "Se completó correctamente el proceso de importación de Int.Suministros, pedidos generados correctamente."));
-                            }
-                            else
-                            {
-                                //PENDIENTE-ERROR Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
-                                Console.WriteLine("Ocurrió un error en la importación de Int. Suministros.");
-
-                                (new InterfazSuministrosBL()).EnviarCorreoElectronico(
-                                new InterfazSuministrosBL().ObtenerDestinatariosReporteInterfaz(4), "", "ERROR Int. Suministros", "",
-                                (new InterfazSuministrosBL().FormatearMensajeError_HTML(null, interfazSum_RegIniBE.Id_error, "Int. Suministros")));
+                                Console.WriteLine(interfazSumBL.FormatearMensajeCulminacionCorrecta_CONSOLA(1, 
+                                    "Int. Prefactura", "Se completó correctamente el proceso de importación de pedidos y fueron generados correctamente."));
                             }
                             #endregion
                             break;
                         /* #################################################################################### */
-                        case "PE_OL1_EXPED": /*Interfaz Expediciones*/
+                        case "PE_OL1_EXPED": /*INTERFAZ EXPEDICIONES*/
                             #region INTERFAZ DE EXPEDICIONES [NO SE PROCESA AQUÍ]
                             /*ESTA INTERFAZ NO SE TRABAJARÁ AQUÍ, SINO EN EL OTRO APLICATIVO DENTRO DE ESTA SOLUCIÓN: "BBVA_GPS_INTERFAZEXPEDICIONES" */
                             #endregion
                             break;
                         /* #################################################################################### */
-                        case "PE_OL1_PREFAC": /*Interfaz Prefacturas */
+                        case "PE_OL1_PREFAC": /*INTERFAZ PREFACTURAS */
                             #region INTERFAZ DE PREFACTURA
                             InterfazPrefacturas_RegIniBE interfazPreFact_RegIniBE = new InterfazPrefacturas_RegIniBE();
                             InterfazPrefacturaBL interfazPreFactBL = new InterfazPrefacturaBL();
@@ -207,20 +205,19 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE))
                             {
                                 //[NOTIFICAR POR CONSOLA]
-                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, "Int. Prefactura", "Se completó correctamente el proceso de importación."));
+                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, 
+                                    "Int. Prefactura", "Se completó correctamente el proceso de importación."));
 
-                                if (interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count > 0) {
-                                    //[NOTIFICAR] EJECUTIVO E INVOLUCRADOS (ENVIAR CORREO HTML Y ARCHIVO ADJUNTO)
-                                    if ((new InterfazPrefacturaBL()).NotificarInterfazPreFactura(interfazPreFact_RegIniBE)){
-                                        Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(2, "Int. Prefactura", "Se envió correctamente el e-amil de notificación del proceso de importación."));
+                                //[NOTIFICAR] EJECUTIVO E INVOLUCRADOS (ENVIAR CORREO HTML Y ARCHIVO ADJUNTO)
+                                if (interfazPreFact_RegIniBE.LstInterfazPrefacturas_RegCabBE.Count > 0)
+                                {
+                                    if ((new InterfazPrefacturaBL()).NotificarInterfazPreFactura(interfazPreFact_RegIniBE))
+                                    {
+                                        Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(2, 
+                                            "Int. Prefactura", "Se envió correctamente el e-amil de notificación del proceso de importación."));
                                     }
                                 }
                             }
-                            /*
-                            else {
-                                //Notificar por correo el error con el código de error generado y más detalles sobre la interfaz
-                                Console.WriteLine("Ocurrió un error en la importación de Int. de Prefactura.");
-                            }*/
                             #endregion
                             break;
                         /* #################################################################################### */
@@ -245,29 +242,39 @@ namespace BBVA_GPS_InterfacesAutomaticas
             }
             catch (NullReferenceException ex)
             {
-                //throw ex;
-                Console.WriteLine(ex.Message);
+                InterfazReferenciasBL objBL = new InterfazReferenciasBL();
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                objBL.EnviarCorreoElectronico(
+                    objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - EventoDetectado_Crearon]", "",
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
          
         }
 
         private static void DefinirVariablesGlobales()
         {
-            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Log_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_LogExp"].ToString();
+            try
+            {
+                GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Log_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_LogExp"].ToString();
 
-            //CARGANDO VARIABLES DE BD
-            Dictionary<string, object> lstVariables = new Dictionary<string, object>();
-            lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
-            GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+                //CARGANDO VARIABLES DE BD
+                Dictionary<string, object> lstVariables = new Dictionary<string, object>();
+                lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
+                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
 
-            /*LISTA DE CÓDIGO DE DEPARTAMENTOS SEGÚN BBVA (ELLOS MANEJAN SUS PROPIOS CÓDIGOS EN LA INTERFAZ)*/
-            GlobalVariables.ListaDepartamentosBBVA = (new UtilBL()).ObtenerListaDepartamentosBBVA();
-
+                /*LISTA DE CÓDIGO DE DEPARTAMENTOS SEGÚN BBVA (ELLOS MANEJAN SUS PROPIOS CÓDIGOS EN LA INTERFAZ)*/
+                GlobalVariables.ListaDepartamentosBBVA = (new UtilBL()).ObtenerListaDepartamentosBBVA();
+            }
+            catch {
+                throw;
+            }
         }
     }
 

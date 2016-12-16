@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Suplacorp.GPS.BE;
 using System.IO;
 using Suplacorp.GPS.Utils;
+using Suplacorp.GPS.DAL;
 
 namespace Suplacorp.GPS.BL
 {
@@ -160,31 +161,39 @@ namespace Suplacorp.GPS.BL
             StringBuilder strBuilding = new StringBuilder();
             string correoAux = "";
 
-            try
-            {
+            try{
                 correoAux = correoAux + "" + "\n\r" +
                         "Secuencia: " + secuencia + "\n\r" +
                         "Nombre Interfaz: [" + nombreInterfaz + "]\n\r" +
                         "Mensaje: " + mensaje + "\n\r" +
-                        "Fecha Error: " + DateTime.Today.ToString("dd/MM/yyyy") + "\n\r" +
-                        "Hora Error: " + DateTime.Now.ToString("h:mm:ss tt") + "\n\r";
+                        "Fecha: " + DateTime.Today.ToString("dd/MM/yyyy") + "\n\r" +
+                        "Hora: " + DateTime.Now.ToString("h:mm:ss tt") + "\n\r";
                 strBuilding.Append(correoAux);
             }
-            catch
-            {
+            catch{
                 throw;
             }
             return strBuilding.ToString();
         }
 
-        public enum Interfaz
+        public string ObtenerDestinatariosReporteInterfaz(int idInterfaz)
         {
-            Referencias = 1,
-            Suministros = 2,
-            Expediciones = 3,
-            Prefacturas = 4
+            try{
+                return (new BaseDAL()).ObtenerDestinatariosReporteInterfaz(idInterfaz);
+            }
+            catch{
+                throw;
+            }
         }
 
-        
+        public string Resetear_Proceso_Interfaz(int idinterfaz, int idregini)
+        {
+            try{
+                return (new BaseDAL()).Resetear_Proceso_Interfaz(idinterfaz, idregini);
+            }
+            catch{
+                throw;
+            }
+        }
     }
 }

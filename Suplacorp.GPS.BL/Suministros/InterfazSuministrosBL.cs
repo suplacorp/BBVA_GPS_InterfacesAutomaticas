@@ -226,11 +226,7 @@ namespace Suplacorp.GPS.BL
                             result_valores = (new InterfazSuministrosDAL()).RegistrarPos(cab).Split(';');
                             if (int.Parse(result_valores[0]) != 0)
                             {
-                                //TODO OK
-                                result_importacion = true;
-                            }
-                            else {
-                                /*OCURRIÓ UN ERROR*/
+                                result_importacion = true; //TODO OK
                             }
                         }
                         else
@@ -260,22 +256,39 @@ namespace Suplacorp.GPS.BL
                             }
                             
                             //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LOS PEDIDOS
-                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz((int)Interfaz.Suministros), 
+                            base.EnviarCorreoElectronico((new InterfazSuministrosDAL()).ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Suministros), 
                                 "", /* EMAILS CON COPIA */
-                                "Reporte de pedidos importados BBVA - Interfaz Suministros",
+                                "[Int. Suministros] - Reporte de pedidos importados BBVA.",
                                 (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO), 
                                 (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
+
                             result = true;
                         }
                         else{
-                            /*OCURRIÓ UN ERROR*/
+                            /*OCURRIÓ UN ERROR AL GENERAR LOS PEDIDOS --> ROLLBACK DE TODO */
                             interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+
+                            /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                            base.EnviarCorreoElectronico(base.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Suministros), "",
+                                "[ERROR Int. Suministros] - Error al generar pedidos (se anuló todo el proceso de importaicón)", "",
+                                base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
+                            /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                            Console.WriteLine(this.FormatearMensajeError_CONSOLA(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
+                            /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
+                            (new InterfazSuministrosDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Suministros, interfaz_RegIniBE.Idregini);
                         }
                     }
                 }
                 else{
                     /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+
+                    /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                    base.EnviarCorreoElectronico(base.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Suministros), "",
+                        "[ERROR Int. Suministros] - Error al generar el registro inicial.", "",
+                        base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
+                    /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                    Console.WriteLine(this.FormatearMensajeError_CONSOLA(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
                 }
                 return result;
             }

@@ -15,5 +15,11 @@ Public Module GlobalVariables
 
     Public ListaDepartamentosBBVA As New Dictionary(Of Integer, String)
 
+    Public Enum Interfaz
+        Referencias = 1
+        Suministros = 2
+        Expediciones = 3
+        Prefacturas = 4
+    End Enum
 
 End Module
