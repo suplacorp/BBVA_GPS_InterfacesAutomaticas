@@ -100,11 +100,23 @@ namespace BBVA_GPS_InterfacesAutomaticas
                 }
                 catch (IOException ioException)
                 {
-                    Console.WriteLine(ioException.Message);
+                    InterfazReferenciasBL objBL = new InterfazReferenciasBL();
+                    /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                    objBL.EnviarCorreoElectronico(
+                        objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
+                        objBL.FormatearMensajeError_HTML(ioException, 0, "ERROR GENERAL"));
+                    /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                    Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ioException, 0, "ERROR GENERAL"));
                 }
             }
             catch (NullReferenceException ex) {
-                Console.WriteLine(ex.Message);
+                InterfazReferenciasBL objBL = new InterfazReferenciasBL();
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                objBL.EnviarCorreoElectronico(
+                    objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
         }
         private static void OnChanged(object source, FileSystemEventArgs e)
@@ -177,6 +189,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //LEER FICHERO DEL BBVA
                             interfazSum_RegIniBE = interfazSumBL.LeerFicheroInterfaz(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref, _lstValidacion);
                             interfazSum_RegIniBE.Nombre_fichero_detino = nombreFicheroSuplacorp;
+
                             if (interfazSumBL.RegistrarInterfaz_RegIni(ref interfazSum_RegIniBE))
                             {
                                 //[NOTIFICAR POR CONSOLA]

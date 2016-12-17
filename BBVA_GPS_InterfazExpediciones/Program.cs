@@ -18,10 +18,23 @@ namespace BBVA_GPS_InterfazExpediciones
     {
         static void Main(string[] args){
 
-            DefinirVariablesGlobales();
+            try
+            {
+                DefinirVariablesGlobales();
 
-            if (GenerarInterfazExpediciones()){
-                /*Notificar por email que la generación de la interfaz de expediciones fue correcta */
+                if (GenerarInterfazExpediciones())
+                {
+                    /*Notificar por email que la generación de la interfaz de expediciones fue correcta */
+                }
+            }
+            catch(Exception ex) {
+                InterfazReferenciasBL objBL = new InterfazReferenciasBL();
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                objBL.EnviarCorreoElectronico(
+                    objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
         }
 
@@ -38,13 +51,11 @@ namespace BBVA_GPS_InterfazExpediciones
             try
             {
                 /*1) GENERAR INTERFAZ DE EXPEDICIONES */
-                //if (1 == 1) /*BORRAR, SOLO PARA PRUEBAS*/
                 if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini))
-                { /*DESCOMENTAR!*/
+                {
                     {
                         intExpediciones = new InterfazExpediciones_RegIniBE();
-                        intExpediciones.Idregini = idregini; /*DESCOMENTAR!*/
-                                                             //intExpediciones.Idregini = 322; /*BORRAR, SOLO PARA PRUEBAS*/
+                        intExpediciones.Idregini = idregini;
 
                         /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
                         drive = Path.GetPathRoot(GlobalVariables.Ruta_sftp);
@@ -69,9 +80,9 @@ namespace BBVA_GPS_InterfazExpediciones
 
                                         /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
                                         //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
-                                        (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
+                                        (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones),
                                             "", /* Emails con copia */
-                                            "Reporte de generación de Interfaz de Expediciones",
+                                            "[Int. Expediciones] - Reporte de generación de Interfaz de Expediciones.",
                                             (Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp),
                                             (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones));
 
@@ -89,18 +100,25 @@ namespace BBVA_GPS_InterfazExpediciones
                         }
                         else
                         {
-                            /*
-                             - Notificar por email que hay un error en acceso a la ruta SFTP
-                             - Deshacer toda la generación de la interfaz de expediciones     
-                            */
-                        }
+                            /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
+                            InterfazExpedicionesBL objBL = new InterfazExpedicionesBL();
+                            /* OCURRIÓ UN ERROR EN EL SFTP */
+                            objBL.EnviarCorreoElectronico(
+                                objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
+                                (objBL.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP")));
+                            /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                            Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP"));
+                            /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO */
+                            objBL.Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, idregini);
 
-                        /* 5) PROBAR TODO EL FLUJO COMPLETO!  */
+
+                            //DESHACER LOS REGISTOS ACTUALIZADOS DE LA INT. EXPEDICIONES!! EN PROCESO
+                        }
                     }
                 }
             }
-            catch (Exception ex) {
-                Console.WriteLine("ERROR");
+            catch {
+                throw;
             }
             return result;
         }
@@ -144,18 +162,24 @@ namespace BBVA_GPS_InterfazExpediciones
 
         private static void DefinirVariablesGlobales()
         {
-            GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
-            GlobalVariables.Ruta_fichero_detino_Log_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_LogExp"].ToString();
+            try
+            {
+                GlobalVariables.Ruta_sftp = System.Configuration.ConfigurationSettings.AppSettings["ruta_sftp"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Ref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Ref"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Exp"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Pref = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Pref"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Sum = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_Sum"].ToString();
+                GlobalVariables.Ruta_fichero_detino_Log_Exp = System.Configuration.ConfigurationSettings.AppSettings["ruta_fichero_detino_LogExp"].ToString();
 
-            //CARGANDO VARIABLES DE BD
-            Dictionary<string, object> lstVariables = new Dictionary<string, object>();
-            lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
-
-            GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+                //CARGANDO VARIABLES DE BD
+                Dictionary<string, object> lstVariables = new Dictionary<string, object>();
+                lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
+                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private static bool GenerarFicheroInterfazExpediciones(string fileName_Expediciones, string fileName_Expediciones_fullpath, InterfazExpediciones_RegIniBE intExpediciones) {

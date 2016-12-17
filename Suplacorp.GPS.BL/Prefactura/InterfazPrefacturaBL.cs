@@ -241,7 +241,7 @@ namespace Suplacorp.GPS.BL
             catch (Exception ex) {
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
-                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "[ERROR - Int. Prefactura]", "",
+                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Prefacturas), "", "[ERROR - Int. Prefactura]", "",
                     (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
