@@ -12,20 +12,22 @@ using System.Threading;
 using System.Collections;
 using System.Text;
 
+
+
+using System.Linq;
+using System.Runtime.InteropServices;
+
 namespace BBVA_GPS_InterfazExpediciones
 {
     class Program
     {
+
         static void Main(string[] args){
 
             try
             {
                 DefinirVariablesGlobales();
-
-                if (GenerarInterfazExpediciones())
-                {
-                    /*Notificar por email que la generación de la interfaz de expediciones fue correcta */
-                }
+                GenerarInterfazExpediciones();   
             }
             catch(Exception ex) {
                 InterfazReferenciasBL objBL = new InterfazReferenciasBL();
