@@ -235,6 +235,15 @@ namespace Suplacorp.GPS.BL
             return correoReporte.ToString();
         }
 
-
+        //public string Resetear_Proceso_Interfaz(int idinterfaz, int idregini)
+        //{
+        //    try
+        //    {
+        //        return (new InterfazExpedicionesDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, idregini);             }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
     }
 }
