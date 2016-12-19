@@ -26,14 +26,14 @@ namespace Suplacorp.GPS.BL
             }
         }
 
-        public bool GenerarInterfazExpediciones(ref int idregini) {
+        public bool GenerarInterfazExpediciones(ref int idregini, string nombre_fichero_destino) {
             string[] result_valores;
             bool result = false;
             int errorID = 0;
             
             try{
                 //REGISTRANDO EN BD LA INTERFAZ DE EXPEDICIONES (GENERANDO LA INTERFAZ DE EXPEDICIONES)
-                result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones("CAMBIAR_NOMBRE_FICHERO_DESTINO_KIKE").Split(';');
+                result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones(nombre_fichero_destino).Split(';');
                 idregini = int.Parse(result_valores[0]);
 
                 if (idregini != 0){
@@ -45,7 +45,7 @@ namespace Suplacorp.GPS.BL
                     /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     base.EnviarCorreoElectronico(
                         new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                        (base.FormatearMensajeError_HTML(null, errorID, "Int. Expediciones")));
+                        (base.FormatearMensajeError_HTML(null, errorID, "Int. Expediciones")), null);
                     /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                     Console.WriteLine(base.FormatearMensajeError_CONSOLA(null, errorID, "Int. Expediciones"));
                 }
@@ -54,7 +54,7 @@ namespace Suplacorp.GPS.BL
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Expediciones")));
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Expediciones")), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Expediciones"));
                 /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
@@ -228,22 +228,12 @@ namespace Suplacorp.GPS.BL
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Expediciones")));
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Expediciones")), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
-                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Expediciones"));
+                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Expediciones"), null);
             }
             return correoReporte.ToString();
         }
 
-        //public string Resetear_Proceso_Interfaz(int idinterfaz, int idregini)
-        //{
-        //    try
-        //    {
-        //        return (new InterfazExpedicionesDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, idregini);             }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
     }
 }

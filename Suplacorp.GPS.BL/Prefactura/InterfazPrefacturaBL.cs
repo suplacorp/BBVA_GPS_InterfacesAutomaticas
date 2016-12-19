@@ -235,14 +235,14 @@ namespace Suplacorp.GPS.BL
 
                     base.EnviarCorreoElectronico(
                         new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4),"", "[ERROR - Int. Prefactura]", "",
-                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Prefactura")));
+                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Prefactura")), null);
                 }
             }
             catch (Exception ex) {
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Prefacturas), "", "[ERROR - Int. Prefactura]", "",
-                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")));
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
                 /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
@@ -275,7 +275,7 @@ namespace Suplacorp.GPS.BL
                     "", /* Emails con copia */
                     "[Int. Prefactura] Reporte.",
                     (interfazPreFact_RegIniBE.Ruta_fichero_detino + interfazPreFact_RegIniBE.Nombre_fichero_detino),
-                    (new InterfazPrefacturaBL()).GenerarReporte_InterfazPreFactura(interfazPreFact_RegIniBE));
+                    (new InterfazPrefacturaBL()).GenerarReporte_InterfazPreFactura(interfazPreFact_RegIniBE), null);
 
                 result = true;
             }

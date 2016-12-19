@@ -179,14 +179,14 @@ namespace Suplacorp.GPS.BL
 
                     base.EnviarCorreoElectronico(
                         new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
-                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Referencias")));
+                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Referencias")), null);
                 }
             }
             catch (Exception ex) {
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
-                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")));
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Referencias"));
                 /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
@@ -210,7 +210,7 @@ namespace Suplacorp.GPS.BL
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 base.EnviarCorreoElectronico(
                     new InterfazReferenciasDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR - Int. Referencias]", "",
-                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")));
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Referencias")), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Referencias"));
                 /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/

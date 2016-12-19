@@ -260,7 +260,7 @@ namespace Suplacorp.GPS.BL
                                 "", /* EMAILS CON COPIA */
                                 "[Int. Suministros] - Reporte de pedidos importados BBVA.",
                                 (lstPedidos[0].RUTA_FICHERO + lstPedidos[0].NOMBRE_FICHERO_DESTINO), 
-                                (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos));
+                                (new InterfazSuministrosBL()).GenerarReporte_GeneracionPedidos(lstPedidos), null);
 
                             result = true;
                         }
@@ -271,7 +271,7 @@ namespace Suplacorp.GPS.BL
                             /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                             base.EnviarCorreoElectronico(base.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Suministros), "",
                                 "[ERROR Int. Suministros] - Error al generar pedidos (se anuló todo el proceso de importaicón)", "",
-                                base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
+                                base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"), null);
                             /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                             Console.WriteLine(this.FormatearMensajeError_CONSOLA(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
                             /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
@@ -286,7 +286,7 @@ namespace Suplacorp.GPS.BL
                     /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                     base.EnviarCorreoElectronico(base.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Suministros), "",
                         "[ERROR Int. Suministros] - Error al generar el registro inicial.", "",
-                        base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
+                        base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Suministros"), null);
                     /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                     Console.WriteLine(this.FormatearMensajeError_CONSOLA(null, interfaz_RegIniBE.Id_error, "Int. Suministros"));
                 }

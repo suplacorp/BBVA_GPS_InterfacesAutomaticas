@@ -19,19 +19,26 @@ namespace Suplacorp.GPS.BL
         }
         #endregion
         
-        public void EnviarCorreoElectronico(string emailPara, string emailConCopia, string asunto, string fileName, string cuerpoCorreo) {
-            try{
-                Email email = new Email();
+        public void EnviarCorreoElectronico(string emailPara, string emailConCopia, string asunto, string fileName, string cuerpoCorreo, string fileName2) {
+            Email email = new Email();
+            try
+            {
+                
                 email.emailTo = emailPara;
                 email.emailCC = emailConCopia;
                 email.subject = asunto;
                 email.isBodyHtml = true;
                 email.fileName = fileName;
+                email.fileName2 = fileName2;
                 email.body = cuerpoCorreo;
                 email.EnviaCorreo();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
+            }
+            finally {
+                email = null;
             }
         }
 

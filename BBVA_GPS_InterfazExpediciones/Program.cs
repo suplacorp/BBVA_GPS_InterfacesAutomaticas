@@ -33,7 +33,7 @@ namespace BBVA_GPS_InterfazExpediciones
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 objBL.EnviarCorreoElectronico(
                     objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
-                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
@@ -52,14 +52,25 @@ namespace BBVA_GPS_InterfazExpediciones
 
             try
             {
-                /*1) GENERAR INTERFAZ DE EXPEDICIONES */
-                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini))
+                /*
+                    1) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA" 
+                    - VALIDAR QUE SI YA DEJÓ UN FICHERO DE EXPEDICIÓN ANTERIOR Y NO HA SIDO DESCARGADO POR BBVA AUN, ENTONCES, VERSIONAR 1,2,3,4...
+                    [OJO], AL REUNIRME CON EL BBVA EXPRESARON QUE NO SE DEBE VERSIONAR EN ABSOLUTO, PERO, DEJARÉ EL VERSIONAMIENTO DEL
+                    FICHERO YA QUE DESEO MONITOREAR SU COMPORTAMIENTO Y NO DESEO PERDER NINGÚN FICHERO GENERADO AL SER "SOBREESCRITO",
+                    LUEGO DECIDIRÉ SI ELIMINO ESTA FUNCIONALIDAD, POR AHORA NO.
+                */
+                fileName_Expediciones = GenerarNombreFicheroExpediciones(); /* --> VERSIONAMIENTO TEMPORALMENTE */
+                fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
+                fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
+
+                /*2) GENERAR FICHERO DE INTERFAZ DE EXPEDICIONES */
+                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini, fileName_Expediciones_suplacorp))
                 {
                     {
                         intExpediciones = new InterfazExpediciones_RegIniBE();
                         intExpediciones.Idregini = idregini;
 
-                        /*2) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
+                        /*3) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
                         drive = Path.GetPathRoot(GlobalVariables.Ruta_sftp);
                         if (Directory.Exists(drive))
                         {
@@ -67,17 +78,9 @@ namespace BBVA_GPS_InterfazExpediciones
                             {
                                 if (intExpediciones.LstInterfazExpediciones_RegCabBE.Count > 0)
                                 {
-                                    /*
-                                     3) GENERAR "FICHERO DE EXPEDICIONES PARA EL BBVA" 
-                                     - VALIDAR QUE SI YA DEJÓ UN FICHERO DE EXPEDICIÓN ANTERIOR Y NO HA SIDO DESCARGADO POR BBVA, ENTONCES, VERSIONAR 1,2,3,4...
-                                     - DETECTAR LOS LOGS (EN EL OTRO APLICATIVO) Y TOMAR ACCIÓN (EVIAR POR CORREO).
-                                    */
-                                    fileName_Expediciones = GenerarNombreFicheroExpediciones();
-                                    fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
-                                    fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
-
                                     if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
                                     {
+                                        /*COPIA LOG: D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Expediciones\... */
                                         File.Copy(fileName_Expediciones_fullpath, Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp);
 
                                         //4) [NOTIFICAR POR CONSOLA]
@@ -90,7 +93,7 @@ namespace BBVA_GPS_InterfazExpediciones
                                             "", /* Emails con copia */
                                             "[Int. Expediciones] - Reporte de generación de Interfaz de Expediciones.",
                                             (Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp),
-                                            (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones));
+                                            (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones), null);
 
                                         result = true;
                                     }
@@ -99,7 +102,7 @@ namespace BBVA_GPS_InterfazExpediciones
                                         /* OCURRIÓ UN ERROR EN LA GENERACIÓN DEL FICHERO DE ITNERFAZ DE EXPEDICIONES*/
                                         objBL_ERROR.EnviarCorreoElectronico(
                                             objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                                            (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO GENERACIÓN FICHERO DE EXPEDICIÓN]")));
+                                            (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO GENERACIÓN FICHERO DE EXPEDICIÓN]")), null);
                                         /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                                         Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO GENERACIÓN FICHERO DE EXPEDICIÓN]"));
                                         //DESHACER LOS REGISTOS ACTUALIZADOS DE LA INT. DE SUMINISTOS!(NOTIFICACIÓN_COMPLETA; IDGUIAS_NOTIFICADAS) EN PROCESO
@@ -115,7 +118,7 @@ namespace BBVA_GPS_InterfazExpediciones
                             /* OCURRIÓ UN ERROR EN EL SFTP */
                             objBL_ERROR.EnviarCorreoElectronico(
                                 objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                                (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP")));                            
+                                (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP")), null);                            
                             /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                             Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP"));
                             //DESHACER LOS REGISTOS ACTUALIZADOS DE LA INT. DE SUMINISTOS!(NOTIFICACIÓN_COMPLETA; IDGUIAS_NOTIFICADAS) EN PROCESO

@@ -33,7 +33,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 objBL.EnviarCorreoElectronico(
                     objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
-                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }    
@@ -104,7 +104,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                     objBL.EnviarCorreoElectronico(
                         objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
-                        objBL.FormatearMensajeError_HTML(ioException, 0, "ERROR GENERAL"));
+                        objBL.FormatearMensajeError_HTML(ioException, 0, "ERROR GENERAL"), null);
                     /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                     Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ioException, 0, "ERROR GENERAL"));
                 }
@@ -114,7 +114,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 objBL.EnviarCorreoElectronico(
                     objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - Main]", "",
-                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
@@ -199,8 +199,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             #endregion
                             break;
                         /* #################################################################################### */
-                        case "PE_OL1_EXPED": /*INTERFAZ EXPEDICIONES*/
-                            #region INTERFAZ DE EXPEDICIONES [NO SE PROCESA AQUÍ]
+                        case "PE_OL1_EXPED": /*[NO SE PROCESA AQUÍ] - INTERFAZ EXPEDICIONES*/
+                            #region [NO SE PROCESA AQUÍ] - INTERFAZ DE EXPEDICIONES
                             /*ESTA INTERFAZ NO SE TRABAJARÁ AQUÍ, SINO EN EL OTRO APLICATIVO DENTRO DE ESTA SOLUCIÓN: "BBVA_GPS_INTERFAZEXPEDICIONES" */
                             #endregion
                             break;
@@ -239,14 +239,37 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             LogExternoExpedicionesBL logExtExpBL = new LogExternoExpedicionesBL();
                             string lectura = logExtExpBL.LeerFicheroInterfazLogExterno(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref);
 
-                            if (!(lectura.Trim().Length == 44 && lectura.Trim().Contains("Fichero procesado correctamenteXX")))
+                            /* EL BBVA REPORTÓ ALGÚN ERROR */
+                            if (!(lectura.Trim().Length == 42 && ((lectura.Split('\t')))[2].Trim().ToLower().Contains("fichero procesado correctamente")))
                             {
+                                /*[ERROR] - NOTIFICACIÓN AL EJECUTIVO*/
                                 logExtExpBL.EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
-                                        "", /* Emails con copia */
-                                        "Reporte log externo [HAY ERRORES] - Int. Expediciones",
+                                        "", //Emails con copia 
+                                        "[ERROR LOG EXTERNO] - Int. de Expediciones",
                                         (Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroBBVA) + nombreFicheroSuplacorp),
-                                        lectura);
+                                        lectura,(GlobalVariables.Ruta_sftp + "PE_OL1_EXPED" + ".txt"));
                             }
+                            else {
+                                //LA EJECUCCIÓN FUE [CORRECTA] POR PARTE DEL BBVA 
+                                logExtExpBL.EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
+                                        "", // Emails con copia
+                                        "[LOG EXTERNO] - Int. de Expediciones, ejecucción correcta por parte del BBVA",
+                                        (Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroBBVA) + nombreFicheroSuplacorp),
+                                        lectura, (GlobalVariables.Ruta_sftp + "PE_OL1_EXPED" + ".txt"));
+                            }
+
+                            /*
+                             ELIMINAR EL FICHERO DE EXPEDICIONES(PE_OL1_EXPED.txt) QUE SE ENCUENTRA EN EL SFTP A LA ESPERA DE LA CONFIRMACIÓN 
+                             POR PARTE DEL BBVA CON SU FICHERO LOG: "PE_OL1_EXPED_LOG_EXTERNO.txt".
+                             */
+                            if (File.Exists(GlobalVariables.Ruta_sftp + "PE_OL1_EXPED" + ".txt"))
+                            {
+                                File.Delete(GlobalVariables.Ruta_sftp + "PE_OL1_EXPED" + ".txt");
+
+                                Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1,
+                                            "[LOG EXTERNO] - Int. de Expediciones", "ejecución correcta por parte del BBVA, se procedió a eliminar el fichero PE_OL1_EXPED.txt del SFTP."));
+                            }
+
                             #endregion
                             break;
                             /* #################################################################################### */
@@ -259,11 +282,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
                 /*NOTIFICACIÓN [ERROR] POR EMAIL*/
                 objBL.EnviarCorreoElectronico(
                     objBL.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Referencias), "", "[ERROR GENERAL - EventoDetectado_Crearon]", "",
-                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"));
+                    objBL.FormatearMensajeError_HTML(ex, 0, "ERROR GENERAL"), null);
                 /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                 Console.WriteLine(objBL.FormatearMensajeError_CONSOLA(ex, 0, "ERROR GENERAL"));
             }
-         
         }
 
         private static void DefinirVariablesGlobales()
