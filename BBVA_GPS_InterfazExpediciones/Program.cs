@@ -24,8 +24,7 @@ namespace BBVA_GPS_InterfazExpediciones
 
         static void Main(string[] args){
 
-            try
-            {
+            try{
                 DefinirVariablesGlobales();
                 GenerarInterfazExpediciones();   
             }
