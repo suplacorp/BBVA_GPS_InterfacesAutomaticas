@@ -14,12 +14,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
 {
     class Program
     {
-        //enum Interfaces { PE_OL1_REFER, PE_OL1_SUMIN, PE_OL1_EXPED, PE_OL1_PREFAC };
-        //public static Dictionary<int, string> ListaDepartamentosBBVA = new Dictionary<int, string>();
-
         static void Main(string[] args)
         {
-
             try
             {
                 /*DEFINIENDO VARIABLES GLOBALES*/

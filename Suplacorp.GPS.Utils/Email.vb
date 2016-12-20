@@ -46,16 +46,21 @@ Public Class Email
             Next
 
             'Attach file
-            If (Me.fileName.Length > 0 And System.IO.File.Exists(fileName)) Then
-                attachment = New System.Net.Mail.Attachment(Me.fileName)
-                message.Attachments.Add(attachment)
+            If Not Me.fileName Is Nothing Then
+                If (Me.fileName.Length > 0 And System.IO.File.Exists(fileName)) Then
+                    attachment = New System.Net.Mail.Attachment(Me.fileName)
+                    message.Attachments.Add(attachment)
+                End If
             End If
 
             'Attach file2
-            If (Me.fileName2.Length > 0 And System.IO.File.Exists(fileName2)) Then
-                attachment = New System.Net.Mail.Attachment(Me.fileName2)
-                message.Attachments.Add(attachment)
+            If Not Me.fileName2 Is Nothing Then
+                If (Me.fileName2.Length > 0 And System.IO.File.Exists(fileName2)) Then
+                    attachment = New System.Net.Mail.Attachment(Me.fileName2)
+                    message.Attachments.Add(attachment)
+                End If
             End If
+
 
             message.Subject = subject
             message.IsBodyHtml = isBodyHtml
