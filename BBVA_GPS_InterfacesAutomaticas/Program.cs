@@ -230,7 +230,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             #endregion
                             break;
                         /* #################################################################################### */
-                        case "PE_OL1_EXPED_LOG_EXTERNO": /*Interfaz Prefacturas*/
+                        case "PE_OL1_EXPED_LOG_EXTERNO": /*INTERFAZ PREFACTURAS*/
                             #region INTERFAZ DE LOG EXTERNO
                             LogExternoExpedicionesBL logExtExpBL = new LogExternoExpedicionesBL();
                             string lectura = logExtExpBL.LeerFicheroInterfazLogExterno(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref);
