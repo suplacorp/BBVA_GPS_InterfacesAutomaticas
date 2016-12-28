@@ -15,7 +15,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
 {
     class Program
     {
-        /*VARIABLES PARA DESHABILITAR EL BOTÓN DE CERRAR "X" DE LA CONSOLA */
+
+        #region VARIABLES PARA DESHABILITAR EL BOTÓN DE CERRAR "X" DE LA CONSOLA
         private const int MF_BYCOMMAND = 0x00000000;
         public const int SC_CLOSE = 0xF060;
 
@@ -27,7 +28,8 @@ namespace BBVA_GPS_InterfacesAutomaticas
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
-        /*FIN VARIABLES PARA DESHABILITAR EL BOTÓN DE CERRAR "X" DE LA CONSOLA */
+        #endregion
+
 
         static void Main(string[] args)
         {
