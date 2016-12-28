@@ -118,7 +118,7 @@ namespace BBVA_GPS_InterfazExpediciones
                             /* OCURRIÓ UN ERROR EN EL SFTP */
                             objBL_ERROR.EnviarCorreoElectronico(
                                 objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones]", "",
-                                (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP")), null);                            
+                                (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP")), null);
                             /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                             Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO SFTP] - NO SE TIENE ACCESO AL SFTP"));
                             //DESHACER LOS REGISTOS ACTUALIZADOS DE LA INT. DE SUMINISTOS!(NOTIFICACIÓN_COMPLETA; IDGUIAS_NOTIFICADAS) EN PROCESO
@@ -126,6 +126,14 @@ namespace BBVA_GPS_InterfazExpediciones
                             objBL_ERROR.Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, intExpediciones.Idregini);
                         }
                     }
+                }
+                else {
+                    objBL_ERROR.EnviarCorreoElectronico(
+                            objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ALERTA - Int. Expediciones]", "",
+                            (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ALERTA] - NO GENERÓ LA INT. DE EXPEDICIONES")), null);
+
+                    /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                    Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ALERTA] - NO GENERÓ LA INT. DE EXPEDICIONES"));
                 }
             }
             catch {
