@@ -21,9 +21,10 @@ namespace BBVA_GPS_InterfazExpediciones
 
         static void Main(string[] args){
 
-            try{
+            try
+            {
                 DefinirVariablesGlobales();
-                GenerarInterfazExpediciones();   
+                GenerarInterfazExpediciones();
             }
             catch(Exception ex) {
                 InterfazReferenciasBL objBL = new InterfazReferenciasBL();
