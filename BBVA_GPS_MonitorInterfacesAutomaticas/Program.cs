@@ -103,7 +103,7 @@ namespace BBVA_GPS_MonitorInterfacesAutomaticas
                     Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO BBVA GPS] - Hay más de 1 aplicativo: BBVA_GPS_InterfacesAutomaticas.exe ejecutándose."));
                     return;
                 }
-                /* [VALIDACIÓN 1] VERIFICANDO "SALUD" DEL SFTP, QUE ESTÉ LEVANTADO, CONECTADO, FUNCIONANDO */
+                /* [VALIDACIÓN 3] VERIFICANDO "SALUD" DEL SFTP, QUE ESTÉ LEVANTADO, CONECTADO, FUNCIONANDO */
                 else if (!Directory.Exists(drive))
                 {
                     objBL_ERROR.EnviarCorreoElectronico(
