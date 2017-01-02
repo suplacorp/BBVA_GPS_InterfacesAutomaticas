@@ -255,7 +255,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             string lectura = logExtExpBL.LeerFicheroInterfazLogExterno(nombreFicheroSuplacorp, Ruta_fichero_detino_Ref);
 
                             /* EL BBVA REPORTÓ ALGÚN ERROR */
-                            if (!(lectura.Trim().Length == 42 && ((lectura.Split('\t')))[2].Trim().ToLower().Contains("fichero procesado correctamente")))
+                            if (!(lectura.Trim().Length > 42 && ((lectura.Split('\t')))[0].Trim().ToLower().Contains("fichero procesado correctamente")))
                             {
                                 /*[ERROR] - NOTIFICACIÓN AL EJECUTIVO*/
                                 logExtExpBL.EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
