@@ -317,7 +317,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                 //CARGANDO VARIABLES DE BD
                 Dictionary<string, object> lstVariables = new Dictionary<string, object>();
                 lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
-                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["idcliente"]);
 
                 /*LISTA DE CÓDIGO DE DEPARTAMENTOS SEGÚN BBVA (ELLOS MANEJAN SUS PROPIOS CÓDIGOS EN LA INTERFAZ)*/
                 GlobalVariables.ListaDepartamentosBBVA = (new UtilBL()).ObtenerListaDepartamentosBBVA();

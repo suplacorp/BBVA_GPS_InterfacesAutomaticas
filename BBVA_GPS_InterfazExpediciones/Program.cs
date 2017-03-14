@@ -191,7 +191,7 @@ namespace BBVA_GPS_InterfazExpediciones
                 //CARGANDO VARIABLES DE BD
                 Dictionary<string, object> lstVariables = new Dictionary<string, object>();
                 lstVariables = (new ValidacionInterfazBL()).CargarVariablesIniciales();
-                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["IDCLIENTE"]);
+                GlobalVariables.IdCliente = Convert.ToInt32(lstVariables["idcliente"]);
             }
             catch
             {
