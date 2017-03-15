@@ -187,7 +187,7 @@ namespace Suplacorp.GPS.DAL
             try
             {
                 DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_REGISTRAR_IEXP");
-
+                cmd.CommandTimeout = 600; /*10 minutos*/
                 sqlDatabase.AddInParameter(cmd, "NOMBRE_FICHERO_DESTINO", DbType.String, nombre_fichero_destino);
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();
             }
