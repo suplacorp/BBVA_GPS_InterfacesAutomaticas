@@ -321,6 +321,10 @@ namespace Suplacorp.GPS.BL
                     " " + "\r\n" +
                     "<table> " + "\r\n" +
                     "   <tr> " + "\r\n" +
+                    "       <td class='espacioIzquierda'><b>ID_Prefactura</b></td> " + "\r\n" +
+                    "       <td><b>" + interfazPreFact_RegIniBE.Idregini.ToString() + "</b></td> " + "\r\n" +
+                    "   </tr> " + "\r\n" +
+                    "   <tr> " + "\r\n" +
                     "       <td class='espacioIzquierda'>Numeral</td> " + "\r\n" +
                     "       <td>" + interfazPreFact_RegIniBE.Numeral.ToString() + "</td> " + "\r\n" +
                     "   </tr> " + "\r\n" +
@@ -529,6 +533,49 @@ namespace Suplacorp.GPS.BL
             }
 
             return correoReporte.ToString();
+        }
+
+
+
+
+        public bool MarcarGuiasAsociadas_Prefactura(ref InterfazPrefacturas_RegIniBE interfaz_RegIniBE) {
+            string[] result_valores;
+            bool result = false;
+            bool result_importacion = false;
+            try
+            {
+                /*  Registrando el "MARCANDO LAS GUIAS ASOCIADAS A LA PREFACTURA " */
+                result_valores = (new InterfazPrefacturaDAL()).MarcarGuiasAsociadas_Prefactura(ref interfaz_RegIniBE).Split(';');
+                if (int.Parse(result_valores[0]) != 0)
+                {
+                    //Todo ok
+                    result_importacion = true;
+                    result = true;
+                }
+                else
+                {
+                    /* OCURRIÓ UN ERROR EN LA MARCACIÓN DE LAS GUÍAS ASOCIADAS A LA PREFACTURA */
+                    interfaz_RegIniBE.Id_error = int.Parse(result_valores[1]);
+
+                    base.EnviarCorreoElectronico(
+                        new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz(4), "", "[ERROR - Int. Prefactura - MARCADO DE GUIAS ASOCIADAS]", "",
+                        (base.FormatearMensajeError_HTML(null, interfaz_RegIniBE.Id_error, "Int. Prefactura")), null);
+                }
+            }
+            catch (Exception ex)
+            {
+                /*NOTIFICACIÓN [ERROR] POR EMAIL*/
+                base.EnviarCorreoElectronico(
+                    new InterfazExpedicionesDAL().ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Prefacturas), "", "[ERROR - Int. Prefactura - MARCADO DE GUIAS ASOCIADAS]", "",
+                    (base.FormatearMensajeError_HTML(ex, 0, "Int. Prefactura")), null);
+                /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                Console.WriteLine(base.FormatearMensajeError_CONSOLA(ex, 0, "Int. Prefactura"));
+                
+                //NO ES NECESARIO
+                /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
+                ////(new InterfazPrefacturaDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Prefacturas, interfaz_RegIniBE.Idregini);
+            }
+            return result;
         }
 
     }

@@ -232,6 +232,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             //REGISTRAR EN BD LA ENTIDAD
                             if (interfazPreFactBL.RegistrarInterfaz_RegIni(ref interfazPreFact_RegIniBE))
                             {
+
+                                //MARCAR LAS GUÍAS ASOCIADAS A LA PREFACTURA
+                                interfazPreFactBL.MarcarGuiasAsociadas_Prefactura(ref interfazPreFact_RegIniBE);
+
                                 //[NOTIFICAR POR CONSOLA]
                                 Console.WriteLine((new InterfazPrefacturaBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1, 
                                     "Int. Prefactura", "Se completó correctamente el proceso de importación."));

@@ -175,5 +175,24 @@ namespace Suplacorp.GPS.DAL
             }
             return result;
         }
+
+        public string MarcarGuiasAsociadas_Prefactura(ref InterfazPrefacturas_RegIniBE interfaz_RegIniBE)
+        {
+            string result = "";
+
+            try
+            {
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("bbva_gps_MarcarGuiasAsociadas_Prefactura");
+                cmd.CommandTimeout = 600; /*10 minutos*/
+                sqlDatabase.AddInParameter(cmd, "idregini_prefactura", DbType.Int32, interfaz_RegIniBE.Idregini);
+                
+                result = sqlDatabase.ExecuteScalar(cmd).ToString();
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
     }
 }
