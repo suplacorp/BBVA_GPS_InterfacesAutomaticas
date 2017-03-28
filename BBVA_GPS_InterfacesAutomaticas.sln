@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfacesAutomaticas", "BBVA_GPS_InterfacesAutomaticas\BBVA_GPS_InterfacesAutomaticas.csproj", "{AA4E0A47-04A1-4EDA-A53A-437C9B4DD7C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suplacorp.GPS.BE", "Suplacorp.GPS.BE\Suplacorp.GPS.BE.csproj", "{032AECAF-EE90-4828-8158-F9B96E4338D1}"

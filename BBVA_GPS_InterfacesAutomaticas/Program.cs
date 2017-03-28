@@ -105,8 +105,17 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     
                     //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) Y QUE NO HAYA UNA EXCEPCIÓN POR RECURSO AÚN EN USO
                     System.Threading.Thread.Sleep(1000);
-                    
-                    File.Move(rutaFicheroBBVA, Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp);
+
+                    //Mover todas las interfaces MENOS la Ing. de Expedición, ésta tiene un trato especial, el aplicativo debe esperar
+                    //un fichero llamado LOG_EXTERNO..., y en base a eso procesa la Interfaz de Expediciones.
+                    if (nombreFicheroBBVA != "PE_OL1_EXPED.txt")
+                    {
+                        File.Move(rutaFicheroBBVA, Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp);
+                    }
+                    else {
+                        //Hacer un respaldo nada más
+                        //File.Copy(rutaFicheroBBVA, Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp);
+                    }
                     Console.WriteLine("==========================================================");
                     Console.WriteLine("");
 
