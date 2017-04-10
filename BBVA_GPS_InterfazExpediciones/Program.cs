@@ -41,13 +41,14 @@ namespace BBVA_GPS_InterfazExpediciones
         {
             bool result = false;
             int idregini = 0;
+            int errorID = 0;
             string drive = "";
             string fileName_Expediciones = "";
             string fileName_Expediciones_suplacorp = "";
             string fileName_Expediciones_fullpath = "";
             InterfazExpediciones_RegIniBE intExpediciones;
             InterfazExpedicionesBL objBL_ERROR = new InterfazExpedicionesBL();
-
+            
             try
             {
                 /*
@@ -61,11 +62,14 @@ namespace BBVA_GPS_InterfazExpediciones
                 fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
                 fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
 
+                intExpediciones = new InterfazExpediciones_RegIniBE();
+
                 /*2) GENERAR FICHERO DE INTERFAZ DE EXPEDICIONES */
-                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini, fileName_Expediciones_suplacorp))
+                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini, fileName_Expediciones_suplacorp, ref errorID))
                 {
+                    #region "Expedición generada correctamente"
                     {
-                        intExpediciones = new InterfazExpediciones_RegIniBE();
+                        //intExpediciones = new InterfazExpediciones_RegIniBE();
                         intExpediciones.Idregini = idregini;
 
                         /*3) OBTENER LA LISTA TOTAL DE LA EXPEDICIÓN PREVIAMENTE GENERADA */
@@ -78,14 +82,12 @@ namespace BBVA_GPS_InterfazExpediciones
                                 {
                                     if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
                                     {
-                                        /*COPIA LOG: D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Expediciones\... */
+                                        /*4.1) COPIA LOG: D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Expediciones\... */
                                         File.Copy(fileName_Expediciones_fullpath, Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp);
-
-                                        //4) [NOTIFICAR POR CONSOLA]
+                                        //4.2) [NOTIFICAR POR CONSOLA]
                                         Console.WriteLine((new InterfazExpedicionesBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1,
                                             "Int. Expediciones", "Se completó correctamente el proceso de generación de la Int. de Expediciones."));
-
-                                        /*4) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
+                                        /*4.3) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
                                         //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
                                         (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones),
                                             "", /* Emails con copia */
@@ -124,19 +126,74 @@ namespace BBVA_GPS_InterfazExpediciones
                             objBL_ERROR.Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, intExpediciones.Idregini);
                         }
                     }
+                    #endregion
                 }
-                else {
+                else if(errorID != 0)
+                {
+                    #region "Error"
                     objBL_ERROR.EnviarCorreoElectronico(
                             objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ALERTA - Int. Expediciones]", "",
                             (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ALERTA] - NO GENERÓ LA INT. DE EXPEDICIONES")), null);
-
                     /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
                     Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ALERTA] - NO GENERÓ LA INT. DE EXPEDICIONES"));
+                    #endregion
+                }else if(errorID == 0 && idregini == 0)
+                {
+                    #region "NUEVO REQUERIMIENTO BBVA --> REPORTAR EXPEDICIÓN VACÍA"
+                    //NO HAY NADA QUE REPORTAR EN EL FICHERO DE EXPEDICIONES, PERO AÚN ASÍ, 
+                    //DEBEMOS GENERAR LA "INT. DE EXPEDICIONES" [VACÍO], EL GPS ESPERA RECIBIR UN FICHERO DIARIAMENTE SINO GENERARÁ ERRORES PARA EL BABY-VA ;)
+
+                    /*ESCRIBIENDO EL [REGISTRO INICIAL] VACÍO  DE LA INTERFAZ DE EXPEDICIONES */
+                    intExpediciones.Numeral = "000000";
+                    intExpediciones.Tipo_registro = "0";
+                    intExpediciones.Tipo_interfaz = "E";
+                    intExpediciones.Pais = "PE";
+                    intExpediciones.Identificador_interfaz = "EX";
+                    intExpediciones.Nombre_fichero = "PE_OL1_EXPED";
+                    intExpediciones.Fecha_ejecucion = DateTime.Today;
+                    intExpediciones.Hora_proceso = "00:00:00";
+
+                    /*ESCRIBIENDO EL [REGISTRO CONTROL] VACÍO DE LA INTERFAZ DE EXPEDICIONES */
+                    intExpediciones.Numero_total_registros_fin = "000000";
+                    intExpediciones.Tipo_registro_fin = "9";
+                    intExpediciones.Numero_registros_cab_fin = "00000";
+                    intExpediciones.Numero_registros_pos_fin = "00000";
+                    intExpediciones.Numero_registros_tipo3_fin = "00000";
+
+                    if (GenerarFicheroInterfazExpediciones(fileName_Expediciones, fileName_Expediciones_fullpath, intExpediciones))
+                    {
+                        /*4.1) COPIA LOG: D:\Suplacorp\InterfacesImportadas_BBVA_GPS\Expediciones\... */
+                        File.Copy(fileName_Expediciones_fullpath, Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp);
+                        //4.2) [NOTIFICAR POR CONSOLA]
+                        Console.WriteLine((new InterfazExpedicionesBL()).FormatearMensajeCulminacionCorrecta_CONSOLA(1,
+                            "Int. Expediciones [VACÍA]", "Se completó correctamente el proceso de generación de la Int. de Expediciones."));
+                        /*4.3) NOTIFICAR POR EMAIL EL "FICHERO" Y EL "REPORTE HTML" */
+                        //ENVIAR CORREO BIEN DETALLADO AL EJECUTIVO E INTERESADOS SOBRE LA GENERACIÓN DE LA INT. DE EXPEDICIONES
+                        (new InterfazExpedicionesBL()).EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones),
+                            "", /* Emails con copia */
+                            "[Int. Expediciones] [VACÍA]- Reporte de generación de Interfaz de Expediciones.",
+                            (Utilitarios.ObtenerRutaFicheroDestino(fileName_Expediciones) + fileName_Expediciones_suplacorp),
+                            (new InterfazExpedicionesBL()).GenerarReporte_GeneracionInterfazExpediciones(intExpediciones), null);
+                    }
+                    else
+                    {
+                        /* OCURRIÓ UN ERROR EN LA GENERACIÓN DEL FICHERO DE ITNERFAZ DE EXPEDICIONES*/
+                        objBL_ERROR.EnviarCorreoElectronico(
+                            objBL_ERROR.ObtenerDestinatariosReporteInterfaz((int)GlobalVariables.Interfaz.Expediciones), "", "[ERROR - Int. Expediciones] [VACÍA]", "",
+                            (objBL_ERROR.FormatearMensajeError_HTML(null, 0, "[ERROR CRÍTICO GENERACIÓN FICHERO DE EXPEDICIÓN - VACÍO]")), null);
+                        /*NOTIFICACIÓN [ERROR] POR CONSOLA DEL APLICATIVO*/
+                        Console.WriteLine(objBL_ERROR.FormatearMensajeError_CONSOLA(null, 0, "[ERROR CRÍTICO GENERACIÓN FICHERO DE EXPEDICIÓN - VACÍO]"));
+                        //DESHACER LOS REGISTOS ACTUALIZADOS DE LA INT. DE SUMINISTOS!(NOTIFICACIÓN_COMPLETA; IDGUIAS_NOTIFICADAS) EN PROCESO
+                        /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
+                        (new InterfazExpedicionesBL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Expediciones, intExpediciones.Idregini);
+                    }
+                    #endregion
                 }
             }
             catch {
                 throw;
             }
+
             return result;
         }
 

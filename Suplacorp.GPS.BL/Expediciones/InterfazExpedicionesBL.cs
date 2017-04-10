@@ -26,10 +26,11 @@ namespace Suplacorp.GPS.BL
             }
         }
 
-        public bool GenerarInterfazExpediciones(ref int idregini, string nombre_fichero_destino) {
+        public bool GenerarInterfazExpediciones(ref int idregini, string nombre_fichero_destino, ref int errorID)
+        {
             string[] result_valores;
             bool result = false;
-            int errorID = 0;
+            //int errorID = 0;
             
             try{
                 //REGISTRANDO EN BD LA INTERFAZ DE EXPEDICIONES (GENERANDO LA INTERFAZ DE EXPEDICIONES)
