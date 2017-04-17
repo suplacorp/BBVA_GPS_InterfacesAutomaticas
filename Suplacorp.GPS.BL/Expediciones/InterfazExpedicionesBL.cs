@@ -37,11 +37,12 @@ namespace Suplacorp.GPS.BL
                 result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones(nombre_fichero_destino).Split(';');
                 idregini = int.Parse(result_valores[0]);
 
-                if (idregini != 0){
+                if (idregini != 0)
+                {
                     result = true;
                 }
-                else if(int.Parse(result_valores[1]) != 0) {
-
+                else if (int.Parse(result_valores[1]) != 0)
+                {
                     errorID = int.Parse(result_valores[1]);
                     /* OCURRIÓ UN ERROR EN EL REGISTRO INICIAL */
                     base.EnviarCorreoElectronico(

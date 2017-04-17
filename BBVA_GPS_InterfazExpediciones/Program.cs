@@ -263,6 +263,7 @@ namespace BBVA_GPS_InterfazExpediciones
 
             try
             {
+
                 using (FileStream fs = new FileStream(fileName_Expediciones_fullpath, FileMode.Append, FileAccess.Write))
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
@@ -321,6 +322,9 @@ namespace BBVA_GPS_InterfazExpediciones
                     strBuilder.Clear();
 
                     result = true;
+
+                    //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) 
+                    System.Threading.Thread.Sleep(2000);
                 }
             }
             catch(Exception ex) {
