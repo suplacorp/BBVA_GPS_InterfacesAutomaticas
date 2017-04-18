@@ -104,7 +104,7 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     nombreFicheroSuplacorp = Utilitarios.QuitarExtensionNombreFichero_BBVA(nombreFicheroBBVA) + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
                     
                     //MUY IMPORTANTE CONGELAR EL PROCESO, PARA DARLE TIEMPO A LIBERAR EL RECURSO (FICHERO) Y QUE NO HAYA UNA EXCEPCIÓN POR RECURSO AÚN EN USO
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(3000);
 
                     //Mover todas las interfaces MENOS la Ing. de Expedición, ésta tiene un trato especial, el aplicativo debe esperar
                     //un fichero llamado LOG_EXTERNO..., y en base a eso procesa la Interfaz de Expediciones.
