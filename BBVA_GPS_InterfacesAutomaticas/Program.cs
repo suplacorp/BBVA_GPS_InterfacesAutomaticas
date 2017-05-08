@@ -269,10 +269,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
                             /* EL BBVA REPORTÓ ALGÚN ERROR */
                             if (!(lectura.Trim().Length > 42 && ((lectura.Split('\t')))[0].Trim().ToLower().Contains("fichero procesado correctamente")))
                             {
-                                /*[ERROR] - NOTIFICACIÓN AL EJECUTIVO*/
+                                /*[ERROR o FICHERO NO PROCESADO POR ESTAR VACÍO] - NOTIFICACIÓN AL EJECUTIVO*/
                                 logExtExpBL.EnviarCorreoElectronico((new InterfazExpedicionesBL()).ObtenerDestinatariosReporteInterfaz(3),
                                         "", //Emails con copia 
-                                        "[ERROR LOG EXTERNO] - Int. de Expediciones",
+                                        "[FICHERO NO PROCESADO] - Int. de Expediciones",
                                         (Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroBBVA) + nombreFicheroSuplacorp),
                                         lectura,(GlobalVariables.Ruta_sftp + "PE_OL1_EXPED" + ".txt"));
                             }
