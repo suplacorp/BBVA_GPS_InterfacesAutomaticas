@@ -238,7 +238,7 @@ namespace Suplacorp.GPS.BL
 
                     //GENERAR "TODOS" LOS PEDIDOS DEL PROCESO ACTUAL [MUY IMPORTANTE]
                     if (result_importacion == true){
-
+                        //
                         result_valores = (new InterfazSuministrosDAL()).GenerarPedidosInterfazSum(interfaz_RegIniBE.Idregini).Split(';');
                         if (int.Parse(result_valores[0]) != 0){
                             
@@ -277,6 +277,9 @@ namespace Suplacorp.GPS.BL
                             /* ELIMINACIÓN DE REGISTRO INICIAL, "RESET DE TODO" EL PROCESO*/
                             (new InterfazSuministrosDAL()).Resetear_Proceso_Interfaz((int)GlobalVariables.Interfaz.Suministros, interfaz_RegIniBE.Idregini);
                         }
+
+
+
                     }
                 }
                 else{
