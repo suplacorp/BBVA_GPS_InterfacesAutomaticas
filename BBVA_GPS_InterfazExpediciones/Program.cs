@@ -18,7 +18,6 @@ namespace BBVA_GPS_InterfazExpediciones
 {
     class Program
     {
-
         static void Main(string[] args){
 
             try
@@ -333,5 +332,6 @@ namespace BBVA_GPS_InterfazExpediciones
             
             return result;
         }
+
     }
 }
