@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfacesAutomaticas", "BBVA_GPS_InterfacesAutomaticas\BBVA_GPS_InterfacesAutomaticas.csproj", "{AA4E0A47-04A1-4EDA-A53A-437C9B4DD7C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suplacorp.GPS.BE", "Suplacorp.GPS.BE\Suplacorp.GPS.BE.csproj", "{032AECAF-EE90-4828-8158-F9B96E4338D1}"
@@ -11,9 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suplacorp.GPS.DAL", "Suplac
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Suplacorp.GPS.Utils", "Suplacorp.GPS.Utils\Suplacorp.GPS.Utils.vbproj", "{856B3AF3-475C-4DE8-9B59-B27280E8B2AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfazExpediciones", "BBVA_GPS_InterfazExpediciones\BBVA_GPS_InterfazExpediciones.csproj", "{BB22DD32-565A-401C-B551-BF16DEBA0B01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfazExpediciones_PACKING", "BBVA_GPS_InterfazExpediciones\BBVA_GPS_InterfazExpediciones_PACKING.csproj", "{BB22DD32-565A-401C-B551-BF16DEBA0B01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_MonitorInterfacesAutomaticas", "BBVA_GPS_MonitorInterfacesAutomaticas\BBVA_GPS_MonitorInterfacesAutomaticas.csproj", "{7C38FA52-7283-4B58-B188-301C4087AFBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfazExpediciones_URGENTES", "BBVA_GPS_InterfazExpediciones_URGENTES\BBVA_GPS_InterfazExpediciones_URGENTES.csproj", "{87985B51-893F-4855-83E8-EC56B68C1BF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBVA_GPS_InterfazExpediciones_VACIAS", "BBVA_GPS_InterfazExpediciones_VACIAS\BBVA_GPS_InterfazExpediciones_VACIAS.csproj", "{63B51B4B-561D-4029-A5CA-B4B4EA016A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +55,14 @@ Global
 		{7C38FA52-7283-4B58-B188-301C4087AFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C38FA52-7283-4B58-B188-301C4087AFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C38FA52-7283-4B58-B188-301C4087AFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87985B51-893F-4855-83E8-EC56B68C1BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87985B51-893F-4855-83E8-EC56B68C1BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87985B51-893F-4855-83E8-EC56B68C1BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87985B51-893F-4855-83E8-EC56B68C1BF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63B51B4B-561D-4029-A5CA-B4B4EA016A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63B51B4B-561D-4029-A5CA-B4B4EA016A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63B51B4B-561D-4029-A5CA-B4B4EA016A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63B51B4B-561D-4029-A5CA-B4B4EA016A64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
