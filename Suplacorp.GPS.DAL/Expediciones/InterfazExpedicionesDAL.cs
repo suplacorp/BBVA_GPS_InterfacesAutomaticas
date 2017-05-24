@@ -180,13 +180,31 @@ namespace Suplacorp.GPS.DAL
             return result;
         }
 
-        public string GenerarInterfazExpediciones(string nombre_fichero_destino)
+        public string GenerarInterfazExpediciones_Packing(string nombre_fichero_destino)
         {
             string result = "";
 
             try
             {
-                DbCommand cmd = sqlDatabase.GetStoredProcCommand("BBVA_GPS_INS_REGISTRAR_IEXP");
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("bbva_gps_ins_registrar_iexp_packing");
+                cmd.CommandTimeout = 1200; /* 20 minutos */
+                sqlDatabase.AddInParameter(cmd, "NOMBRE_FICHERO_DESTINO", DbType.String, nombre_fichero_destino);
+                result = sqlDatabase.ExecuteScalar(cmd).ToString();
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public string GenerarInterfazExpediciones_Urgente(string nombre_fichero_destino)
+        {
+            string result = "";
+
+            try
+            {
+                DbCommand cmd = sqlDatabase.GetStoredProcCommand("bbva_gps_ins_registrar_iexp_urgentes");
                 cmd.CommandTimeout = 1200; /* 20 minutos */
                 sqlDatabase.AddInParameter(cmd, "NOMBRE_FICHERO_DESTINO", DbType.String, nombre_fichero_destino);
                 result = sqlDatabase.ExecuteScalar(cmd).ToString();

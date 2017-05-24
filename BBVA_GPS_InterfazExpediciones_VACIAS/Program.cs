@@ -23,7 +23,7 @@ namespace BBVA_GPS_InterfazExpediciones_VACIAS
             try
             {
                 DefinirVariablesGlobales();
-                GenerarInterfazExpediciones();
+                GenerarInterfazExpediciones_Vacio();
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace BBVA_GPS_InterfazExpediciones_VACIAS
         }
 
 
-        public static bool GenerarInterfazExpediciones()
+        public static bool GenerarInterfazExpediciones_Vacio()
         {
             bool result = false;
             int idregini = 0;
@@ -50,6 +50,7 @@ namespace BBVA_GPS_InterfazExpediciones_VACIAS
             InterfazExpediciones_RegIniBE intExpediciones;
             InterfazExpedicionesBL objBL_ERROR = new InterfazExpedicionesBL();
 
+            /* VACÍO */
             try
             {
                 /*

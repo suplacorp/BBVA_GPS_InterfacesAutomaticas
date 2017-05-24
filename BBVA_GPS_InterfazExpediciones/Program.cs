@@ -23,7 +23,7 @@ namespace BBVA_GPS_InterfazExpediciones
             try
             {
                 DefinirVariablesGlobales();
-                GenerarInterfazExpediciones();
+                GenerarInterfazExpediciones_Packing();
             }
             catch(Exception ex) {
                 InterfazReferenciasBL objBL = new InterfazReferenciasBL();
@@ -36,7 +36,7 @@ namespace BBVA_GPS_InterfazExpediciones
             }
         }
 
-        public static bool GenerarInterfazExpediciones()
+        public static bool GenerarInterfazExpediciones_Packing()
         {
             bool result = false;
             int idregini = 0;
@@ -64,7 +64,7 @@ namespace BBVA_GPS_InterfazExpediciones
                 intExpediciones = new InterfazExpediciones_RegIniBE();
 
                 /*2) GENERAR FICHERO DE INTERFAZ DE EXPEDICIONES */
-                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini, fileName_Expediciones_suplacorp, ref errorID))
+                if ((new InterfazExpedicionesBL()).GenerarInterfazExpediciones(ref idregini, fileName_Expediciones_suplacorp, ref errorID, false))
                 {
                     #region "Expedición generada correctamente"
                     {

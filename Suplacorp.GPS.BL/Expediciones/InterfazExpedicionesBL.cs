@@ -26,7 +26,7 @@ namespace Suplacorp.GPS.BL
             }
         }
 
-        public bool GenerarInterfazExpediciones(ref int idregini, string nombre_fichero_destino, ref int errorID)
+        public bool GenerarInterfazExpediciones(ref int idregini, string nombre_fichero_destino, ref int errorID, bool esUrgente)
         {
             string[] result_valores;
             bool result = false;
@@ -34,7 +34,13 @@ namespace Suplacorp.GPS.BL
             
             try{
                 //REGISTRANDO EN BD LA INTERFAZ DE EXPEDICIONES (GENERANDO LA INTERFAZ DE EXPEDICIONES)
-                result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones(nombre_fichero_destino).Split(';');
+                if (esUrgente){
+                    result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones_Urgente(nombre_fichero_destino).Split(';');
+                }
+                else {
+                    result_valores = (new InterfazExpedicionesDAL()).GenerarInterfazExpediciones_Packing(nombre_fichero_destino).Split(';');
+                }
+
                 idregini = int.Parse(result_valores[0]);
 
                 if (idregini != 0)
@@ -64,6 +70,7 @@ namespace Suplacorp.GPS.BL
             }
             return result;
         }
+
 
         public string ObtenerDestinatariosReporteInterfaz(int idInterfaz)
         {
