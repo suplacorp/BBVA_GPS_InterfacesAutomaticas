@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Permissions;
-using Suplacorp.GPS.BE;
-using Suplacorp.GPS.BL;
-using System.Configuration;
-using Suplacorp.GPS.Utils;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Threading;
 using System.Collections;
 using System.Text;
-using System.Linq;
-using System.Runtime.InteropServices;
+using Suplacorp.GPS.BE;
+using Suplacorp.GPS.BL;
+using Suplacorp.GPS.Utils;
+
+
+
+
 
 namespace BBVA_GPS_InterfazExpediciones_VACIAS
 {
