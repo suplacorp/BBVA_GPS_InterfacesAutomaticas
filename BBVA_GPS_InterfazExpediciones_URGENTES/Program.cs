@@ -53,7 +53,8 @@ namespace BBVA_GPS_InterfazExpediciones_URGENTES
                     FICHERO YA QUE DESEO MONITOREAR SU COMPORTAMIENTO Y NO DESEO PERDER NINGÚN FICHERO GENERADO AL SER "SOBREESCRITO",
                     LUEGO DECIDIRÉ SI ELIMINO ESTA FUNCIONALIDAD, POR AHORA NO.
                 */
-                fileName_Expediciones = GenerarNombreFicheroExpediciones(); /* --> VERSIONAMIENTO TEMPORALMENTE */
+                //fileName_Expediciones = GenerarNombreFicheroExpediciones(); /* --> VERSIONAMIENTO TEMPORALMENTE */
+                fileName_Expediciones = "PE_OL1_EXPED";
                 fileName_Expediciones_fullpath = GlobalVariables.Ruta_sftp + fileName_Expediciones + ".txt";
                 fileName_Expediciones_suplacorp = fileName_Expediciones + "_" + DateTime.Now.ToString("yyyyMMdd_hmmss").ToString() + ".txt";
 
