@@ -110,8 +110,10 @@ namespace BBVA_GPS_InterfacesAutomaticas
                     //un fichero llamado LOG_EXTERNO..., y en base a eso procesa la Interfaz de Expediciones.
                     if (nombreFicheroBBVA != "PE_OL1_EXPED.txt")
                     {
-                        if (File.Exists(rutaFicheroBBVA)) {
-                            File.Move(rutaFicheroBBVA, Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp) + nombreFicheroSuplacorp);
+                        string rutaDestino = "";
+                        rutaDestino = Utilitarios.ObtenerRutaFicheroDestino(nombreFicheroSuplacorp);
+                        if (!File.Exists(rutaDestino + nombreFicheroSuplacorp)) {
+                            File.Move(rutaFicheroBBVA, rutaDestino + nombreFicheroSuplacorp);
                         }
                     }
                     else {
